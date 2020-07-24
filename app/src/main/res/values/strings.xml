@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CloneiCaller</string>
+    <string name="wellcome">Chào mừng bạn tới iCaller</string>
+    <string name="app_desc">Ứng dụng chặn cuộc gọi rác</string>
+    <string name="btn_start">Bắt đầu</string>
+    <string name="version">Phiên bản 1.2</string>
+    <string name="btn_ok">OK</string>
+    <string name="req_permission">Request permission</string>
+    <string name="content_req">Activate permissions related to <strong>Phone calls</strong></string>
+    <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+    <string name="sign_in">ĐĂNG NHẬP</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="first_number">+84 |</string>
+</resources>

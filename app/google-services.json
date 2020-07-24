@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "78920661148",
+    "firebase_url": "https://icallerclone.firebaseio.com",
+    "project_id": "icallerclone",
+    "storage_bucket": "icallerclone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:78920661148:android:595683a8b5415eae279559",
+        "android_client_info": {
+          "package_name": "com.example.cloneicaller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "78920661148-vfclvbdjho0kn29kd9li15ka1q453fp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cloneicaller",
+            "certificate_hash": "60125c55bbaa373bd7c11f8d51b57c4429d06812"
+          }
+        },
+        {
+          "client_id": "78920661148-rkidkhfmub76phraqeotkm2d1p9srurl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhGTqx_GAYioywAysLM254eza07oiR42w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "78920661148-rkidkhfmub76phraqeotkm2d1p9srurl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
