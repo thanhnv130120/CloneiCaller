@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void sendOTPToUser(String phoneNumber){
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+84382480081",        // Phone number to verify
+                "+84966999999",        // Phone number to verify
                 60,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
