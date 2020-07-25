@@ -31,6 +31,10 @@ public class FragmentHome extends Fragment {
     }
 
     private void setUpTab() {
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_dial_hover);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_history);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_blocking);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_setting);
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -64,7 +68,6 @@ public class FragmentHome extends Fragment {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
