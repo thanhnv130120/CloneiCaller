@@ -3,6 +3,7 @@ package com.example.cloneicaller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,11 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cloneicaller.Models.Members;
+import com.example.cloneicaller.auth.RetrofitClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -27,11 +31,19 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.concurrent.TimeUnit;
 
-public class LoginActivity extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class LoginActivity extends AppCompatActivity implements Callback<Members> {
     Button btn_login;
     LinearLayout layout_otp;
-    private EditText edt1,edt2,edt3,edt4,edt5,edt6, edtphoneNumber;
+    private EditText edt1, edt2, edt3, edt4, edt5, edt6, edtphoneNumber;
     String verifyCodeBySystem;
+    String codeOtp;
+    String phoneNum = "+84965999999";
+
+    private String g_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjZmMyMzViZDYxMGZhY2FlYzVlYjBhZGU5NTg5ZGE5NTI4MmRlY2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaWNhbGxlci04YzM3MiIsImF1ZCI6ImljYWxsZXItOGMzNzIiLCJhdXRoX3RpbWUiOjE1OTU1Nzk1MzksInVzZXJfaWQiOiIxclc2ZjBuZ2RSWk5nd3dGRG1ONWNvaVdSSTkzIiwic3ViIjoiMXJXNmYwbmdkUlpOZ3d3RkRtTjVjb2lXUkk5MyIsImlhdCI6MTU5NTU3OTU0MSwiZXhwIjoxNTk1NTgzMTQxLCJwaG9uZV9udW1iZXIiOiIrODQ5NjU5OTk5OTkiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7InBob25lIjpbIis4NDk2NTk5OTk5OSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.Ai2K2bSa7YQUui-MFks6lLy8bWFNpPw50V4vGI5_UOOvzlGXhBI--nvOp72JS0TNG1hpODy4viLuooeuJ4GOEQ2ifJHeuatg5DHV8RfrPcZB48TIXLSpSieZxqR60qkivVobB50ysCH3vWQn5BAi2iBQSuHMbTqOvHUEkJ57YU2IVgrNXLDu0sZpOggmIlvs5da_rN_9naImEKTsJzdfmYmkUa2umZ8uGNy_coC5QtdvTZWGeo5OatXbbrzDAUMG13Z9r_a-mFcx37etS7dRPVFJIqV1ALxDDtjvt5Lc6FNR70Mr09cU6RjxzTvSDgvjuejPePfUfCycsQpGu8IQvg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +61,6 @@ public class LoginActivity extends AppCompatActivity {
         edtphoneNumber = findViewById(R.id.edtphoneNumber);
 
         final String phoneNumber = edtphoneNumber.getText().toString();
-
-        PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-        try {
-            Phonenumber.PhoneNumber phoneNumberVN1  = phoneNumberUtil.parse(phoneNumber, "VN");
-        } catch (NumberParseException e) {
-            e.printStackTrace();
-        }
 
 
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
+                if (editable.toString().length() == 1) {
                     edt2.requestFocus();
                 }
             }
@@ -98,9 +103,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
+                if (editable.toString().length() == 1) {
                     edt3.requestFocus();
-                }else if (editable.toString().length() == 0){
+                } else if (editable.toString().length() == 0) {
                     edt1.requestFocus();
                 }
             }
@@ -119,9 +124,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
+                if (editable.toString().length() == 1) {
                     edt4.requestFocus();
-                }else if (editable.toString().length() == 0){
+                } else if (editable.toString().length() == 0) {
                     edt2.requestFocus();
                 }
             }
@@ -140,9 +145,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
+                if (editable.toString().length() == 1) {
                     edt5.requestFocus();
-                }else if (editable.toString().length() == 0){
+                } else if (editable.toString().length() == 0) {
                     edt3.requestFocus();
                 }
             }
@@ -161,9 +166,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
+                if (editable.toString().length() == 1) {
                     edt6.requestFocus();
-                }else if (editable.toString().length() == 0){
+                } else if (editable.toString().length() == 0) {
                     edt4.requestFocus();
                 }
             }
@@ -182,19 +187,25 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().length() == 1){
-
-                }else if (editable.toString().length() == 0){
+                if (editable.toString().length() == 1) {
+                    try {
+                        codeOtp = edt1.getText().toString() + edt2.getText().toString() + edt3.getText().toString() + edt4.getText().toString() + edt5.getText().toString() + edt6.getText().toString();
+                        verifyCode(codeOtp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (editable.toString().length() == 0) {
                     edt5.requestFocus();
                 }
             }
         });
 
+
     }
 
-    private void sendOTPToUser(String phoneNumber){
+    private void sendOTPToUser(String phoneNumber) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+84966999999",        // Phone number to verify
+                "+84382480082",        // Phone number to verify
                 60,                 // Timeout duration
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
@@ -204,12 +215,12 @@ public class LoginActivity extends AppCompatActivity {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            Log.e("Success","Thành công");
+            Log.e("Success", "Thành công");
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
-            Log.e("Failed",e.getMessage());
+            Log.e("Failed", e.getMessage());
         }
 
         @Override
@@ -219,8 +230,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     };
 
-    private void verifyCode(String codeByUser){
-        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verifyCodeBySystem,codeByUser);
+    private void verifyCode(String codeByUser) {
+        PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verifyCodeBySystem, codeByUser);
         signInUserByCredential(phoneAuthCredential);
     }
 
@@ -229,14 +240,44 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth.signInWithCredential(phoneAuthCredential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(LoginActivity.this,"Successfull",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this,task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                try {
+                    if (task.isSuccessful()) {
+                        Log.e("checkOTP", "true OTP");
+//                       task.getResult().getUser().getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                           @Override
+//                           public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                               Log.e("AAAA", task.getResult().getToken());
+//                               int a  =1;
+//
+//                           }
+//                       });
+
+                        RetrofitClient.getInstance().getMember(phoneNum,g_token).enqueue(LoginActivity.this);
+
+                    } else {
+                        Log.e("checkOTP", "false OTP");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
 
+    @Override
+    public void onResponse(Call<Members> call, Response<Members> response) {
+        if (response.isSuccessful()){
+            Log.e("Auth","Valid");
+
+            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+        }
+        else {
+            Log.e("Auth", "Invalid");
+        }
+    }
+
+    @Override
+    public void onFailure(Call<Members> call, Throwable t) {
+        Log.e("Auth", t.getMessage());
+    }
 }
