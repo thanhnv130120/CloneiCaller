@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
 import com.example.cloneicaller.adapter.AdapterPersonDiary;
+import com.example.cloneicaller.adapter.ItemPersonAdapter;
+import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.item.ItemGroup;
 import com.example.cloneicaller.item.ItemPerson;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,9 +35,10 @@ import java.util.Set;
 public class FragmentDiary extends Fragment implements View.OnClickListener{
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
-    private ArrayList<ItemGroup> groupAlphabet = new ArrayList<>();
-    private ArrayList<String> person = new ArrayList<>();
-    private ArrayList<String>persons = new ArrayList<>();
+    private ArrayList<ItemPerson>people = new ArrayList<>();
+//    private ArrayList<ItemGroup> groupAlphabet = new ArrayList<>();
+//    private ArrayList<String> person = new ArrayList<>();
+//    private ArrayList<String>persons = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,32 +61,37 @@ public class FragmentDiary extends Fragment implements View.OnClickListener{
         while (cursor.moveToNext()){
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            person.add(name);
+//            person.add(name);
+            people.add(new ItemPerson(name,-1));
         }
-        for (String itemPerson:sortArrayList(person)) {
-            persons.add(itemPerson);
-        }
-        ArrayList<String>alphabet = new ArrayList<>();
-        for (String personz:persons) {
-            alphabet.add(Character.toString(personz.charAt(0)));
-        }
-        Set<String> set = new HashSet<>(alphabet);
-        alphabet.clear();
-        alphabet.addAll(set);
-        for (int i = 0; i < alphabet.size(); i++) {
-            ArrayList<String>collection = new ArrayList<>();
-            for (int j = 0; j < persons.size(); j++) {
-                if(Character.toString(persons.get(j).charAt(0)).equals(alphabet.get(i))){
-                    collection.add(persons.get(j));
-                }
-            }
-            groupAlphabet.add(new ItemGroup(collection,alphabet.get(i)));
-        }
+        people = Common.sortList(people);
+        people = Common.addAlphabet(people);
+        ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(),people);
+        rclList.setAdapter(adapter);
+//        for (String itemPerson:sortArrayList(person)) {
+//            persons.add(itemPerson);
+//        }
+//        ArrayList<String>alphabet = new ArrayList<>();
+//        for (String personz:persons) {
+//            alphabet.add(Character.toString(personz.charAt(0)));
+//        }
+//        Set<String> set = new HashSet<>(alphabet);
+//        alphabet.clear();
+//        alphabet.addAll(set);
+//        for (int i = 0; i < alphabet.size(); i++) {
+//            ArrayList<String>collection = new ArrayList<>();
+//            for (int j = 0; j < persons.size(); j++) {
+//                if(Character.toString(persons.get(j).charAt(0)).equals(alphabet.get(i))){
+//                    collection.add(persons.get(j));
+//                }
+//            }
+//            groupAlphabet.add(new ItemGroup(collection,alphabet.get(i)));
+//        }
 //        for (String itemPerson:person) {
 //            groupAlphabet.add(new ItemGroup(persons,Character.toString(itemPerson.charAt(0))));
 //        }
-        AdapterAlphabetDiary adapterAlphabetDiary = new AdapterAlphabetDiary(getContext(),groupAlphabet);
-        rclList.setAdapter(adapterAlphabetDiary);
+//        AdapterAlphabetDiary adapterAlphabetDiary = new AdapterAlphabetDiary(getContext(),groupAlphabet);
+//        rclList.setAdapter(adapterAlphabetDiary);
     }
     private ArrayList<String> sortArrayList(ArrayList<String>item){
         Collections.sort(item, new Comparator<String>() {
