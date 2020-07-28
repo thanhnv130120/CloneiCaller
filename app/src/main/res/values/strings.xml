@@ -12,4 +12,6 @@
     <string name="sign_in">ĐĂNG NHẬP</string>
     <string name="phone_number">Số điện thoại</string>
     <string name="first_number">+84 |</string>
+    <string name="diary">DANH BẠ</string>
+    <string name="input">Nhập vào đây</string>
 </resources>
