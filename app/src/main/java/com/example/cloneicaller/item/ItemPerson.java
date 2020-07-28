@@ -1,15 +1,24 @@
 package com.example.cloneicaller.item;
 
 public class ItemPerson  {
-    private String name;
+    private String name,number;
     private int viewType;
 
     public ItemPerson() {
     }
 
-    public ItemPerson(String name, int viewType) {
+    public ItemPerson(String name, int viewType,String number) {
         this.name = name;
         this.viewType = viewType;
+        this.number = number;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public String getName() {

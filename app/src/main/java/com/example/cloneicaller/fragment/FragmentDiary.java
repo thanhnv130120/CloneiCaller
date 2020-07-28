@@ -1,6 +1,7 @@
 package com.example.cloneicaller.fragment;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cloneicaller.DetailDiaryActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
 import com.example.cloneicaller.adapter.AdapterPersonDiary;
@@ -32,7 +34,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FragmentDiary extends Fragment implements View.OnClickListener{
+public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener{
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
     private ArrayList<ItemPerson>people = new ArrayList<>();
@@ -62,12 +64,13 @@ public class FragmentDiary extends Fragment implements View.OnClickListener{
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 //            person.add(name);
-            people.add(new ItemPerson(name,-1));
+            people.add(new ItemPerson(name,-1,num));
         }
         people = Common.sortList(people);
         people = Common.addAlphabet(people);
         ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(),people);
         rclList.setAdapter(adapter);
+        adapter.setListener(this);
 //        for (String itemPerson:sortArrayList(person)) {
 //            persons.add(itemPerson);
 //        }
@@ -133,5 +136,16 @@ public class FragmentDiary extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public void onClickPerson(int position) {
+        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("name",people.get(position).getName());
+        bundle.putString("number",people.get(position).getNumber());
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

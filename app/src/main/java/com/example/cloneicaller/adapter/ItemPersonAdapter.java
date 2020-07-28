@@ -19,10 +19,15 @@ import java.util.List;
 public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<ItemPerson>personList;
+    private PersonItemListener listener;
 
     public ItemPersonAdapter(Context context, List<ItemPerson> personList) {
         this.context = context;
         this.personList = personList;
+    }
+
+    public void setListener(PersonItemListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -58,7 +63,10 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             personHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context,""+personList.get(position).getName(),Toast.LENGTH_LONG).show();
+                    if(listener!=null){
+                        listener.onClickPerson(position);
+                    }
+                    //Toast.makeText(context,""+personList.get(position).getName() +":"+personList.get(position).getNumber(),Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -87,5 +95,8 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         return personList.get(position).getViewType();
+    }
+    public interface PersonItemListener{
+        void onClickPerson(int position);
     }
 }
