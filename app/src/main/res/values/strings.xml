@@ -12,4 +12,14 @@
     <string name="sign_in">ĐĂNG NHẬP</string>
     <string name="phone_number">Số điện thoại</string>
     <string name="first_number">+84 |</string>
+    <string name="diary">DANH BẠ</string>
+    <string name="input">Nhập vào đây</string>
+    <string name="detail">CHI TIẾT</string>
+    <string name="default_name">default person</string>
+    <string name="default_number">default phone number</string>
+    <string name="call">GỌI</string>
+    <string name="message">NHẮN TIN</string>
+    <string name="block">CHẶN</string>
+    <string name="default_country">default nation</string>
+    <string name="default_network">default network</string>
 </resources>
