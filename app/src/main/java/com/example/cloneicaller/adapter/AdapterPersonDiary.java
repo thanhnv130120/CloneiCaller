@@ -24,7 +24,9 @@ public class AdapterPersonDiary extends RecyclerView.Adapter<AdapterPersonDiary.
         this.context = context;
         this.itemPeople = itemPeople;
     }
-
+    public void setListener(ItemClicker listener){
+        this.listener = listener;
+    }
     @NonNull
     @Override
     public PersonHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

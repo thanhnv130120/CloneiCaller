@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +17,7 @@ import com.example.cloneicaller.item.ItemPerson;
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
-public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDiary.AlphaHolder> {
+public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDiary.AlphaHolder> implements AdapterPersonDiary.ItemClicker{
     private Context context;
     private ArrayList<ItemGroup> arrayListGroup;
     private ArrayList<String>itemPeople;
@@ -35,13 +36,22 @@ public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDi
     @Override
     public void onBindViewHolder(@NonNull AlphaHolder holder, int position) {
         holder.tvFirstCharacter.setText(arrayListGroup.get(position).getName());
+        ArrayList<String>persons = new ArrayList<>();
+        for (String person:arrayListGroup.get(position).getPerson()) {
+        }
         AdapterPersonDiary personAdapter = new AdapterPersonDiary(context,arrayListGroup.get(position).getPerson());
         holder.rclListGroup.setAdapter(personAdapter);
+        personAdapter.setListener(this);
     }
 
     @Override
     public int getItemCount() {
         return arrayListGroup.size();
+    }
+
+    @Override
+    public void onClickListener(int position) {
+        Toast.makeText(context,position,Toast.LENGTH_LONG).show();
     }
 
     public static class AlphaHolder extends RecyclerView.ViewHolder{
@@ -52,5 +62,8 @@ public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDi
             tvFirstCharacter = itemView.findViewById(R.id.tv_first_alphabet);
             rclListGroup = itemView.findViewById(R.id.rcl_item_diary);
         }
+    }
+    public interface GroupOnClick{
+        void onGroupClickListener(int position);
     }
 }

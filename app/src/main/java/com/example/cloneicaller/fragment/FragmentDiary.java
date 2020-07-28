@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
+import com.example.cloneicaller.adapter.AdapterPersonDiary;
 import com.example.cloneicaller.item.ItemGroup;
 import com.example.cloneicaller.item.ItemPerson;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,11 +30,12 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FragmentDiary extends Fragment implements View.OnClickListener {
+public class FragmentDiary extends Fragment implements View.OnClickListener{
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
-    ArrayList<ItemGroup> groupAlphabet = new ArrayList<>();
-
+    private ArrayList<ItemGroup> groupAlphabet = new ArrayList<>();
+    private ArrayList<String> person = new ArrayList<>();
+    private ArrayList<String>persons = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,7 +48,6 @@ public class FragmentDiary extends Fragment implements View.OnClickListener {
     }
 
     private void fetchContact() {
-        ArrayList<String> person = new ArrayList<>();
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String selection = null;
         String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
@@ -59,7 +60,6 @@ public class FragmentDiary extends Fragment implements View.OnClickListener {
             String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             person.add(name);
         }
-        ArrayList<String>persons = new ArrayList<>();
         for (String itemPerson:sortArrayList(person)) {
             persons.add(itemPerson);
         }
