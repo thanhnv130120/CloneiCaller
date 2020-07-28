@@ -3,7 +3,9 @@ package com.example.cloneicaller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
     String codeOtp;
     String phoneNum = "+84965999999";
 
-    private String g_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjZmMyMzViZDYxMGZhY2FlYzVlYjBhZGU5NTg5ZGE5NTI4MmRlY2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaWNhbGxlci04YzM3MiIsImF1ZCI6ImljYWxsZXItOGMzNzIiLCJhdXRoX3RpbWUiOjE1OTU1Nzk1MzksInVzZXJfaWQiOiIxclc2ZjBuZ2RSWk5nd3dGRG1ONWNvaVdSSTkzIiwic3ViIjoiMXJXNmYwbmdkUlpOZ3d3RkRtTjVjb2lXUkk5MyIsImlhdCI6MTU5NTU3OTU0MSwiZXhwIjoxNTk1NTgzMTQxLCJwaG9uZV9udW1iZXIiOiIrODQ5NjU5OTk5OTkiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7InBob25lIjpbIis4NDk2NTk5OTk5OSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.Ai2K2bSa7YQUui-MFks6lLy8bWFNpPw50V4vGI5_UOOvzlGXhBI--nvOp72JS0TNG1hpODy4viLuooeuJ4GOEQ2ifJHeuatg5DHV8RfrPcZB48TIXLSpSieZxqR60qkivVobB50ysCH3vWQn5BAi2iBQSuHMbTqOvHUEkJ57YU2IVgrNXLDu0sZpOggmIlvs5da_rN_9naImEKTsJzdfmYmkUa2umZ8uGNy_coC5QtdvTZWGeo5OatXbbrzDAUMG13Z9r_a-mFcx37etS7dRPVFJIqV1ALxDDtjvt5Lc6FNR70Mr09cU6RjxzTvSDgvjuejPePfUfCycsQpGu8IQvg";
+    private String g_token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZjZmMyMzViZDYxMGZhY2FlYzVlYjBhZGU5NTg5ZGE5NTI4MmRlY2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaWNhbGxlci04YzM3MiIsImF1ZCI6ImljYWxsZXItOGMzNzIiLCJhdXRoX3RpbWUiOjE1OTU4MTUzMDAsInVzZXJfaWQiOiIxclc2ZjBuZ2RSWk5nd3dGRG1ONWNvaVdSSTkzIiwic3ViIjoiMXJXNmYwbmdkUlpOZ3d3RkRtTjVjb2lXUkk5MyIsImlhdCI6MTU5NTgxNTMwMiwiZXhwIjoxNTk1ODE4OTAyLCJwaG9uZV9udW1iZXIiOiIrODQ5NjU5OTk5OTkiLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7InBob25lIjpbIis4NDk2NTk5OTk5OSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBob25lIn19.eVn386uJEZ6skWDRKqwxk-6su46IchXF24Vk0gQ5V5unjtD_0nDtMmG5K7hwv824E5VuCqoq2ZByyRsugQB5D9BkoEKSH-OlmuAt2YY8yAIFuv5lMslT9o4FX6tJxgsqwBBNB637iVK5iRpQThMyg6Omd8Kdh0EALS4mvBJUugoPaC5T4d006QpwAblAO4csrK7dtnoXSE3nfbqXT1huIrhVnyGMCXghFs1lOebPmR2hNMfBfoXo0uM52ET7NvM6h4fMCTlECzjGQPEh0dzFdbcVhUTBzb9OYaJOTdwGZP2sSX5PedBKlMNHmSiYUezzP4FKih-AFnZAWrzDXrenkA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,7 +254,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
 //                           }
 //                       });
 
-                        RetrofitClient.getInstance().getMember(phoneNum,g_token).enqueue(LoginActivity.this);
+                        RetrofitClient.getInstance().getMember(phoneNum, g_token).enqueue(LoginActivity.this);
 
                     } else {
                         Log.e("checkOTP", "false OTP");
@@ -266,12 +268,15 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
 
     @Override
     public void onResponse(Call<Members> call, Response<Members> response) {
-        if (response.isSuccessful()){
-            Log.e("Auth","Valid");
+        if (response.isSuccessful()) {
+            Log.e("Auth", "Valid");
+            SharedPreferences sharedPreferences = getSharedPreferences("token", Context.MODE_PRIVATE);
+            SharedPreferences.Editor spE = sharedPreferences.edit();
+            spE.putString("g_token",g_token);
+            spE.commit();
 
-            startActivity(new Intent(getApplicationContext(),HomeActivity.class));
-        }
-        else {
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+        } else {
             Log.e("Auth", "Invalid");
         }
     }
