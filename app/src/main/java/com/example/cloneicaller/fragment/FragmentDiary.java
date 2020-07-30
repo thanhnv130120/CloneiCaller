@@ -1,6 +1,7 @@
 package com.example.cloneicaller.fragment;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,9 +39,11 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
     private ArrayList<ItemPerson>people = new ArrayList<>();
+    private FragmentDiaryListner listener;
 //    private ArrayList<ItemGroup> groupAlphabet = new ArrayList<>();
 //    private ArrayList<String> person = new ArrayList<>();
 //    private ArrayList<String>persons = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,21 +56,23 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     }
 
     private void fetchContact() {
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String selection = null;
-        String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-        String[] selectionArgs = null;
-        String sortOrder = null;
-        ContentResolver resolver = getContext().getContentResolver();
-        Cursor cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
-        while (cursor.moveToNext()){
-            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//            person.add(name);
-            people.add(new ItemPerson(name,-1,num));
-        }
+//        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+//        String selection = null;
+//        String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+//        String[] selectionArgs = null;
+//        String sortOrder = null;
+//        ContentResolver resolver = getContext().getContentResolver();
+//        Cursor cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+//        while (cursor.moveToNext()){
+//            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+//            String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+////            person.add(name);
+//            people.add(new ItemPerson(name,-1,num));
+//        }
+        people = Common.resolverArrayList(null,getContext());
         people = Common.sortList(people);
         people = Common.addAlphabet(people);
+        listener.onPutListDiarySent(people);
         ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(),people);
         rclList.setAdapter(adapter);
         adapter.setListener(this);
@@ -137,7 +142,6 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     public void onClick(View v) {
 
     }
-
     @Override
     public void onClickPerson(int position) {
         //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
@@ -147,5 +151,24 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
         bundle.putString("number",people.get(position).getNumber());
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+    public interface FragmentDiaryListner{
+        void onPutListDiarySent(ArrayList<ItemPerson>people);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof FragmentDiaryListner){
+            listener = (FragmentDiaryListner)context;
+        }else {
+            throw new RuntimeException(context.toString() + " must implement FragmentListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }

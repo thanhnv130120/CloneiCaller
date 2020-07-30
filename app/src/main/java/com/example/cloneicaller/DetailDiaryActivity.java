@@ -17,13 +17,28 @@ public class DetailDiaryActivity extends AppCompatActivity implements View.OnCli
     protected void onStart() {
         super.onStart();
         Intent intent1 = getIntent();
-        String name = intent1.getExtras().get("name").toString();
-        String number = intent1.getExtras().get("number").toString();
-        tvNameDetail.setText(name);
-        tvPhoneDetail.setText(number);
-        tvPhoneNumberDetail.setText(number);
+        if (intent1.getExtras().get("name")!=null){
+            String name = intent1.getExtras().get("name").toString();
+            tvNameDetail.setText(name);
+        }
+        if (intent1.getExtras().get("number")!=null){
+            String number = intent1.getExtras().get("number").toString();
+            tvPhoneDetail.setText(number);
+            tvPhoneDetail.setText(number);
+            tvPhoneNumberDetail.setText(number);
+        }
+        Intent intent2 = getIntent();
+        if (intent2.getExtras().get("name1")!=null){
+            String name1 = intent2.getExtras().get("name1").toString();
+            tvNameDetail.setText(name1);
+        }
+        if (intent2.getExtras().get("number1")!=null){
+            String number1 = intent2.getExtras().get("number1").toString();
+            tvPhoneDetail.setText(number1);
+            tvPhoneDetail.setText(number1);
+            tvPhoneNumberDetail.setText(number1);
+        }
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

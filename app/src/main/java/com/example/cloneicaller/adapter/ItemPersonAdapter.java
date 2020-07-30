@@ -14,6 +14,7 @@ import com.example.cloneicaller.R;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.item.ItemPerson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -98,5 +99,9 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
     public interface PersonItemListener{
         void onClickPerson(int position);
+    }
+    public void filterList(ArrayList<ItemPerson>arrayList){
+        personList = arrayList;
+        notifyDataSetChanged();
     }
 }

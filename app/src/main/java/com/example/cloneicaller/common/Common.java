@@ -1,6 +1,11 @@
 package com.example.cloneicaller.common;
 
 import android.app.Person;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 
 import com.example.cloneicaller.item.ItemPerson;
 
@@ -67,5 +72,23 @@ public class Common {
             result.add(String.valueOf(character));
         }
         return result;
+    }
+    public static ArrayList<ItemPerson>resolverArrayList(ItemPerson itemPerson, Context context){
+        ArrayList<ItemPerson>personArrayList = new ArrayList<>();
+        if(itemPerson==null){
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String selection = null;
+            String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+            String[] selectionArgs = null;
+            String sortOrder = null;
+            ContentResolver resolver = context.getContentResolver();
+            Cursor cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+            while (cursor.moveToNext()){
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                personArrayList.add(new ItemPerson(name,-1,num));
+            }
+        }
+        return personArrayList;
     }
 }
