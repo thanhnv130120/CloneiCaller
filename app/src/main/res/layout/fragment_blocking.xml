@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,8 +7,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:id="@+id/rlt"
         >
         <TextView
+            android:id="@+id/tv_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -27,11 +29,24 @@
             android:id="@+id/img_btn_search"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:id="@+id/lnear_filter"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
             android:background="@color/colorWhite"
+            android:orientation="vertical"
+            >
+        </LinearLayout>
+        </RelativeLayout>
+    <RelativeLayout
+        android:background="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:orientation="horizontal"
+            android:id="@+id/lnear_filter"
+            android:visibility="visible"
             >
             <ImageView
                 android:src="@drawable/ic_arrow_back"
@@ -48,10 +63,12 @@
                 android:background="@drawable/background_search"
                 >
                 <EditText
+                    android:focusable="true"
                     android:background="@drawable/background_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
+
                     android:hint="@string/input"
                     android:layout_gravity="center_vertical"
                     android:paddingLeft="15dp"
@@ -59,18 +76,76 @@
                     />
             </LinearLayout>
         </LinearLayout>
-        </RelativeLayout>
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_block"
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabSelectedTextColor="@color/colorPurpleBG"
-        app:tabTextColor="#CDCDCD"
-        app:tabIndicatorColor="@color/colorPurpleBG"
-        />
-    <androidx.viewpager.widget.ViewPager
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlt"
+        android:id="@+id/rlt_bar"
+        >
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_block"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+            app:tabSelectedTextColor="@color/colorPurpleBG"
+            app:tabTextColor="#CDCDCD"
+            app:tabIndicatorColor="@color/colorPurpleBG"
+            />
+        <LinearLayout
+            android:weightSum="2"
+            android:id="@+id/lnear_filter_search"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            >
+            <TextView
+                android:id="@+id/tv_displayed_diary"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:text="@string/diary_filter_number"/>
+            <TextView
+                android:id="@+id/tv_displayed_block"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:text="@string/blocked_filter_number"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rlt_rcl_filter"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlt_bar">
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/view"/>
+        <LinearLayout
+            android:id="@+id/lnear_rcl_filter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:background="@color/colorHideSlide"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:background="@color/colorWhite"
+                android:id="@+id/rcl_filter"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

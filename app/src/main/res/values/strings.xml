@@ -38,4 +38,7 @@
     <string name="block_name">Tên</string>
     <string name="block_description">Mô tả</string>
     <string name="block_option">Lựa chọn:</string>
+    <string name="diary_filter_number">DANH BẠ (2)</string>
+    <string name="blocked_filter_number">DANH SÁCH CHẶN (0)</string>
+    <string name="blocked_default_work">DEFAULT WORK</string>
 </resources>

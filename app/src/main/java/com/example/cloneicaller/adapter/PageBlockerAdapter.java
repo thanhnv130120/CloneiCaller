@@ -13,7 +13,6 @@ public class PageBlockerAdapter extends FragmentPagerAdapter {
     public PageBlockerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
-
     @NonNull
     @Override
     public Fragment getItem(int position) {
