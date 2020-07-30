@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cloneicaller.DetailDiaryActivity;
 import com.example.cloneicaller.Holder.HeaderListHistory;
 import com.example.cloneicaller.Holder.ListHistoryHolder;
 import com.example.cloneicaller.ListItem;
@@ -92,14 +93,21 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 listHistoryHolder.imgDetailCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        Intent intent = new Intent(context, DetailDiaryActivity.class);
+                        intent.putExtra("number", generalItem.getContact().getNumber());
+                        intent.putExtra("duration", generalItem.getContact().getDuration());
+                        intent.putExtra("date", generalItem.getContact().getDate());
+                        intent.putExtra("type", generalItem.getContact().getType());
+                        intent.putExtra("name", generalItem.getContact().getName());
+                        intent.putExtra("country", generalItem.getContact().getCountry());
+                        intent.putExtra("numbertype",generalItem.getContact().getNetwork());
+                        context.startActivity(intent);
                     }
                 });
                 listHistoryHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + generalItem.getContact().getNumber() + ""));
-                        Log.e("ABC", generalItem.getContact().getNumber() + "");
                         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 1);
                         }
@@ -112,7 +120,6 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case ListItem.TYPE_DATE:
                 DateItem dateItem = (DateItem) listItemList.get(position);
                 HeaderListHistory headerListHistory = (HeaderListHistory) holder;
-
 
                 headerListHistory.tvDate.setText(dateItem.getDate());
 

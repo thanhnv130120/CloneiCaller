@@ -67,7 +67,7 @@
             android:layout_marginRight="8dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_detail_call"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
