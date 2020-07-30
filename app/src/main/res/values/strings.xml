@@ -28,4 +28,7 @@
     <string name="block">CHẶN</string>
     <string name="default_country">default nation</string>
     <string name="default_network">default network</string>
+    <string name="diary_filter_number">DANH BẠ (2)</string>
+    <string name="blocked_filter_number">DANH SÁCH CHẶN (0)</string>
+    <string name="blocked_default_work">DEFAULT WORK</string>
 </resources>

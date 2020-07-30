@@ -36,10 +36,10 @@ public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDi
     @Override
     public void onBindViewHolder(@NonNull AlphaHolder holder, int position) {
         holder.tvFirstCharacter.setText(arrayListGroup.get(position).getName());
-        ArrayList<String>persons = new ArrayList<>();
-        for (String person:arrayListGroup.get(position).getPerson()) {
+        for (int i = 0; i < arrayListGroup.get(position).getPerson().size(); i++) {
+
         }
-        AdapterPersonDiary personAdapter = new AdapterPersonDiary(context,arrayListGroup.get(position).getPerson());
+        AdapterPersonDiary personAdapter = new AdapterPersonDiary(context,itemPeople);
         holder.rclListGroup.setAdapter(personAdapter);
         personAdapter.setListener(this);
     }
@@ -51,7 +51,7 @@ public class AdapterAlphabetDiary extends RecyclerView.Adapter<AdapterAlphabetDi
 
     @Override
     public void onClickListener(int position) {
-        Toast.makeText(context,position,Toast.LENGTH_LONG).show();
+        Toast.makeText(context,itemPeople.get(position),Toast.LENGTH_LONG).show();
     }
 
     public static class AlphaHolder extends RecyclerView.ViewHolder{

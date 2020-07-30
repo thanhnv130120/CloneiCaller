@@ -9,4 +9,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorGray">#DFDEDE</color>
     <color name="colorRed">#DA2006</color>
+    <color name="colorHideSlide">#61000000</color>
 </resources>
