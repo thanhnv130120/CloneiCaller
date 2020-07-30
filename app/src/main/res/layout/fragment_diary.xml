@@ -28,10 +28,7 @@
         android:layout_margin="20dp"
         android:id="@+id/floating_btn_diary"
         android:backgroundTint="@color/colorPurpleBG"
-
         android:clickable="true"
-        android:src="@drawable/ic_add"
-        app:fabSize="normal"
-
-        />
+        android:src="@drawable/ic_plus"
+        app:fabSize="normal" />
 </RelativeLayout>

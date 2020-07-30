@@ -2,17 +2,18 @@ package com.example.cloneicaller.Models;
 
 public class Contact {
 
-    private String number, duration,date, name,type;
+    private String number, duration, date, name, type, country, network;
     private int viewType;
 
 
-
-    public Contact(String number, String duration, String date, String name, String type) {
+    public Contact(String number, String duration, String date, String name, String type, String country, String network) {
         this.number = number;
         this.duration = duration;
         this.date = date;
         this.name = name;
         this.type = type;
+        this.country = country;
+        this.network = network;
     }
 
     public String getNumber() {
@@ -61,5 +62,21 @@ public class Contact {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 }
