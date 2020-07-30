@@ -79,7 +79,7 @@
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/rlt"
         android:id="@+id/rlt_bar"
         >
@@ -94,39 +94,45 @@
             app:tabIndicatorColor="@color/colorPurpleBG"
             />
         <LinearLayout
-            android:weightSum="2"
             android:id="@+id/lnear_filter_search"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorWhite"
-            android:orientation="horizontal"
-            android:visibility="visible"
+            android:layout_height="match_parent"
+            android:background="@color/colorHideSlide"
             >
-            <TextView
-                android:id="@+id/tv_displayed_diary"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:text="@string/diary_filter_number"/>
-            <TextView
-                android:id="@+id/tv_displayed_block"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:text="@string/blocked_filter_number"/>
+            <LinearLayout
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorWhite"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                >
+                <TextView
+                    android:id="@+id/tv_displayed_diary"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/diary_filter_number"/>
+                <TextView
+                    android:id="@+id/tv_displayed_block"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/blocked_filter_number"/>
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rlt_rcl_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rlt_bar">
+        android:layout_marginTop="100dp">
         <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -134,10 +140,9 @@
         <LinearLayout
             android:id="@+id/lnear_rcl_filter"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="visible"
-            android:background="@color/colorHideSlide"
             >
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
