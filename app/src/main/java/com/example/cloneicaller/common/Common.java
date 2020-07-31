@@ -91,4 +91,11 @@ public class Common {
         }
         return personArrayList;
     }
+    public static ArrayList<String>covertToStringArray(ArrayList<ItemPerson>people){
+        ArrayList<String>name = new ArrayList<>();
+        for (int i = 0; i < people.size(); i++) {
+            name.add(people.get(i).getName());
+        }
+        return name;
+    }
 }
