@@ -6,6 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,33 +19,44 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.BlockActivity;
+import com.example.cloneicaller.HomeActivity;
+import com.example.cloneicaller.MainActivity;
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.databinding.FragmentBlackDiaryBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FragmentBlackDiary extends Fragment {
 
-    RecyclerView rcBlockList;
-    FloatingActionButton btnFloatingAddToBlock;
+    FragmentBlackDiaryBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_black_diary,container,false);
+
+        binding = FragmentBlackDiaryBinding.inflate(inflater, container, false);
+
+        View view = binding.getRoot();
+        return view;
 
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rcBlockList = view.findViewById(R.id.rcBlockList);
-        btnFloatingAddToBlock = view.findViewById(R.id.btnFloatingAddToBlock);
 
-        btnFloatingAddToBlock.setOnClickListener(new View.OnClickListener() {
+        binding.btnFloatingAddToBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getContext().startActivity(new Intent(getContext(), BlockActivity.class));
+            }
+        });
+
+        binding.btnUpdateListBlock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
             }
         });
     }
+
 }

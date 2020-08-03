@@ -30,40 +30,47 @@ import com.example.cloneicaller.adapter.ItemPersonAdapter;
 import com.example.cloneicaller.adapter.PageBlockerAdapter;
 import com.example.cloneicaller.adapter.PagerAdapter;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.databinding.FragmentBlockingBinding;
 import com.example.cloneicaller.item.ItemPerson;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
-public class FragmentListBlock extends Fragment implements View.OnClickListener, AdapterItemSearch.SearchClickListener {
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private ImageView imgSearch;
-    private LinearLayout lnShow;
-    private LinearLayout lnFilterSearch;
-    private LinearLayout lnFilterRcl;
-    private ImageView imgBack;
-    private EditText edtSearch;
-    private TextView tvHeader;
-    private int count;
-    private RecyclerView rclFilter;
-    private TextView tvDisplayedDiary;
-    private TextView tvDisplayedBlocked;
+public class FragmentListBlock extends Fragment implements View.OnClickListener, HomeActivity.DataReceiverListener, AdapterItemSearch.SearchClickListener {
     private AdapterItemSearch adapterPerson;
-    private ArrayList<ItemPerson>persons;
-    private ArrayList<ItemPerson>filterList;
+    private ArrayList<ItemPerson> persons = new ArrayList<>();
 
-//        @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            setArrayListPerson((ArrayList<ItemPerson>) getArguments().getSerializable("ModelList"));
-//        }
-//    }
+    FragmentBlockingBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentBlockingBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+
+        PageBlockerAdapter adapter = new PageBlockerAdapter(getChildFragmentManager());
+        binding.view.setAdapter(adapter);
+        binding.tabBlock.setupWithViewPager(binding.view);
+
+//        if (getArguments()!=null){
+//            setArrayListPerson((ArrayList<ItemPerson>) getArguments().getSerializable("ModelList"));
+//        }
+        persons = Common.resolverArrayList(null, getContext());
+        persons = Common.sortList(persons);
+        adapterPerson = new AdapterItemSearch(getContext(), persons);
+        binding.rclFilter.setAdapter(adapterPerson);
+        binding.imgBtnBack.setOnClickListener(this);
+        binding.lnearFilter.setVisibility(View.GONE);
+        binding.lnearRclFilter.setVisibility(View.GONE);
+        binding.lnearFilterSearch.setVisibility(View.GONE);
+        binding.imgBtnSearch.setOnClickListener(this);
+        binding.tvDisplayedDiary.setOnClickListener(this);
+        binding.tvDisplayedBlock.setOnClickListener(this);
+        binding.tvDisplayedDiary.setTextColor(Color.RED);
+        binding.tvDisplayedBlock.setTextColor(Color.GRAY);
+        binding.tabBlock.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+
         View view = inflater.inflate(R.layout.fragment_blocking,container,false);
         persons = new ArrayList<>();
         filterList = new ArrayList<>();
@@ -98,10 +105,11 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 //        tvDisplayedBlocked.setOnClickListener(this);
 //        count = 0;
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int potion = tab.getPosition();
-                tvHeader.setText(adapter.getPageTitle(potion));
+                binding.tvHeader.setText(adapter.getPageTitle(potion));
             }
 
             @Override
@@ -114,11 +122,12 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 
             }
         });
-//        edtSearch.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
+
+        binding.edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
 //
 //            @Override
 //            public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -131,10 +140,29 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 //            }
 //        });
 
+
         return view;
     }
 
     private void filter(String toString) {
+        ArrayList<ItemPerson> filerList = new ArrayList<>();
+        for (ItemPerson person : persons) {
+            if (person.getName().toLowerCase().contains(toString.toLowerCase())) {
+                filerList.add(person);
+            }
+        }
+        int count = filerList.size();
+        if (count > 0) {
+            binding.lnearFilter.setVisibility(View.VISIBLE);
+            binding.tvDisplayedDiary.setText("DANH BẠ (" + filerList.size() + ")");
+        }
+        adapterPerson.filterList(filerList);
+    }
+
+    public void setArrayListPerson(ArrayList<ItemPerson> listPerson) {
+        for (int i = 0; i < listPerson.size(); i++) {
+            persons.add(listPerson.get(i));
+=======
         persons = Common.resolverArrayList(null,getContext());
         persons = Common.sortList(persons);
         for (ItemPerson person :persons) {
@@ -146,21 +174,45 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
         if(count > 0){
             lnFilterSearch.setVisibility(View.VISIBLE);
             tvDisplayedDiary.setText("DANH BẠ ("+filterList.size()+")");
+
         }
         adapterPerson.filterList(filterList);
         filterList.clear();
         count = 0;
     }
+
+
+
 //    public void setArrayListPerson(ArrayList<ItemPerson>listPerson){
 //        for (int i = 0; i < listPerson.size(); i++) {
 //            persons.add(listPerson.get(i));
 //        }
 //    }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.img_btn_search:
+
+                binding.lnearFilter.setVisibility(View.VISIBLE);
+                break;
+            case R.id.img_btn_back:
+                binding.lnearFilter.setVisibility(View.GONE);
+                binding.lnearRclFilter.setVisibility(View.GONE);
+                binding.lnearFilterSearch.setVisibility(View.GONE);
+                break;
+            case R.id.tv_displayed_diary:
+                binding.tvDisplayedDiary.setTextColor(Color.RED);
+                binding.tvDisplayedBlock.setTextColor(Color.GRAY);
+                binding.lnearRclFilter.setVisibility(View.VISIBLE);
+                break;
+            case R.id.tv_displayed_block:
+                binding.tvDisplayedDiary.setTextColor(Color.GRAY);
+                binding.tvDisplayedBlock.setTextColor(Color.RED);
+                binding.lnearRclFilter.setVisibility(View.GONE);
+
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container_view,new FragmentSearchFilter()).commit();
+
                 break;
 //            case R.id.img_btn_back:
 //                lnShow.setVisibility(View.GONE);
@@ -183,17 +235,24 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onReceived(int requestCode, int resultCode, Intent data) {
+
+        setArrayListPerson((ArrayList<ItemPerson>) data.getExtras().getSerializable("ModelList"));
+    }
+
 //    @Override
 //    public void onReceived(int requestCode, int resultCode, Intent data) {
 //
 //         setArrayListPerson((ArrayList<ItemPerson>) data.getExtras().getSerializable("ModelList"));
 //    }
+
     @Override
     public void onSearchClickListener(int position) {
         Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("name1",persons.get(position).getName());
-        bundle.putString("number1",persons.get(position).getNumber());
+        bundle.putString("name1", persons.get(position).getName());
+        bundle.putString("number1", persons.get(position).getNumber());
         intent.putExtras(bundle);
         startActivity(intent);
     }

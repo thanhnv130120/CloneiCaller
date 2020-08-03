@@ -21,6 +21,7 @@
     <string name="diary">DANH BẠ</string>
     <string name="input">Nhập vào đây</string>
     <string name="detail">CHI TIẾT</string>
+    <string name="detail_call">CHI TIẾT CUỘC GỌI</string>
     <string name="default_name">default person</string>
     <string name="default_number">default phone number</string>
     <string name="call">GỌI</string>
@@ -41,6 +42,12 @@
     <string name="diary_filter_number">DANH BẠ (2)</string>
     <string name="blocked_filter_number">DANH SÁCH CHẶN (0)</string>
     <string name="blocked_default_work">DEFAULT WORK</string>
+    <string name="update_list_block_title">Cập nhật danh sách bị chặn</string>
+    <string name="update_list_block_content">Nhận danh sách cập nhật các số spam được báo cáo gần nhất để phát hiện chúng nhanh chóng ngay cả khi ngoại tuyến. Cập nhật danh sách này thường xuyên.</string>
+    <string name="update">Cập nhật</string>
+    <string name="update_list_block_complete">Dữ liệu đã cập nhật mới nhất.</string>
+    <string name="update_list_block_time">Lần cập nhật cuối cùng</string>
+    <string name="setting_eng">Setting</string>
     <string name="title_activity_test_call_activiry">TestCallActiviry</string>
     <!--
     This string is used for square devices and overridden by hello_world in

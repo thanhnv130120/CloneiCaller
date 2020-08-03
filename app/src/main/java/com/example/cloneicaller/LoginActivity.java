@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.cloneicaller.Models.Members;
 import com.example.cloneicaller.auth.RetrofitClient;
+import com.example.cloneicaller.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -38,9 +39,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements Callback<Members> {
-    Button btn_login;
-    LinearLayout layout_otp;
-    private EditText edt1, edt2, edt3, edt4, edt5, edt6, edtphoneNumber;
+
+    ActivityLoginBinding binding;
     String verifyCodeBySystem;
     String codeOtp;
     String phoneNum = "+84965999999";
@@ -50,30 +50,22 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        btn_login = findViewById(R.id.btn_login);
-        layout_otp = findViewById(R.id.layout_otp);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        edt1 = (EditText) findViewById(R.id.edt1);
-        edt2 = (EditText) findViewById(R.id.edt2);
-        edt3 = (EditText) findViewById(R.id.edt3);
-        edt4 = (EditText) findViewById(R.id.edt4);
-        edt5 = (EditText) findViewById(R.id.edt5);
-        edt6 = (EditText) findViewById(R.id.edt6);
-        edtphoneNumber = findViewById(R.id.edtphoneNumber);
-
-        final String phoneNumber = edtphoneNumber.getText().toString();
+        final String phoneNumber = binding.edtphoneNumber.getText().toString();
 
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layout_otp.setVisibility(view.getVisibility());
+                binding.layoutOtp.setVisibility(view.getVisibility());
                 sendOTPToUser(phoneNumber);
             }
         });
 
-        edt1.addTextChangedListener(new TextWatcher() {
+        binding.edt1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -87,12 +79,12 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
-                    edt2.requestFocus();
+                    binding.edt2.requestFocus();
                 }
             }
         });
 
-        edt2.addTextChangedListener(new TextWatcher() {
+        binding.edt2.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -106,14 +98,14 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
-                    edt3.requestFocus();
+                    binding.edt3.requestFocus();
                 } else if (editable.toString().length() == 0) {
-                    edt1.requestFocus();
+                    binding.edt1.requestFocus();
                 }
             }
         });
 
-        edt3.addTextChangedListener(new TextWatcher() {
+        binding.edt3.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -127,14 +119,14 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
-                    edt4.requestFocus();
+                    binding.edt4.requestFocus();
                 } else if (editable.toString().length() == 0) {
-                    edt2.requestFocus();
+                    binding.edt2.requestFocus();
                 }
             }
         });
 
-        edt4.addTextChangedListener(new TextWatcher() {
+        binding.edt4.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -148,14 +140,14 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
-                    edt5.requestFocus();
+                    binding.edt5.requestFocus();
                 } else if (editable.toString().length() == 0) {
-                    edt3.requestFocus();
+                    binding.edt3.requestFocus();
                 }
             }
         });
 
-        edt5.addTextChangedListener(new TextWatcher() {
+        binding.edt5.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -169,14 +161,14 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
-                    edt6.requestFocus();
+                    binding.edt6.requestFocus();
                 } else if (editable.toString().length() == 0) {
-                    edt4.requestFocus();
+                    binding.edt4.requestFocus();
                 }
             }
         });
 
-        edt6.addTextChangedListener(new TextWatcher() {
+        binding.edt6.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -191,13 +183,13 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().length() == 1) {
                     try {
-                        codeOtp = edt1.getText().toString() + edt2.getText().toString() + edt3.getText().toString() + edt4.getText().toString() + edt5.getText().toString() + edt6.getText().toString();
+                        codeOtp = binding.edt1.getText().toString() + binding.edt2.getText().toString() + binding.edt3.getText().toString() + binding.edt4.getText().toString() + binding.edt5.getText().toString() + binding.edt6.getText().toString();
                         verifyCode(codeOtp);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else if (editable.toString().length() == 0) {
-                    edt5.requestFocus();
+                    binding.edt5.requestFocus();
                 }
             }
         });
@@ -272,7 +264,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
             Log.e("Auth", "Valid");
             SharedPreferences sharedPreferences = getSharedPreferences("token", Context.MODE_PRIVATE);
             SharedPreferences.Editor spE = sharedPreferences.edit();
-            spE.putString("g_token",g_token);
+            spE.putString("g_token", g_token);
             spE.commit();
 
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));

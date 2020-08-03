@@ -28,6 +28,7 @@ import com.example.cloneicaller.Models.GeneralItem;
 import com.example.cloneicaller.PermissionActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
+import com.example.cloneicaller.databinding.FragmentHistoryBinding;
 
 import java.sql.Time;
 import java.text.DateFormat;
@@ -43,14 +44,16 @@ public class FragmentListHistory extends Fragment {
 
     private List<Contact> contactList = new ArrayList<>();
     List<ListItem> consolidatedList = new ArrayList<>();
-    RecyclerView rcListHistory;
+
+    FragmentHistoryBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-        rcListHistory = view.findViewById(R.id.rcListHistory);
+
+        binding = FragmentHistoryBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
 
         contactList = getCallDetails();
 
@@ -72,10 +75,11 @@ public class FragmentListHistory extends Fragment {
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(getContext());
-        rcListHistory.setLayoutManager(linearLayoutManager);
+
+        binding.rcListHistory.setLayoutManager(linearLayoutManager);
 
         ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);
-        rcListHistory.setAdapter(listHistoryAdapter);
+        binding.rcListHistory.setAdapter(listHistoryAdapter);
 
         return view;
     }

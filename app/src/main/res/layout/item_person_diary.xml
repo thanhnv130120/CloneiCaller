@@ -13,7 +13,7 @@
             android:layout_gravity="center_vertical"
             android:text="Anh Hoang Vu"
             android:textSize="20sp"
-            android:textColor="#000000"
+            android:textColor="@color/colorBlack"
             android:paddingLeft="15dp"
             android:layout_centerVertical="true"
             />

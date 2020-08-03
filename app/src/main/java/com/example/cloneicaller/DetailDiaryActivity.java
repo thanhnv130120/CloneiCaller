@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.cloneicaller.databinding.ActivityDetailDiaryBinding;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,35 +25,17 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailDiaryActivity extends AppCompatActivity {
-    private ImageView imgBtnBackDetail, imgEditDetail, imgBlockWhite, imgSaveContact, imgMessageWhite, imgCallWhite, imgType;
-    private CircleImageView imgPersonDetail;
-    private TextView tvNameDetail, tvDateDetail, tvNumberDetail, tvDuration, tvNumberDetail2, tv_phone_number_detail, tvNetwork, tvNation;
-    private LinearLayout layoutSaveContact;
 
     String name, duration, date, number, type, country, numbertype;
 
+    ActivityDetailDiaryBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_diary);
 
-        imgBtnBackDetail = (ImageView) findViewById(R.id.img_btn_back_detail);
-        imgPersonDetail = (CircleImageView) findViewById(R.id.img_person_detail);
-        tvNameDetail = (TextView) findViewById(R.id.tv_name_detail);
-        imgCallWhite = (ImageView) findViewById(R.id.img_call_white);
-        imgMessageWhite = (ImageView) findViewById(R.id.img_message_white);
-        imgSaveContact = (ImageView) findViewById(R.id.img_save_contact);
-        imgBlockWhite = (ImageView) findViewById(R.id.img_block_white);
-        tvNation = (TextView) findViewById(R.id.tv_nation);
-        tvNetwork = (TextView) findViewById(R.id.tv_network);
-        layoutSaveContact = findViewById(R.id.layoutSaveContact);
-        tvDateDetail = findViewById(R.id.tvDateDetail);
-        tvNumberDetail = findViewById(R.id.tvNumberDetail);
-        imgType = findViewById(R.id.imgType);
-        tvDuration = findViewById(R.id.tvDuration);
-        tvNumberDetail2 = findViewById(R.id.tvNumberDetail2);
-        tv_phone_number_detail = findViewById(R.id.tv_phone_number_detail);
-        imgEditDetail = findViewById(R.id.imgEditDetail);
+        binding = ActivityDetailDiaryBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
@@ -65,14 +49,14 @@ public class DetailDiaryActivity extends AppCompatActivity {
 
         //Nếu là số lạ thì hiển thị chi tiết là số không thì hiển thị tên
         if (null == name) {
-            tvNameDetail.setText(number);
-            layoutSaveContact.setVisibility(View.VISIBLE);
+            binding.tvNameDetail.setText(number);
+            binding.layoutSaveContact.setVisibility(View.VISIBLE);
         } else {
-            tvNameDetail.setText(name);
+            binding.tvNameDetail.setText(name);
         }
 
         //Lưu số lạ
-        imgSaveContact.setOnClickListener(new View.OnClickListener() {
+        binding.imgSaveContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
@@ -82,20 +66,20 @@ public class DetailDiaryActivity extends AppCompatActivity {
             }
         });
 
-        tvDateDetail.setText(date);
+        binding.tvDateDetail.setText(date);
 
-        tvNumberDetail.setText(number);
+        binding.tvNumberDetail.setText(number);
 
         if (type.equals("OUTGOING")) {
-            imgType.setImageResource(R.drawable.ic_out_call);
+            binding.imgType.setImageResource(R.drawable.ic_out_call);
         } else if (type.equals("INCOMING")) {
-            imgType.setImageResource(R.drawable.ic_in_call);
+            binding.imgType.setImageResource(R.drawable.ic_in_call);
         } else {
-            imgType.setImageResource(R.drawable.ic_miss_call);
+            binding.imgType.setImageResource(R.drawable.ic_miss_call);
         }
 
 
-        imgCallWhite.setOnClickListener(new View.OnClickListener() {
+        binding.imgCallWhite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
@@ -106,7 +90,7 @@ public class DetailDiaryActivity extends AppCompatActivity {
             }
         });
 
-        imgMessageWhite.setOnClickListener(new View.OnClickListener() {
+        binding.imgMessageWhite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent smsIntent = new Intent(Intent.ACTION_VIEW);
@@ -117,24 +101,24 @@ public class DetailDiaryActivity extends AppCompatActivity {
             }
         });
 
-        imgEditDetail.setOnClickListener(new View.OnClickListener() {
+        binding.imgEditDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
 
-        tvDuration.setText(duration);
+        binding.tvDuration.setText(duration);
 
-        tvNumberDetail2.setText(number);
+        binding.tvNumberDetail2.setText(number);
 
-        tv_phone_number_detail.setText(number);
+        binding.tvPhoneNumberDetail.setText(number);
 
-        tvNation.setText(country);
+        binding.tvNation.setText(country);
 
-        tvNetwork.setText(numbertype);
+        binding.tvNetwork.setText(numbertype);
 
-        imgBtnBackDetail.setOnClickListener(new View.OnClickListener() {
+        binding.imgBtnBackDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
