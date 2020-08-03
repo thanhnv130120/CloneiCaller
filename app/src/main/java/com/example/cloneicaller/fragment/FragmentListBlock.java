@@ -42,13 +42,6 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 
     FragmentBlockingBinding binding;
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //((HomeActivity)getActivity()).setListener(this);
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -77,6 +70,42 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
         binding.tvDisplayedDiary.setTextColor(Color.RED);
         binding.tvDisplayedBlock.setTextColor(Color.GRAY);
         binding.tabBlock.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+
+        View view = inflater.inflate(R.layout.fragment_blocking,container,false);
+        persons = new ArrayList<>();
+        filterList = new ArrayList<>();
+        tvHeader = view.findViewById(R.id.tv_header);
+        tabLayout = view.findViewById(R.id.tab_block);
+        viewPager = view.findViewById(R.id.view);
+        PageBlockerAdapter adapter = new PageBlockerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        imgSearch = view.findViewById(R.id.img_btn_search);
+//        imgBack = view.findViewById(R.id.img_btn_back);
+//        lnShow = view.findViewById(R.id.lnear_filter);
+//        lnFilterSearch = view.findViewById(R.id.lnear_filter_search);
+//        lnFilterRcl = view.findViewById(R.id.lnear_rcl_filter);
+//        edtSearch = view.findViewById(R.id.edt_search);
+//        tvDisplayedBlocked = view.findViewById(R.id.tv_displayed_block);
+//        tvDisplayedDiary = view.findViewById(R.id.tv_displayed_diary);
+//        rclFilter = view.findViewById(R.id.rcl_filter);
+//        if (getArguments()!=null){
+//            setArrayListPerson((ArrayList<ItemPerson>) getArguments().getSerializable("ModelList"));
+//        }
+//        persons = Common.resolverArrayList(null,getContext());
+//        persons = Common.sortList(persons);
+//        adapterPerson = new AdapterItemSearch(getContext(),persons);
+//        rclFilter.setAdapter(adapterPerson);
+//        imgBack.setOnClickListener(this);
+//        lnShow.setVisibility(View.GONE);
+//        lnFilterRcl.setVisibility(View.GONE);
+//        lnFilterSearch.setVisibility(View.GONE);
+        imgSearch.setOnClickListener(this);
+//        tvDisplayedDiary.setOnClickListener(this);
+//        tvDisplayedBlocked.setOnClickListener(this);
+//        count = 0;
+        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int potion = tab.getPosition();
@@ -93,22 +122,25 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 
             }
         });
+
         binding.edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                filter(s.toString());
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
         return view;
     }
 
@@ -130,13 +162,38 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
     public void setArrayListPerson(ArrayList<ItemPerson> listPerson) {
         for (int i = 0; i < listPerson.size(); i++) {
             persons.add(listPerson.get(i));
+=======
+        persons = Common.resolverArrayList(null,getContext());
+        persons = Common.sortList(persons);
+        for (ItemPerson person :persons) {
+            if (person.getName().trim().toLowerCase().startsWith(toString.trim().toLowerCase())){
+                filterList.add(person);
+            }
         }
+        count  = filterList.size();
+        if(count > 0){
+            lnFilterSearch.setVisibility(View.VISIBLE);
+            tvDisplayedDiary.setText("DANH BẠ ("+filterList.size()+")");
+
+        }
+        adapterPerson.filterList(filterList);
+        filterList.clear();
+        count = 0;
     }
+
+
+
+//    public void setArrayListPerson(ArrayList<ItemPerson>listPerson){
+//        for (int i = 0; i < listPerson.size(); i++) {
+//            persons.add(listPerson.get(i));
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_btn_search:
+
                 binding.lnearFilter.setVisibility(View.VISIBLE);
                 break;
             case R.id.img_btn_back:
@@ -153,7 +210,28 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
                 binding.tvDisplayedDiary.setTextColor(Color.GRAY);
                 binding.tvDisplayedBlock.setTextColor(Color.RED);
                 binding.lnearRclFilter.setVisibility(View.GONE);
+
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container_view,new FragmentSearchFilter()).commit();
+
                 break;
+//            case R.id.img_btn_back:
+//                lnShow.setVisibility(View.GONE);
+//                lnFilterRcl.setVisibility(View.GONE);
+//                lnFilterSearch.setVisibility(View.GONE);
+//                persons.clear();
+//                filterList.clear();
+//                edtSearch.setFocusable(false);
+//                break;
+//            case R.id.tv_displayed_diary:
+//                tvDisplayedDiary.setTextColor(Color.RED);
+//                tvDisplayedBlocked.setTextColor(Color.GRAY);
+//                lnFilterRcl.setVisibility(View.VISIBLE);
+//                break;
+//            case R.id.tv_displayed_block:
+//                tvDisplayedDiary.setTextColor(Color.GRAY);
+//                tvDisplayedBlocked.setTextColor(Color.RED);
+//                lnFilterRcl.setVisibility(View.GONE);
+//                break;
         }
     }
 
@@ -162,6 +240,12 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
 
         setArrayListPerson((ArrayList<ItemPerson>) data.getExtras().getSerializable("ModelList"));
     }
+
+//    @Override
+//    public void onReceived(int requestCode, int resultCode, Intent data) {
+//
+//         setArrayListPerson((ArrayList<ItemPerson>) data.getExtras().getSerializable("ModelList"));
+//    }
 
     @Override
     public void onSearchClickListener(int position) {
@@ -173,3 +257,4 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
         startActivity(intent);
     }
 }
+ 

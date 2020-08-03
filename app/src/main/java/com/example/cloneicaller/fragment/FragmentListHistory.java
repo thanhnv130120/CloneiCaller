@@ -51,6 +51,7 @@ public class FragmentListHistory extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
@@ -74,6 +75,7 @@ public class FragmentListHistory extends Fragment {
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(getContext());
+
         binding.rcListHistory.setLayoutManager(linearLayoutManager);
 
         ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);

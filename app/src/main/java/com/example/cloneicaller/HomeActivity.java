@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+=======
+
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import com.example.cloneicaller.Models.Data;
@@ -71,6 +75,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         init();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        initReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        unregisterReceiver(callStateReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
     private void init() {
         getSupportFragmentManager().beginTransaction().replace(binding.containerView.getId(),
                 new FragmentHome()).commit();
@@ -122,6 +143,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             ex.printStackTrace();
         }
         return null;
+    }
+    private void initReceiver() {
+//        callStateReceiver = new CallStateReceiver();
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("android.intent.action.PHONE_STATE");
+//        registerReceiver(callStateReceiver,filter);
     }
 //    private BottomNavigationView.OnNavigationItemSelectedListener botListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
 //        @Override

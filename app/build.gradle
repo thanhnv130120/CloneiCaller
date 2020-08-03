@@ -48,10 +48,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.2.0'
     implementation 'io.michaelrocks:libphonenumber-android:8.11.1'
+    implementation 'androidx.wear:wear:1.0.0'
     testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'androidx.fragment_block.ext:junit:1.1.1'
 //    androidTestImplementation 'androidx.fragment_block.espresso:espresso-core:3.2.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    compileOnly 'com.google.android.wearable:wearable:2.5.0'
 
     debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
     releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
