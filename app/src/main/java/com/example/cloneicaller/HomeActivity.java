@@ -7,17 +7,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-=======
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.cloneicaller.Models.Data;
-import com.example.cloneicaller.Models.Datas;
-import com.example.cloneicaller.Models.RootData;
 import com.example.cloneicaller.Room.PhoneDB;
-import com.example.cloneicaller.Room.PhoneDBQueryTask;
 import com.example.cloneicaller.auth.RetrofitClient;
 import com.example.cloneicaller.databinding.ActivityHomeBinding;
 import com.example.cloneicaller.fragment.FragmentCallKeyboard;
