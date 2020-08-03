@@ -52,30 +52,30 @@ public class FragmentListHistory extends Fragment {
 
         rcListHistory = view.findViewById(R.id.rcListHistory);
 
-  //      contactList = getCallDetails();
+        contactList = getCallDetails();
 
-//        HashMap<String, List<Contact>> groupedHashMap = groupDataIntoHashMap(contactList);
-//
-//
-//        for (String date : groupedHashMap.keySet()) {
-//            DateItem dateItem = new DateItem();
-//            dateItem.setDate(date);
-//            consolidatedList.add(dateItem);
-//
-//
-//            for (Contact contact : groupedHashMap.get(date)) {
-//                GeneralItem generalItem = new GeneralItem();
-//                generalItem.setContact(contact);
-//                consolidatedList.add(generalItem);
-//            }
-//        }
-//
-//        LinearLayoutManager linearLayoutManager =
-//                new LinearLayoutManager(getContext());
-//        rcListHistory.setLayoutManager(linearLayoutManager);
-//
-//        ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);
-//        rcListHistory.setAdapter(listHistoryAdapter);
+        HashMap<String, List<Contact>> groupedHashMap = groupDataIntoHashMap(contactList);
+
+
+        for (String date : groupedHashMap.keySet()) {
+            DateItem dateItem = new DateItem();
+            dateItem.setDate(date);
+            consolidatedList.add(dateItem);
+
+
+            for (Contact contact : groupedHashMap.get(date)) {
+                GeneralItem generalItem = new GeneralItem();
+                generalItem.setContact(contact);
+                consolidatedList.add(generalItem);
+            }
+        }
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getContext());
+        rcListHistory.setLayoutManager(linearLayoutManager);
+
+        ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);
+        rcListHistory.setAdapter(listHistoryAdapter);
 
         return view;
     }
