@@ -15,21 +15,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BlockActivity"
+        <activity android:name=".IntroduceActivity"
             android:theme="@style/NoActionBar"></activity>
+        <activity
+            android:name=".QuestionActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".DetailContact"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".BlockActivity"
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".HomeActivity"
-            android:theme="@style/NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/NoActionBar"></activity>
-        <activity
-            android:name=".DetailDiaryActivity"
-            android:theme="@style/NoActionBar"></activity>
-        <activity
-            android:name=".PermissionActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,11 +36,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".LoginActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".DetailDiaryActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".PermissionActivity"
+            android:theme="@style/NoActionBar" >
+
+        </activity>
+        <activity
             android:name=".WellcomeActivity"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>

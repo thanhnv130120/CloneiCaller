@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.Holder.BlockListHolder;
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.databinding.ItemBlockListBinding;
+import com.example.cloneicaller.databinding.ItemQuestionBinding;
 
 public class BlockListAdapter extends RecyclerView.Adapter<BlockListHolder> {
 
@@ -18,9 +20,8 @@ public class BlockListAdapter extends RecyclerView.Adapter<BlockListHolder> {
     @NonNull
     @Override
     public BlockListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_block_list,parent,false);
-        BlockListHolder blockListHolder = new BlockListHolder(v);
-        return blockListHolder;
+        return new BlockListHolder(ItemBlockListBinding.inflate(LayoutInflater.from(parent.getContext()),
+                parent, false));
     }
 
     @Override

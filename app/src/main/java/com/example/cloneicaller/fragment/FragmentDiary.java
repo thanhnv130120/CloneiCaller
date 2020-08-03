@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cloneicaller.DetailContact;
 import com.example.cloneicaller.DetailDiaryActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
 import com.example.cloneicaller.adapter.AdapterPersonDiary;
 import com.example.cloneicaller.adapter.ItemPersonAdapter;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.databinding.FragmentDiaryBinding;
 import com.example.cloneicaller.item.ItemGroup;
 import com.example.cloneicaller.item.ItemPerson;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,13 +47,15 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
 //    private ArrayList<String> person = new ArrayList<>();
 //    private ArrayList<String>persons = new ArrayList<>();
 
+    FragmentDiaryBinding binding;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_diary,container,false);
-        rclList = view.findViewById(R.id.rcl_diary);
-        btnAdd = view.findViewById(R.id.floating_btn_diary);
-        btnAdd.setOnClickListener(this);
+
+        binding = FragmentDiaryBinding.inflate(inflater, container, false);
+        View view = binding.getRoot();
+        binding.floatingBtnDiary.setOnClickListener(this);
         fetchContact();
         return view;
     }
@@ -74,7 +79,7 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
         people = Common.addAlphabet(people);
         listener.onPutListDiarySent(people);
         ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(),people);
-        rclList.setAdapter(adapter);
+        binding.rclDiary.setAdapter(adapter);
         adapter.setListener(this);
 //        for (String itemPerson:sortArrayList(person)) {
 //            persons.add(itemPerson);
@@ -140,12 +145,14 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     }
     @Override
     public void onClick(View v) {
-
+        Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
+        intent.setType(ContactsContract.RawContacts.CONTENT_TYPE);
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, "");
+        startActivity(intent);
     }
     @Override
     public void onClickPerson(int position) {
-        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
+        Intent intent = new Intent(getActivity(), DetailContact.class);
         Bundle bundle = new Bundle();
         bundle.putString("name",people.get(position).getName());
         bundle.putString("number",people.get(position).getNumber());

@@ -16,48 +16,39 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.databinding.FragmentCallKeyboardBinding;
 
 import java.util.ArrayList;
 
 public class FragmentCallKeyboard extends Fragment implements View.OnClickListener {
-    private TextView edtShowNumb;
-    private Button btnNum1, btnNum2, btnNum3,btnNum4, btnNum5, btnNum6, btnNum7, btnNum8, btnNum9, btnNum0, btnSym1, btnSym2;
-    private ImageView imgDelete, imgCall;
+//    private TextView edtShowNumb;
+//    private Button btnNum1, btnNum2, btnNum3,btnNum4, btnNum5, btnNum6, btnNum7, btnNum8, btnNum9, btnNum0, btnSym1, btnSym2;
+//    private ImageView imgDelete, imgCall;
     private String numberDislayed = "";
+
+    FragmentCallKeyboardBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_call_keyboard,container,false);
-        edtShowNumb = v.findViewById(R.id.edt_number);
-        btnNum0 = v.findViewById(R.id.btn_no0);
-        btnNum1 = v.findViewById(R.id.btn_no1);
-        btnNum2 = v.findViewById(R.id.btn_no2);
-        btnNum3 = v.findViewById(R.id.btn_no3);
-        btnNum4 = v.findViewById(R.id.btn_no4);
-        btnNum5 = v.findViewById(R.id.btn_no5);
-        btnNum6 = v.findViewById(R.id.btn_no6);
-        btnNum7 = v.findViewById(R.id.btn_no7);
-        btnNum8 = v.findViewById(R.id.btn_no8);
-        btnNum9 = v.findViewById(R.id.btn_no9);
-        btnSym1 = v.findViewById(R.id.btn_nonum1);
-        btnSym2 = v.findViewById(R.id.btn_nonum2);
-        imgCall = v.findViewById(R.id.img_call);
-        imgDelete = v.findViewById(R.id.img_delete);
-        btnNum0.setOnClickListener(this);
-        btnNum1.setOnClickListener(this);
-        btnNum2.setOnClickListener(this);
-        btnNum3.setOnClickListener(this);
-        btnNum4.setOnClickListener(this);
-        btnNum5.setOnClickListener(this);
-        btnNum6.setOnClickListener(this);
-        btnNum7.setOnClickListener(this);
-        btnNum8.setOnClickListener(this);
-        btnNum9.setOnClickListener(this);
-        btnSym1.setOnClickListener(this);
-        btnSym2.setOnClickListener(this);
-        imgCall.setOnClickListener(this);
-        imgDelete.setOnClickListener(this);
+
+        binding = FragmentCallKeyboardBinding.inflate(inflater, container, false);
+        View v = binding.getRoot();
+
+        binding.btnNo0.setOnClickListener(this);
+        binding.btnNo1.setOnClickListener(this);
+        binding.btnNo2.setOnClickListener(this);
+        binding.btnNo3.setOnClickListener(this);
+        binding.btnNo4.setOnClickListener(this);
+        binding.btnNo5.setOnClickListener(this);
+        binding.btnNo6.setOnClickListener(this);
+        binding.btnNo7.setOnClickListener(this);
+        binding.btnNo8.setOnClickListener(this);
+        binding.btnNo9.setOnClickListener(this);
+        binding.btnNonum1.setOnClickListener(this);
+        binding.btnNonum2.setOnClickListener(this);
+        binding.imgCall.setOnClickListener(this);
+        binding.imgDelete.setOnClickListener(this);
         return v;
 
     }
@@ -71,7 +62,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "0";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no1:
                 if(checkFormat(numberDislayed)){
@@ -79,7 +70,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "1";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no2:
                 if(checkFormat(numberDislayed)){
@@ -87,7 +78,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "2";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no3:
                 if(checkFormat(numberDislayed)){
@@ -95,7 +86,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "3";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no4:
                 if(checkFormat(numberDislayed)){
@@ -103,7 +94,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "4";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no5:
                 if(checkFormat(numberDislayed)){
@@ -111,7 +102,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "5";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no6:
                 if(checkFormat(numberDislayed)){
@@ -119,7 +110,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "6";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no7:
                 if(checkFormat(numberDislayed)){
@@ -127,7 +118,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "7";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no8:
                 if(checkFormat(numberDislayed)){
@@ -135,7 +126,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "8";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_no9:
                 if(checkFormat(numberDislayed)){
@@ -143,7 +134,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "9";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_nonum1:
                 if(checkFormat(numberDislayed)){
@@ -151,7 +142,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "#";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.btn_nonum2:
                 if(checkFormat(numberDislayed)){
@@ -159,7 +150,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                 }else {
                     numberDislayed = numberDislayed + "*";
                 }
-                edtShowNumb.setText(numberDislayed);
+                binding.edtNumber.setText(numberDislayed);
                 break;
             case R.id.img_delete:
                 if(numberDislayed.length()>=1) {
@@ -172,7 +163,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
                         numberDislayed = removeCharAtString(numberDislayed, i);
                         numberDislayed = removeCharAtString(numberDislayed, i - 1);
                     }
-                    edtShowNumb.setText(numberDislayed);
+                    binding.edtNumber.setText(numberDislayed);
                 }
                 break;
             case R.id.img_call:

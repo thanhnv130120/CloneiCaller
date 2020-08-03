@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.databinding.ItemQuestionBinding;
+import com.example.cloneicaller.databinding.PersonItemBinding;
 import com.example.cloneicaller.item.ItemPerson;
 
 import java.util.ArrayList;
@@ -26,13 +28,13 @@ public class AdapterItemSearch extends RecyclerView.Adapter<AdapterItemSearch.Pe
     @NonNull
     @Override
     public PersonSearchItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.person_item,parent,false);
-        return new PersonSearchItem(v);
+        return new PersonSearchItem(PersonItemBinding.inflate(LayoutInflater.from(parent.getContext()),
+                parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull PersonSearchItem holder, int position) {
-        holder.tvSearchName.setText(people.get(position).getName());
+        holder.personItemBinding.tvPersonTitle.setText(people.get(position).getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,10 +51,10 @@ public class AdapterItemSearch extends RecyclerView.Adapter<AdapterItemSearch.Pe
     }
 
     public static class PersonSearchItem extends RecyclerView.ViewHolder {
-        private TextView tvSearchName;
-        public PersonSearchItem(@NonNull View itemView) {
-            super(itemView);
-            tvSearchName = (TextView) itemView.findViewById(R.id.tv_person_title);
+        PersonItemBinding personItemBinding;
+        public PersonSearchItem(@NonNull PersonItemBinding personItemBinding) {
+            super(personItemBinding.getRoot());
+            this.personItemBinding = personItemBinding;
         }
     }
     public interface SearchClickListener{

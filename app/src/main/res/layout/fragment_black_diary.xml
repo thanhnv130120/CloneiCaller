@@ -8,6 +8,73 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:id="@+id/layoutUpdateBlackList"
+        android:gravity="center_vertical"
+        android:visibility="visible"
+        android:background="@color/colorFireBrick">
+        <TextView
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:text="@string/update_list_block_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="@color/colorWhite"
+            android:text="@string/update_list_block_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btnUpdateListBlock"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_ok"
+            android:textColor="@color/colorFireBrick"
+            android:text="@string/update"
+            android:layout_width="150dp"
+            android:layout_height="45dp"/>
+        <TextView
+            android:id="@+id/tvUpdateTime"
+            android:textColor="@color/colorWhite"
+            android:text="Dữ liệu 2020-07-31 10:59:04"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:id="@+id/layoutUpdateBlackListComplete"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:background="@drawable/bg_update_data_success">
+        <TextView
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:text="@string/update_list_block_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="@color/colorWhite"
+            android:text="@string/update_list_block_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tvUpdateTimeComplete"
+            android:textColor="@color/colorWhite"
+            android:text="Dữ liệu 2020-07-31 10:59:04"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/colorLavender"
         android:orientation="horizontal"
         android:padding="8dp">
@@ -47,11 +114,11 @@
                 android:src="@drawable/ic_block_setting_scam" />
 
             <TextView
+                android:textColor="@color/colorBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="@string/block_setting_scam"
-                android:textStyle="bold" />
+                android:text="@string/block_setting_scam" />
         </LinearLayout>
 
         <Switch
@@ -82,11 +149,11 @@
                 android:src="@drawable/ic_block_setting_advertising" />
 
             <TextView
+                android:textColor="@color/colorBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="@string/block_setting_advertising"
-                android:textStyle="bold" />
+                android:text="@string/block_setting_advertising" />
         </LinearLayout>
 
         <Switch
@@ -117,11 +184,11 @@
                 android:src="@drawable/ic_block_setting_out_contact" />
 
             <TextView
+                android:textColor="@color/colorBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="@string/block_setting_out_contact"
-                android:textStyle="bold" />
+                android:text="@string/block_setting_out_contact" />
         </LinearLayout>
 
         <Switch
@@ -152,11 +219,11 @@
                 android:src="@drawable/ic_block_setting_foreign_number" />
 
             <TextView
+                android:textColor="@color/colorBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="@string/block_setting_foreign_number"
-                android:textStyle="bold" />
+                android:text="@string/block_setting_foreign_number" />
         </LinearLayout>
 
         <Switch

@@ -6,16 +6,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.cloneicaller.databinding.ActivityBlockBinding;
+
 public class BlockActivity extends AppCompatActivity {
-    ImageView imgBackFrBlock;
+
+    ActivityBlockBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_block);
 
-        imgBackFrBlock = findViewById(R.id.imgBackFrBlock);
+        binding = ActivityBlockBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        imgBackFrBlock.setOnClickListener(new View.OnClickListener() {
+        binding.imgBackFrBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();

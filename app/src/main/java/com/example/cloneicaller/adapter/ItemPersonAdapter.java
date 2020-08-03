@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.databinding.GroupItemBinding;
+import com.example.cloneicaller.databinding.PersonItemBinding;
 import com.example.cloneicaller.item.ItemPerson;
 
 import java.util.ArrayList;
@@ -34,21 +36,17 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
         if (viewType == Common.VIEW_TYPE_GROUP){
-            ViewGroup group = (ViewGroup)layoutInflater.inflate(R.layout.group_item,parent,false);
-            GroupHolder groupHolder = new GroupHolder(group);
-            return groupHolder;
+            return new GroupHolder(GroupItemBinding.inflate(LayoutInflater.from(parent.getContext()),
+                    parent, false));
         }
         else if(viewType == Common.VIEW_TYPE_PERSON){
-            ViewGroup person = (ViewGroup)layoutInflater.inflate(R.layout.person_item,parent,false);
-            PersonHolder personHolder = new PersonHolder(person);
-            return personHolder;
+            return new PersonHolder(PersonItemBinding.inflate(LayoutInflater.from(parent.getContext()),
+                    parent, false));
         }
         else{
-            ViewGroup group = (ViewGroup)layoutInflater.inflate(R.layout.group_item,parent,false);
-            GroupHolder groupHolder = new GroupHolder(group);
-            return groupHolder;
+            return new GroupHolder(GroupItemBinding.inflate(LayoutInflater.from(parent.getContext()),
+                    parent, false));
         }
     }
 
@@ -56,18 +54,17 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof GroupHolder){
             GroupHolder groupHolder = (GroupHolder)holder;
-            groupHolder.tvGroupList.setText(personList.get(position).getName());
+            groupHolder.groupItemBinding.tvGroupList.setText(personList.get(position).getName());
         }
         else if(holder instanceof PersonHolder){
             PersonHolder personHolder = (PersonHolder) holder;
-            personHolder.tvPersonList.setText(personList.get(position).getName());
+            personHolder.personItemBinding.tvPersonTitle.setText(personList.get(position).getName());
             personHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener!=null){
                         listener.onClickPerson(position);
                     }
-                    //Toast.makeText(context,""+personList.get(position).getName() +":"+personList.get(position).getNumber(),Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -79,17 +76,19 @@ public class ItemPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class PersonHolder extends RecyclerView.ViewHolder{
-        private TextView tvPersonList;
-        public PersonHolder(@NonNull View itemView) {
-            super(itemView);
-            tvPersonList = (TextView)itemView.findViewById(R.id.tv_person_title);
+        PersonItemBinding personItemBinding;
+
+        public PersonHolder(@NonNull PersonItemBinding personItemBinding) {
+            super(personItemBinding.getRoot());
+            this.personItemBinding = personItemBinding;
         }
     }
     public class GroupHolder extends RecyclerView.ViewHolder{
-        private TextView tvGroupList;
-        public GroupHolder(@NonNull View itemView) {
-            super(itemView);
-            tvGroupList = (TextView)itemView.findViewById(R.id.tv_group_list);
+        GroupItemBinding groupItemBinding;
+
+        public GroupHolder(@NonNull GroupItemBinding groupItemBinding) {
+            super(groupItemBinding.getRoot());
+            this.groupItemBinding = groupItemBinding;
         }
     }
 
