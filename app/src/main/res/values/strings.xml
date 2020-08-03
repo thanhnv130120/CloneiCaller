@@ -41,4 +41,10 @@
     <string name="diary_filter_number">DANH BẠ (2)</string>
     <string name="blocked_filter_number">DANH SÁCH CHẶN (0)</string>
     <string name="blocked_default_work">DEFAULT WORK</string>
+    <string name="title_activity_test_call_activiry">TestCallActiviry</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>
