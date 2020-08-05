@@ -5,10 +5,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Binder;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 
 import com.example.cloneicaller.item.ItemPerson;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -97,5 +100,60 @@ public class Common {
             name.add(people.get(i).getName());
         }
         return name;
+    }
+    public static void disconnectCall(){
+        try {
+
+            String serviceManagerName = "android.os.ServiceManager";
+            String serviceManagerNativeName = "android.os.ServiceManagerNative";
+            String telephonyName = "com.android.internal.telephony.ITelephony";
+            Class<?> telephonyClass;
+            Class<?> telephonyStubClass;
+            Class<?> serviceManagerClass;
+            Class<?> serviceManagerNativeClass;
+            Method telephonyEndCall;
+            Object telephonyObject;
+            Object serviceManagerObject;
+            telephonyClass = Class.forName(telephonyName);
+            telephonyStubClass = telephonyClass.getClasses()[0];
+            serviceManagerClass = Class.forName(serviceManagerName);
+            serviceManagerNativeClass = Class.forName(serviceManagerNativeName);
+            Method getService = // getDefaults[29];
+                    serviceManagerClass.getMethod("getService", String.class);
+            Method tempInterfaceMethod = serviceManagerNativeClass.getMethod("asInterface", IBinder.class);
+            Binder tmpBinder = new Binder();
+            tmpBinder.attachInterface(null, "fake");
+            serviceManagerObject = tempInterfaceMethod.invoke(null, tmpBinder);
+            IBinder retbinder = (IBinder) getService.invoke(serviceManagerObject, "phone");
+            Method serviceMethod = telephonyStubClass.getMethod("asInterface", IBinder.class);
+            telephonyObject = serviceMethod.invoke(null, retbinder);
+            telephonyEndCall = telephonyClass.getMethod("endCall");
+            telephonyEndCall.invoke(telephonyObject);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean checkUnknown(String number, Context context){
+        boolean identified = false;
+        ArrayList<ItemPerson>personArrayList = new ArrayList<>();
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String selection = null;
+            String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+            String[] selectionArgs = null;
+            String sortOrder = null;
+            ContentResolver resolver = context.getContentResolver();
+            Cursor cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
+            while (cursor.moveToNext()){
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                personArrayList.add(new ItemPerson(name,-1,num));
+            }
+        for (ItemPerson itemPerson:personArrayList) {
+            if(number==itemPerson.getNumber()){
+                identified = true;
+            }
+        }
+        return identified;
     }
 }

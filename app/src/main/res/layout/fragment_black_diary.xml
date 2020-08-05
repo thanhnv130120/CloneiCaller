@@ -122,6 +122,7 @@
         </LinearLayout>
 
         <Switch
+            android:id="@+id/sw_lie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -157,6 +158,7 @@
         </LinearLayout>
 
         <Switch
+            android:id="@+id/sw_advertise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -192,6 +194,7 @@
         </LinearLayout>
 
         <Switch
+            android:id="@+id/sw_unknown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
@@ -227,6 +230,7 @@
         </LinearLayout>
 
         <Switch
+            android:id="@+id/sw_nation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
