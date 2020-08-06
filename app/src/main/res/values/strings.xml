@@ -53,5 +53,11 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
+    <string name="other">KHÁC</string>
+    <string name="advertise">QUẢNG CÁO</string>
+    <string name="lean">CHO VAY</string>
+    <string name="owe">ĐÒI NỢ</string>
+    <string name="lie">LỪA ĐẢO</string>
+    <string name="land">BẤT ĐỘNG SẢN</string>
     <string name="hello_world">Hello Square World!</string>
 </resources>

@@ -25,18 +25,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.cloneicaller.BlockActivity;
 import com.example.cloneicaller.CallStateReceiver;
 import com.example.cloneicaller.HomeActivity;
 import com.example.cloneicaller.MainActivity;
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.Room.BlockItemDatabase;
+import com.example.cloneicaller.adapter.BlockListItemAdapter;
 import com.example.cloneicaller.call.ITelephony;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.FragmentBlackDiaryBinding;
+import com.example.cloneicaller.item.BlockerPersonItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class FragmentBlackDiary extends Fragment {
     //CallStateReceiver blockUnknownReceiver;
@@ -78,6 +83,10 @@ public class FragmentBlackDiary extends Fragment {
 //        Log.e("FragmentBlack","has call:"+number);
         preferencesBlockCall = getContext().getSharedPreferences("blockUnknownCall",Context.MODE_PRIVATE);
         binding.swUnknown.setChecked(preferencesBlockCall.getBoolean("checked",false));
+        BlockItemDatabase database = Room.databaseBuilder(getContext().getApplicationContext(),BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
         binding.btnFloatingAddToBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +118,9 @@ public class FragmentBlackDiary extends Fragment {
                 }
             }
         });
+        List<BlockerPersonItem>items = database.getItemDao().getItems();
+        BlockListItemAdapter adapter = new BlockListItemAdapter(items,getContext());
+        binding.rcBlockList.setAdapter(adapter);
     }
 
         private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
@@ -120,8 +132,8 @@ public class FragmentBlackDiary extends Fragment {
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 Toast.makeText(getContext(),"The incoming number is : "+incomingNumber,Toast.LENGTH_LONG).show();
                 if ((incomingNumber != null)&& !Common.checkUnknown(incomingNumber,context)&& binding.swUnknown.isChecked()) {
-//                    Log.e("Broadcast","Checked!");
-//                    Toast.makeText(getContext(),"Checked !",Toast.LENGTH_LONG).show();
+                    Log.e("Broadcast","Checked!");
+                    Toast.makeText(getContext(),"Checked !",Toast.LENGTH_LONG).show();
                     CallStateReceiver.endCall(context);
                 }
 //                number = incomingNumber;
