@@ -9,6 +9,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 
+import com.example.cloneicaller.item.BlockerPersonItem;
 import com.example.cloneicaller.item.ItemPerson;
 
 import java.lang.reflect.Method;
@@ -26,6 +27,15 @@ public class Common {
         Collections.sort(people, new Comparator<ItemPerson>() {
             @Override
             public int compare(ItemPerson o1, ItemPerson o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return people;
+    }
+    public static List<BlockerPersonItem> sortBlockList (List<BlockerPersonItem>people){
+        Collections.sort(people, new Comparator<BlockerPersonItem>() {
+            @Override
+            public int compare(BlockerPersonItem o1, BlockerPersonItem o2) {
                 return o1.getName().compareTo(o2.getName());
             }
         });
@@ -58,6 +68,35 @@ public class Common {
         }
         list.get(i).setViewType(VIEW_TYPE_PERSON);
         customList.add(list.get(i));
+        return customList;
+    }
+    public static List<BlockerPersonItem>addAlphabetBlocker(List<BlockerPersonItem>blocker){
+        int i = 0;
+        ArrayList<BlockerPersonItem>customList = new ArrayList<>();
+        BlockerPersonItem blockerPersonItem = new BlockerPersonItem();
+        blockerPersonItem.setName(String.valueOf(blocker.get(0).getName().charAt(0)));
+        blockerPersonItem.setTypeArrange(VIEW_TYPE_GROUP);
+        alphabet_available.add(String.valueOf(blocker.get(0).getName().charAt(0)));
+        customList.add(blockerPersonItem);
+        for (i = 0; i < blocker.size()-1; i++) {
+            BlockerPersonItem itemPerson = new BlockerPersonItem();
+            char name1 = blocker.get(i).getName().charAt(0);
+            char name2 = blocker.get(i+1).getName().charAt(0);
+            if(name1==name2){
+                blocker.get(i).setTypeArrange(VIEW_TYPE_PERSON);
+                customList.add(blocker.get(i));
+            }
+            else {
+                blocker.get(i).setTypeArrange(VIEW_TYPE_PERSON);
+                customList.add(blocker.get(i));
+                itemPerson.setName(String.valueOf(name2));
+                itemPerson.setTypeArrange(VIEW_TYPE_GROUP);
+                alphabet_available.add(String.valueOf(name2));
+                customList.add(itemPerson);
+            }
+        }
+        blocker.get(i).setTypeArrange(VIEW_TYPE_PERSON);
+        customList.add(blocker.get(i));
         return customList;
     }
     public static int findPositionWithName(String name, ArrayList<ItemPerson>list){

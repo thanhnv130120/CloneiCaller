@@ -24,6 +24,7 @@ import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
 import com.example.cloneicaller.adapter.AdapterPersonDiary;
 import com.example.cloneicaller.adapter.ItemPersonAdapter;
+import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.FragmentDiaryBinding;
 import com.example.cloneicaller.item.ItemGroup;
@@ -38,7 +39,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener{
+public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
     private ArrayList<ItemPerson>people = new ArrayList<>();
@@ -153,10 +154,14 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     @Override
     public void onClickPerson(int position) {
         Intent intent = new Intent(getActivity(), DetailContact.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("name",people.get(position).getName());
-        bundle.putString("number",people.get(position).getNumber());
-        intent.putExtras(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(INTENT_NAME,people.get(position).getName());
+//        bundle.putString(INTENT_NUMBER,people.get(position).getNumber());
+//        intent.putExtras(bundle);
+        intent.putExtra(INTENT_NAME,people.get(position).getName());
+        intent.putExtra(INTENT_NUMBER,people.get(position).getNumber());
+        intent.putExtra(INTENT_BLOCK,false);
+        intent.putExtra(INTENT_BLOCK_TYPE,"");
         startActivity(intent);
     }
     public interface FragmentDiaryListner{

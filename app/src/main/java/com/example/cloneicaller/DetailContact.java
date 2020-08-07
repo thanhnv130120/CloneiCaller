@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,12 +14,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.databinding.ActivityDetailContactBinding;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class DetailContact extends AppCompatActivity {
-
+public class DetailContact extends AppCompatActivity implements AppConstants {
+    private String name;
+    private String number;
     ActivityDetailContactBinding binding;
 
     @Override
@@ -28,10 +31,22 @@ public class DetailContact extends AppCompatActivity {
         binding = ActivityDetailContactBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        String name = getIntent().getExtras().getString("name");
-        String number = getIntent().getExtras().getString("number");
-
+        if (getIntent().getBooleanExtra(INTENT_BLOCK,false)==false ) {
+            binding.imgPersonDetail.setBorderColorResource(R.color.colorPurpleBG);
+            binding.lnearDetail.setBackgroundResource(R.drawable.bg_update_data_success);
+            binding.lnearSave.setVisibility(View.GONE);
+            binding.imgEditDetailContact.setVisibility(View.VISIBLE);
+            binding.rltBlockType.setVisibility(View.GONE);
+        }else {
+            binding.imgPersonDetail.setBorderColorResource(R.color.colorRed);
+            binding.imgEditDetailContact.setVisibility(View.GONE);
+            binding.lnearDetail.setBackgroundResource(R.drawable.bg_data_update);
+            binding.lnearSave.setVisibility(View.VISIBLE);
+            binding.rltBlockType.setVisibility(View.VISIBLE);
+            binding.tvBlockType.setText(getIntent().getStringExtra(INTENT_BLOCK_TYPE));
+        }
+        name = getIntent().getStringExtra(INTENT_NAME);
+        number = getIntent().getStringExtra(INTENT_NUMBER);
         binding.tvNameDetailContact.setText(name);
         binding.tvNumberDetailContact.setText(number);
         binding.tvDetailContactPhoneNum.setText(number);

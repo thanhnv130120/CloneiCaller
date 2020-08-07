@@ -29,25 +29,30 @@ import androidx.room.Room;
 
 import com.example.cloneicaller.BlockActivity;
 import com.example.cloneicaller.CallStateReceiver;
+import com.example.cloneicaller.DetailContact;
 import com.example.cloneicaller.HomeActivity;
 import com.example.cloneicaller.MainActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.adapter.BlockListItemAdapter;
 import com.example.cloneicaller.call.ITelephony;
+import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.FragmentBlackDiaryBinding;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentBlackDiary extends Fragment {
+public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter.BlockerItemListener, AppConstants {
     //CallStateReceiver blockUnknownReceiver;
     FragmentBlackDiaryBinding binding;
     SharedPreferences preferencesBlockCall;
     private String number;
+    private List<BlockerPersonItem>items;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -118,9 +123,14 @@ public class FragmentBlackDiary extends Fragment {
                 }
             }
         });
-        List<BlockerPersonItem>items = database.getItemDao().getItems();
+        items = database.getItemDao().getItems();
+        if (items.size()>1) {
+            items = Common.sortBlockList(items);
+            items = Common.addAlphabetBlocker(items);
+        }
         BlockListItemAdapter adapter = new BlockListItemAdapter(items,getContext());
         binding.rcBlockList.setAdapter(adapter);
+        adapter.setListener(this);
     }
 
         private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
@@ -166,5 +176,20 @@ public class FragmentBlackDiary extends Fragment {
     public void onStop() {
         super.onStop();
         getActivity().unregisterReceiver(blockUnknownReceiver);
+    }
+
+    @Override
+    public void onClickBlocker(int position) {
+        Intent intent = new Intent(getActivity(), DetailContact.class);
+//        Bundle bundle = new Bundle();
+        intent.putExtra(INTENT_NAME,items.get(position).getName());
+        intent.putExtra(INTENT_NUMBER,items.get(position).getNumber());
+        intent.putExtra(INTENT_BLOCK,true);
+        intent.putExtra(INTENT_BLOCK_TYPE,items.get(position).getType());
+//        bundle.putString(INTENT_NAME,items.get(position).getName());
+//        bundle.putString(INTENT_NUMBER,items.get(position).getNumber());
+//        bundle.putEx;
+//        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

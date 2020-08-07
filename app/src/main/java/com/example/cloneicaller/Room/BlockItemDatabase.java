@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.cloneicaller.item.BlockerPersonItem;
 
-@Database(entities = {BlockerPersonItem.class}, version = 1)
+@Database(entities = {BlockerPersonItem.class}, version = 2)
 public abstract class BlockItemDatabase extends RoomDatabase {
     public abstract BlockItemDao getItemDao();
 }

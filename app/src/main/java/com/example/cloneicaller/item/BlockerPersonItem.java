@@ -6,11 +6,14 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "blockitems")
 public class BlockerPersonItem {
-    public BlockerPersonItem(String name, String type, String number,int image) {
+    public BlockerPersonItem(String name, String type, String number, int image, int typeArrange) {
         this.name = name;
         this.type = type;
         this.number = number;
         this.image = image;
+        this.typeArrange = typeArrange;
+    }
+    public BlockerPersonItem() {
     }
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -22,6 +25,16 @@ public class BlockerPersonItem {
     private String number;
     @ColumnInfo(name = "image")
     private int image;
+
+    private int typeArrange;
+
+    public int getTypeArrange() {
+        return typeArrange;
+    }
+
+    public void setTypeArrange(int typeArrange) {
+        this.typeArrange = typeArrange;
+    }
 
     public int getId() {
         return id;

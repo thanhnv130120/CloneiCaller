@@ -60,7 +60,7 @@ public class BlockActivity extends AppCompatActivity {
                 database.getItemDao().insertAll(new BlockerPersonItem(binding.edtBlockerName.getText().toString(),
                         nameBlock,
                         binding.edtBlockerNumber.getText().toString(),
-                        imgBlock));
+                        imgBlock,-1));
                 startActivity(new Intent(BlockActivity.this, HomeActivity.class));
             }
         });
