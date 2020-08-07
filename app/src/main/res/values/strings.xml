@@ -34,7 +34,7 @@
     <string name="block_setting_advertising">Chặn các số quảng cáo</string>
     <string name="block_setting_foreign_number">Chặn các số nước ngoài</string>
     <string name="block_setting_out_contact">Chặn các số không có trong danh bạ</string>
-    <string name="block_setting_scam">Chặn các số lừa đảo</string>
+    <string name="block_setting_scam">Chặn các số lừa đảo, đòi nợ</string>
     <string name="block_number">Chặn số</string>
     <string name="block_name">Tên</string>
     <string name="block_description">Mô tả</string>

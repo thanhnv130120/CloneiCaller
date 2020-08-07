@@ -51,6 +51,8 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     //CallStateReceiver blockUnknownReceiver;
     FragmentBlackDiaryBinding binding;
     SharedPreferences preferencesBlockCall;
+    SharedPreferences preferencesBlockLier;
+    SharedPreferences preferencesBlockAdvertise;
     private String number;
     private List<BlockerPersonItem>items;
     @Nullable
@@ -86,8 +88,13 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
  //       String number = CallStateReceiver.incommingNumber;
 //        Toast.makeText(getContext(),"FragmentBlack"+number,Toast.LENGTH_LONG).show();
 //        Log.e("FragmentBlack","has call:"+number);
+        preferencesBlockLier = getContext().getSharedPreferences("blockLierCall",Context.MODE_PRIVATE);
+        preferencesBlockAdvertise = getContext().getSharedPreferences("blockAdvertiseCall",Context.MODE_PRIVATE);
         preferencesBlockCall = getContext().getSharedPreferences("blockUnknownCall",Context.MODE_PRIVATE);
         binding.swUnknown.setChecked(preferencesBlockCall.getBoolean("checked",false));
+        binding.swLieOwe.setChecked(preferencesBlockLier.getBoolean("checked",false));
+        binding.swAdvertise.setChecked(preferencesBlockAdvertise.getBoolean("checked",false));
+
         BlockItemDatabase database = Room.databaseBuilder(getContext().getApplicationContext(),BlockItemDatabase.class,
                 "blockItems")
                 .allowMainThreadQueries()
@@ -108,16 +115,29 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
             @Override
             public void onClick(View v) {
                 if (binding.swUnknown.isChecked()){
-//                    Intent intent = new Intent("android.intent.action.PHONE_STATE");
-//                    getActivity().sendBroadcast(intent);
                     SharedPreferences.Editor editor = preferencesBlockCall.edit();
                     editor.putBoolean("checked",true);
                     editor.commit();
-//                    if(Common.checkUnknown(number,getContext())){
-//                     endCall(getContext());
-//                    }
-                }else {
+                }else if(!binding.swUnknown.isChecked()){
                     SharedPreferences.Editor editor = preferencesBlockCall.edit();
+                    editor.remove("checked");
+                    editor.commit();
+                }
+                if (binding.swAdvertise.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockAdvertise.edit();
+                    editor.putBoolean("checked",true);
+                    editor.commit();
+                }else if(!binding.swAdvertise.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockAdvertise.edit();
+                    editor.remove("checked");
+                    editor.commit();
+                }
+                if (binding.swLieOwe.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockLier.edit();
+                    editor.putBoolean("checked",true);
+                    editor.commit();
+                }else if(!binding.swLieOwe.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockLier.edit();
                     editor.remove("checked");
                     editor.commit();
                 }
@@ -139,12 +159,25 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
             String state =  intent.getStringExtra(TelephonyManager.EXTRA_STATE);
             Log.e("AAAA", "state");
             String incomingNumber =intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            List<BlockerPersonItem>blockerItem = Common.checkRealDialer(items);
             if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 Toast.makeText(getContext(),"The incoming number is : "+incomingNumber,Toast.LENGTH_LONG).show();
-                if ((incomingNumber != null)&& !Common.checkUnknown(incomingNumber,context)&& binding.swUnknown.isChecked()) {
-                    Log.e("Broadcast","Checked!");
-                    Toast.makeText(getContext(),"Checked !",Toast.LENGTH_LONG).show();
-                    CallStateReceiver.endCall(context);
+                if ((incomingNumber != null)) {
+                    if(!Common.checkUnknown(incomingNumber,context)&& binding.swUnknown.isChecked()){
+                        Log.e("Broadcast","Unknown?Checked!");
+                        Toast.makeText(getContext(),"Unknown?Checked !",Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if(Common.checkInside(incomingNumber,Common.checkLier(blockerItem))&&binding.swLieOwe.isChecked()){
+                        Log.e("Broadcast","Lie or Owe?Checked!");
+                        Toast.makeText(getContext(),"Lie or Owe?Checked !",Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if (Common.checkInside(incomingNumber,Common.checkAdvertise(blockerItem))&&binding.swAdvertise.isChecked()){
+                        Log.e("Broadcast","Advertised?Checked!");
+                        Toast.makeText(getContext(),"Advertised?Checked !",Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
                 }
 //                number = incomingNumber;
             }

@@ -207,6 +207,7 @@
                 android:src="@drawable/ic_block_white" />
 
             <TextView
+                android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

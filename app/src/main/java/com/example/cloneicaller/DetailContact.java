@@ -37,6 +37,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants {
             binding.lnearSave.setVisibility(View.GONE);
             binding.imgEditDetailContact.setVisibility(View.VISIBLE);
             binding.rltBlockType.setVisibility(View.GONE);
+            binding.tvStatus.setText("CHẶN");
         }else {
             binding.imgPersonDetail.setBorderColorResource(R.color.colorRed);
             binding.imgEditDetailContact.setVisibility(View.GONE);
@@ -44,6 +45,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants {
             binding.lnearSave.setVisibility(View.VISIBLE);
             binding.rltBlockType.setVisibility(View.VISIBLE);
             binding.tvBlockType.setText(getIntent().getStringExtra(INTENT_BLOCK_TYPE));
+            binding.tvStatus.setText("BỎ CHẶN");
         }
         name = getIntent().getStringExtra(INTENT_NAME);
         number = getIntent().getStringExtra(INTENT_NUMBER);

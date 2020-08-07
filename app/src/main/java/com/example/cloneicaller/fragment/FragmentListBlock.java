@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cloneicaller.DetailDiaryActivity;
+import com.example.cloneicaller.FilterSearchActivity;
 import com.example.cloneicaller.HomeActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.adapter.AdapterItemSearch;
@@ -152,8 +153,9 @@ public class FragmentListBlock extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_btn_search:
-
-                binding.rltRclFilter.setVisibility(View.VISIBLE);
+                startActivity(new Intent(getContext(), FilterSearchActivity.class));
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container_view, new FragmentSearchFilter()).commit();
+//                binding.rltRclFilter.setVisibility(View.VISIBLE);
                 break;
 //            case R.id.img_btn_back:
 //                binding.lnearFilter.setVisibility(View.GONE);

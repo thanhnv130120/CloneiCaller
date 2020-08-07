@@ -195,4 +195,40 @@ public class Common {
         }
         return identified;
     }
+    public static List<BlockerPersonItem> checkLier(List<BlockerPersonItem>blockerPersonItems){
+        ArrayList<BlockerPersonItem>checkL = new ArrayList<>();
+        for (BlockerPersonItem blockerPersonItem:blockerPersonItems) {
+            if(blockerPersonItem.getType().equals("LỪA ĐẢO")||blockerPersonItem.getType().equals("ĐÒI NỢ")){
+                checkL.add(blockerPersonItem);
+            }
+        }
+        return checkL;
+    }
+    public static List<BlockerPersonItem> checkRealDialer(List<BlockerPersonItem>blockerPersonItems){
+        ArrayList<BlockerPersonItem>blocker = new ArrayList<>();
+        for (BlockerPersonItem blockerPersonItem:blockerPersonItems) {
+            if (blockerPersonItem.getNumber()!=null){
+                blocker.add(blockerPersonItem);
+            }
+        }
+        return blocker;
+    }
+    public static List<BlockerPersonItem> checkAdvertise(List<BlockerPersonItem>blockerPersonItems){
+        ArrayList<BlockerPersonItem>checkA = new ArrayList<>();
+        for (BlockerPersonItem blockerPersonItem:blockerPersonItems) {
+            if(blockerPersonItem.getType().equals("QUẢNG CÁO")){
+                checkA.add(blockerPersonItem);
+            }
+        }
+        return checkA;
+    }
+    public static boolean checkInside(String number, List<BlockerPersonItem> check){
+        boolean identified = false;
+        for (BlockerPersonItem blockerPersonItem:check) {
+            if(number.equals(blockerPersonItem.getNumber())){
+                identified = true;
+            }
+        }
+        return identified;
+    }
 }
