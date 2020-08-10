@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.example.cloneicaller.Models.Contact;
 import com.example.cloneicaller.Models.DateItem;
 import com.example.cloneicaller.Models.GeneralItem;
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.SwipeHelper;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Context context;
     List<Contact> contactList;
     List<ListItem> listItemList;
+    RecyclerView recyclerView;
 
     public ListHistoryAdapter(Context context, List<ListItem> listItemList) {
         this.context = context;
@@ -100,7 +103,7 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         intent.putExtra("type", generalItem.getContact().getType());
                         intent.putExtra("name", generalItem.getContact().getName());
                         intent.putExtra("country", generalItem.getContact().getCountry());
-                        intent.putExtra("numbertype",generalItem.getContact().getNetwork());
+                        intent.putExtra("numbertype", generalItem.getContact().getNetwork());
                         context.startActivity(intent);
                     }
                 });
@@ -114,6 +117,7 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         context.startActivity(intent);
                     }
                 });
+
 
                 break;
 

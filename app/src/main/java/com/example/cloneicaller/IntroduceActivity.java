@@ -29,6 +29,5 @@ public class IntroduceActivity extends AppCompatActivity {
 
         binding.wvIntroduce.getSettings().getJavaScriptEnabled();
         binding.wvIntroduce.loadUrl("file:///android_res/raw/about_vn.html");
-
     }
 }

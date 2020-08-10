@@ -3,9 +3,6 @@
     package="com.example.cloneicaller">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature android:name="android.hardware.type.watch" />
-
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,15 +19,20 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
 
     <application
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <service
+            android:name=".DialogOutgoingActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
         <activity
             android:name=".IntroduceActivity"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".QuestionActivity"
             android:theme="@style/NoActionBar" />
@@ -57,7 +59,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".PermissionActivity"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".WellcomeActivity"
             android:theme="@style/NoActionBar" />
@@ -65,10 +67,19 @@
             android:name=".MainActivity"
             android:theme="@style/NoActionBar" />
 
-        <receiver android:name=".CallStateReceiver">
+        <service
+            android:name=".DialogBeforeCallActivity"
+            android:exported="true" />
+
+        <receiver
+            android:name=".CallStateReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
     </application>
+
 </manifest>

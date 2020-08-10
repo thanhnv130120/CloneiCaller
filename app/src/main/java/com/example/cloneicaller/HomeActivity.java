@@ -8,10 +8,9 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 
+import com.example.cloneicaller.Models.DataModel;
 import com.example.cloneicaller.Room.PhoneDB;
 import com.example.cloneicaller.auth.RetrofitClient;
 import com.example.cloneicaller.databinding.ActivityHomeBinding;
@@ -22,9 +21,11 @@ import com.example.cloneicaller.fragment.FragmentListBlock;
 import com.example.cloneicaller.fragment.FragmentListHistory;
 import com.example.cloneicaller.fragment.FragmentSetting;
 import com.example.cloneicaller.item.ItemPerson;
+import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -42,14 +43,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<ItemPerson> persons = new ArrayList<>();
     private DataReceiverListener listener;
     private Bundle bundle = new Bundle();
+    List<DataModel.DataBeanX.DataBean> dataBeanList;
 
     ActivityHomeBinding binding;
 
     PhoneDB phoneDB;
 
+
     String data;
     String jsonPhone;
-    Integer LIMIT = 50;
+    Integer LIMIT = 5000;
     String SELECT = "id,code,phone,name,warn_type,updated_at";
 
     public ArrayList<ItemPerson> getPersons() {
@@ -68,6 +71,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         View view = binding.getRoot();
         setContentView(view);
         init();
+        dataBeanList = new ArrayList<>();
     }
 
     @Override
@@ -91,18 +95,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         getSupportFragmentManager().beginTransaction().replace(binding.containerView.getId(),
                 new FragmentHome()).commit();
 
+        phoneDB = Room.databaseBuilder(getApplicationContext(),
+                PhoneDB.class, "user1.db").allowMainThreadQueries().build();
 
         RetrofitClient.getInstance().getData(LIMIT, ">2020-01-01", 1, 1, SELECT, "id", "DESC").enqueue(HomeActivity.this);
-
-//        Log.e("ABC", jsonPhone+"");
-
-//        PhoneDBQueryTask phoneDBQueryTask = new PhoneDBQueryTask(this);
-//        phoneDBQueryTask.insertData(new PhoneDBQueryTask.OnQuery<long[]>() {
-//            @Override
-//            public void onResult(long[] longs) {
-//
-//            }
-//        });
 
     }
 
@@ -139,6 +135,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         return null;
     }
+
     private void initReceiver() {
 //        callStateReceiver = new CallStateReceiver();
 //        IntentFilter filter = new IntentFilter();
@@ -187,21 +184,38 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPutListDiarySent(ArrayList<ItemPerson> people) {
-//        for (int i = 0; i < people.size(); i++) {
-//            persons.add(people.get(i));
-//        }
         bundle.putSerializable("ModelList", people);
         fragmentListBlock.setArguments(bundle);
     }
 
     @Override
     public void onResponse(Call<String> call, Response<String> response) {
-        Log.e("ABC", response.body() + "");
         data = response.body();
         String key = "0123456789abcdef";
         jsonPhone = decryptPhoneDB(key, data);
-        Log.e("TAG", decryptPhoneDB(key, data));
+
+        Gson gson = new Gson();
+        DataModel r = gson.fromJson(jsonPhone, DataModel.class);
+
+        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
+        if (result.length > 0) {
+            Log.e("abc", "thanh cong");
+            Log.e("ccc", result.length + "");
+        } else {
+            Log.e("cba", "ngu");
+        }
+
+        List<DataModel.DataBeanX.DataBean> dataBeanList = phoneDB.phoneDBDAO().getAll();
+        Log.e("abc", dataBeanList.size() + "");
+        for (int i= 0; i<dataBeanList.size();i++){
+            DataModel.DataBeanX.DataBean dataBean = dataBeanList.get(i);
+            Log.e("abc",dataBean.getId()+"");
+            Log.e("abc",dataBean.getName());
+        }
+
+
     }
+
 
     @Override
     public void onFailure(Call<String> call, Throwable t) {

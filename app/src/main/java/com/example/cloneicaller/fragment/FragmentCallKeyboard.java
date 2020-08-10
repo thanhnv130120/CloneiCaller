@@ -1,6 +1,8 @@
 package com.example.cloneicaller.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.cloneicaller.R;
@@ -34,6 +38,12 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
 
         binding = FragmentCallKeyboardBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
+
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        }
 
         binding.btnNo0.setOnClickListener(this);
         binding.btnNo1.setOnClickListener(this);

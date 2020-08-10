@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<Members
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
