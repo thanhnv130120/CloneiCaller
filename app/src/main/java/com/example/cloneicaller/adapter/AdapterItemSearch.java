@@ -25,6 +25,10 @@ public class AdapterItemSearch extends RecyclerView.Adapter<AdapterItemSearch.Pe
         this.people = people;
     }
 
+    public void setListener(SearchClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public PersonSearchItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

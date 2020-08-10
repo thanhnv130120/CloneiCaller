@@ -21,44 +21,47 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.adapter.AdapterBlockerSearch;
 import com.example.cloneicaller.adapter.AdapterItemSearch;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.databinding.FragmentSearchFilterBinding;
 import com.example.cloneicaller.item.ItemPerson;
 
 import java.util.ArrayList;
 
-public class FragmentSearchFilter extends Fragment implements View.OnClickListener {
-    private LinearLayout lnFilter, lnFilterSearch, lnFilterRecycler;
-    private ImageView imgBtnBack;
-    private EditText edtSearch;
-    private RecyclerView rclFilter;
-    private TextView tvDisplayedDiary;
-    private TextView tvDisplayedBlocked;
+public class FragmentSearchFilter extends Fragment implements View.OnClickListener, AdapterBlockerSearch.SearchBlockerListener {
+    FragmentSearchFilterBinding binding;
+//    private LinearLayout lnFilter, lnFilterSearch, lnFilterRecycler;
+//    private ImageView imgBtnBack;
+//    private EditText edtSearch;
+//    private RecyclerView rclFilter;
+//    private TextView tvDisplayedDiary;
+//    private TextView tvDisplayedBlocked;
     private ArrayList<ItemPerson>personArrayList = new ArrayList<>();
     private AdapterItemSearch adapterPerson;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search_filter,container,false);
-        lnFilter = v.findViewById(R.id.lnear_filter);
-        lnFilterSearch = v.findViewById(R.id.lnear_filter_search);
-        lnFilterRecycler = v.findViewById(R.id.lnear_rcl_filter);
-        imgBtnBack = v.findViewById(R.id.img_btn_back);
-        edtSearch = v.findViewById(R.id.edt_search);
-        lnFilterRecycler.setVisibility(View.GONE);
-        lnFilterSearch.setVisibility(View.GONE);
-        tvDisplayedDiary = v.findViewById(R.id.tv_displayed_diary);
-        tvDisplayedBlocked = v.findViewById(R.id.tv_displayed_block);
-        rclFilter = v.findViewById(R.id.rcl_filter);
+        //lnFilter = v.findViewById(R.id.lnear_filter);
+        //lnFilterSearch = v.findViewById(R.id.lnear_filter_search);
+        //lnFilterRecycler = v.findViewById(R.id.lnear_rcl_filter);
+        //imgBtnBack = v.findViewById(R.id.img_btn_back);
+        //edtSearch = v.findViewById(R.id.edt_search);
+        binding.lnearRclFilter1.setVisibility(View.GONE);
+        binding.lnearFilterSearch1.setVisibility(View.GONE);
+        //tvDisplayedDiary = v.findViewById(R.id.tv_displayed_diary);
+        //tvDisplayedBlocked = v.findViewById(R.id.tv_displayed_block);
+        //rclFilter = v.findViewById(R.id.rcl_filter);
         personArrayList = Common.resolverArrayList(null,getContext());
         personArrayList = Common.sortList(personArrayList);
         adapterPerson = new AdapterItemSearch(getContext(),personArrayList);
-        rclFilter.setAdapter(adapterPerson);
-        tvDisplayedDiary.setOnClickListener(this);
-        tvDisplayedBlocked.setOnClickListener(this);
-        imgBtnBack.setOnClickListener(this);
-        edtSearch.setFocusable(true);
-                edtSearch.addTextChangedListener(new TextWatcher() {
+        binding.rclFilter1.setAdapter(adapterPerson);
+        binding.tvDisplayedDiary1.setOnClickListener(this);
+        binding.tvDisplayedBlock1.setOnClickListener(this);
+        binding.imgBtnBack1.setOnClickListener(this);
+        binding.edtSearch1.setFocusable(true);
+                binding.edtSearch1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -87,8 +90,8 @@ public class FragmentSearchFilter extends Fragment implements View.OnClickListen
         int count;
         count = filterList.size();
         if(count > 0){
-            lnFilterSearch.setVisibility(View.VISIBLE);
-            tvDisplayedDiary.setText("DANH BẠ ("+filterList.size()+")");
+            binding.lnearFilterSearch1.setVisibility(View.VISIBLE);
+            binding.tvDisplayedDiary1.setText("DANH BẠ ("+filterList.size()+")");
         }
         adapterPerson.filterList(filterList);
     }
@@ -100,14 +103,19 @@ public class FragmentSearchFilter extends Fragment implements View.OnClickListen
                         new FragmentListBlock()).commit();
                 break;
             case R.id.tv_displayed_diary:
-                lnFilterRecycler.setVisibility(View.VISIBLE);
-                tvDisplayedDiary.setTextColor(Color.RED);
-                tvDisplayedBlocked.setTextColor(Color.GRAY);
+                binding.lnearFilterSearch1.setVisibility(View.VISIBLE);
+                binding.tvDisplayedDiary1.setTextColor(Color.RED);
+                binding.tvDisplayedBlock1.setTextColor(Color.GRAY);
                 break;
             case R.id.tv_displayed_block:
-                tvDisplayedDiary.setTextColor(Color.GRAY);
-                tvDisplayedBlocked.setTextColor(Color.RED);
+                binding.tvDisplayedDiary1.setTextColor(Color.GRAY);
+                binding.tvDisplayedBlock1.setTextColor(Color.RED);
                 break;
         }
+    }
+
+    @Override
+    public void onBlockerClickListener(int position) {
+
     }
 }

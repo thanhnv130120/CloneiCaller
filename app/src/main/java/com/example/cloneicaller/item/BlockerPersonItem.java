@@ -1,22 +1,54 @@
 package com.example.cloneicaller.item;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "blockitems")
 public class BlockerPersonItem {
-    private String name;
-    private String type;
-    private String number;
-    private String image;
-    public BlockerPersonItem(String name, String type, String number,String image) {
+    public BlockerPersonItem(String name, String type, String number, int image, int typeArrange) {
         this.name = name;
         this.type = type;
         this.number = number;
         this.image = image;
+        this.typeArrange = typeArrange;
+    }
+    public BlockerPersonItem() {
+    }
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    @ColumnInfo(name = "name")
+    private String name;
+    @ColumnInfo(name = "type")
+    private String type;
+    @ColumnInfo(name = "number")
+    private String number;
+    @ColumnInfo(name = "image")
+    private int image;
+
+    private int typeArrange;
+
+    public int getTypeArrange() {
+        return typeArrange;
     }
 
-    public String getImage() {
+    public void setTypeArrange(int typeArrange) {
+        this.typeArrange = typeArrange;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(int image) {
         this.image = image;
     }
 

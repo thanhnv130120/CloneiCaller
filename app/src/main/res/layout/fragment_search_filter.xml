@@ -9,7 +9,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:orientation="horizontal"
-                android:id="@+id/lnear_filter"
+                android:id="@+id/lnear_filter1"
                 android:visibility="visible"
                 android:background="@color/colorWhite"
                 >
@@ -20,7 +20,7 @@
                     android:layout_margin="10dp"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
-                    android:id="@+id/img_btn_back"/>
+                    android:id="@+id/img_btn_back1"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -37,19 +37,19 @@
                         android:hint="@string/input"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="15dp"
-                        android:id="@+id/edt_search"
+                        android:id="@+id/edt_search1"
                         />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
-                android:layout_below="@+id/lnear_filter"
-                android:id="@+id/lnear_filter_search"
+                android:layout_below="@+id/lnear_filter1"
+                android:id="@+id/lnear_filter_search1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
                 >
                 <LinearLayout
-                    android:id="@+id/ln_bar"
+                    android:id="@+id/ln_bar1"
                     android:weightSum="2"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -57,7 +57,7 @@
                     android:orientation="horizontal"
                     >
                     <TextView
-                        android:id="@+id/tv_displayed_diary"
+                        android:id="@+id/tv_displayed_diary1"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                         android:layout_gravity="center_vertical"
                         android:text="@string/diary_filter_number"/>
                     <TextView
-                        android:id="@+id/tv_displayed_block"
+                        android:id="@+id/tv_displayed_block1"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -77,8 +77,8 @@
                 </LinearLayout>
             </LinearLayout>
     <LinearLayout
-        android:layout_below="@+id/lnear_filter"
-        android:id="@+id/lnear_rcl_filter"
+        android:layout_below="@+id/lnear_filter1"
+        android:id="@+id/lnear_rcl_filter1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:background="@color/colorWhite"
-            android:id="@+id/rcl_filter"
+            android:id="@+id/rcl_filter1"
             />
     </LinearLayout>
 </RelativeLayout>

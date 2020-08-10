@@ -28,6 +28,7 @@ import com.example.cloneicaller.SwipeHelper;
 import com.example.cloneicaller.adapter.AdapterAlphabetDiary;
 import com.example.cloneicaller.adapter.AdapterPersonDiary;
 import com.example.cloneicaller.adapter.ItemPersonAdapter;
+import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.DialogDeleteContactBinding;
 import com.example.cloneicaller.databinding.FragmentDiaryBinding;
@@ -44,9 +45,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener {
-
-    private ArrayList<ItemPerson> people = new ArrayList<>();
+public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
+    private RecyclerView rclList;
+    private FloatingActionButton btnAdd;
+    private ArrayList<ItemPerson>people = new ArrayList<>();
     private FragmentDiaryListner listener;
 
     FragmentDiaryBinding binding;
@@ -127,6 +129,17 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
 
     @Override
     public void onClickPerson(int position) {
+
+        Intent intent = new Intent(getActivity(), DetailContact.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(INTENT_NAME,people.get(position).getName());
+//        bundle.putString(INTENT_NUMBER,people.get(position).getNumber());
+//        intent.putExtras(bundle);
+        intent.putExtra(INTENT_NAME,people.get(position).getName());
+        intent.putExtra(INTENT_NUMBER,people.get(position).getNumber());
+        intent.putExtra(INTENT_BLOCK,false);
+        intent.putExtra(INTENT_BLOCK_TYPE,"");
+      
         //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
         Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
         Bundle bundle = new Bundle();
