@@ -27,7 +27,6 @@ import java.util.List;
 public class QuestionActivity extends AppCompatActivity {
     QuestionAdapter questionAdapter;
     List<Question> questionList;
-    ImageView imgBackQuestion;
 
     ActivityQuestionBinding binding;
 
