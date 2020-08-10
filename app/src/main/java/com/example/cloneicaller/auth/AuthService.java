@@ -1,9 +1,6 @@
 package com.example.cloneicaller.auth;
 
-import com.example.cloneicaller.Models.Data;
-import com.example.cloneicaller.Models.Datas;
 import com.example.cloneicaller.Models.Members;
-import com.example.cloneicaller.Models.RootData;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

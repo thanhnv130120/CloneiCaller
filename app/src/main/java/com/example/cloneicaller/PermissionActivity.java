@@ -22,7 +22,6 @@ import com.example.cloneicaller.databinding.DialogRequestPermissionBinding;
 public class PermissionActivity extends AppCompatActivity {
 
     ActivityPermissionBinding binding;
-    private Button btnPermisson;
 
     private static final int REQUEST_CALL = 1;
     private static final int REQUEST_CONTACTS = 2;

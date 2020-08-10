@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.example.cloneicaller.Models.DateItem;
 import com.example.cloneicaller.Models.GeneralItem;
 import com.example.cloneicaller.PermissionActivity;
 import com.example.cloneicaller.R;
+import com.example.cloneicaller.SwipeHelper;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
 import com.example.cloneicaller.databinding.FragmentHistoryBinding;
 
@@ -80,6 +82,19 @@ public class FragmentListHistory extends Fragment {
 
         ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);
         binding.rcListHistory.setAdapter(listHistoryAdapter);
+
+        SwipeHelper swipeHelper = new SwipeHelper(getContext(), binding.rcListHistory) {
+            @Override
+            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+                underlayButtons.add(new SwipeHelper.UnderlayButton("CHẶN", 1, Color.parseColor("#A90939"), new SwipeHelper.UnderlayButtonClickListener() {
+                    @Override
+                    public void onClick(int pos) {
+                        Toast.makeText(getContext(), "ABC", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                ));
+            }
+        };
 
         return view;
     }

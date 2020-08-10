@@ -2,6 +2,7 @@ package com.example.cloneicaller;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.BlockedNumberContract;
 import android.telecom.TelecomManager;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.example.cloneicaller.call.ITelephony;
 import java.lang.reflect.Method;
 
 public class CallStateReceiver extends BroadcastReceiver {
+
     ITelephony iTelephony;
     private static final String TAG = null;
     public static String incommingNumber;
@@ -112,6 +115,39 @@ public class CallStateReceiver extends BroadcastReceiver {
 //        }
     //}
 
+    public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+    public static String incomingNumber = "";
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        Log.e("AAAA", "state");
+        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+            Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
+            Log.e("AAAA", "state: " + incomingNumber);
+            Intent intent1 = new Intent(context, DialogBeforeCallActivity.class);
+            context.startService(intent1);
+            if ((incomingNumber != null) && incomingNumber.equals("6505551212")) {
+                disconnectCall();
+            }
+        }
+
+        //Outgoing call detect
+        else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+            Log.e("ABC", "started");
+            Intent intent1 = new Intent(context, DialogBeforeCallActivity.class);
+            context.startService(intent1);
+        } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+            Log.e("ABC", "ended");
+            Intent i = new Intent(context, DialogOutgoingActivity.class);
+            context.startService(i);
+            DialogBeforeCallActivity.removeView();
+        }
+
+        checkPermission(context);
+
     public void blockedcall(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             Cursor c = context.getContentResolver().query(BlockedNumberContract.BlockedNumbers.CONTENT_URI,
@@ -124,6 +160,7 @@ public class CallStateReceiver extends BroadcastReceiver {
             context.getContentResolver().delete(uri, null, null);
         }
     }
+
     public static void endCall(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             ITelephony telephonyService;
@@ -142,6 +179,19 @@ public class CallStateReceiver extends BroadcastReceiver {
                 tm.endCall();
         }
     }
+
+    public void checkPermission(Context context) {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(context)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + context.getPackageName()));
+                ((Activity) context).startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            }
+        } else {
+            context.startService(new Intent(context, DialogBeforeCallActivity.class));
+        }
+    }
+
     public void disconnectCall() {
         try {
 
