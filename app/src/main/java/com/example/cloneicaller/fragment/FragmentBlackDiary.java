@@ -1,5 +1,6 @@
 package com.example.cloneicaller.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,13 +49,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter.BlockerItemListener, AppConstants {
-    //CallStateReceiver blockUnknownReceiver;
     FragmentBlackDiaryBinding binding;
     SharedPreferences preferencesBlockCall;
-    SharedPreferences preferencesBlockLier;
+    SharedPreferences preferencesLie;
     SharedPreferences preferencesBlockAdvertise;
+    SharedPreferences preferencesBlockForeign;
     private String number;
     private List<BlockerPersonItem>items;
+    BlockItemDatabase database;
+    private BlockerPersonItem blockerPersonItem;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,41 +67,21 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         return view;
 
     }
-    public static void endCall(Context context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            ITelephony telephonyService;
-            try {
-                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                Method m = tm.getClass().getDeclaredMethod("getITelephony");
-
-                m.setAccessible(true);
-                telephonyService = (ITelephony) m.invoke(tm);
-                telephonyService.endCall();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-            tm.endCall();
-        }
-    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
  //       String number = CallStateReceiver.incommingNumber;
 //        Toast.makeText(getContext(),"FragmentBlack"+number,Toast.LENGTH_LONG).show();
 //        Log.e("FragmentBlack","has call:"+number);
-        preferencesBlockLier = getContext().getSharedPreferences("blockLierCall",Context.MODE_PRIVATE);
+        //Log.e("FragmentBlack",String.valueOf(Common.notForeignNumber("84836918988")));
+        preferencesLie = getContext().getSharedPreferences("blockLieCall",Context.MODE_PRIVATE);
         preferencesBlockAdvertise = getContext().getSharedPreferences("blockAdvertiseCall",Context.MODE_PRIVATE);
         preferencesBlockCall = getContext().getSharedPreferences("blockUnknownCall",Context.MODE_PRIVATE);
+        preferencesBlockForeign = getContext().getSharedPreferences("blockForeign",Context.MODE_PRIVATE);
         binding.swUnknown.setChecked(preferencesBlockCall.getBoolean("checked",false));
-        binding.swLieOwe.setChecked(preferencesBlockLier.getBoolean("checked",false));
+        binding.swLieOwe.setChecked(preferencesLie.getBoolean("checked1",false));
         binding.swAdvertise.setChecked(preferencesBlockAdvertise.getBoolean("checked",false));
-
-        BlockItemDatabase database = Room.databaseBuilder(getContext().getApplicationContext(),BlockItemDatabase.class,
-                "blockItems")
-                .allowMainThreadQueries()
-                .build();
+        binding.swNation.setChecked(preferencesBlockForeign.getBoolean("checked",false));
         binding.btnFloatingAddToBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +92,20 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         binding.btnUpdateListBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            }
+        });
+        binding.swLieOwe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (binding.swLieOwe.isChecked()){
+                    SharedPreferences.Editor editor = preferencesLie.edit();
+                    editor.putBoolean("checked1",true);
+                    editor.commit();
+                }else if(!binding.swLieOwe.isChecked()){
+                    SharedPreferences.Editor editor = preferencesLie.edit();
+                    editor.remove("checked1");
+                    editor.commit();
+                }
             }
         });
         binding.swUnknown.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +120,11 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
                     editor.remove("checked");
                     editor.commit();
                 }
+            }
+        });
+        binding.swAdvertise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (binding.swAdvertise.isChecked()){
                     SharedPreferences.Editor editor = preferencesBlockAdvertise.edit();
                     editor.putBoolean("checked",true);
@@ -132,17 +134,29 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
                     editor.remove("checked");
                     editor.commit();
                 }
-                if (binding.swLieOwe.isChecked()){
-                    SharedPreferences.Editor editor = preferencesBlockLier.edit();
+            }
+        });
+        binding.swNation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (binding.swNation.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockForeign.edit();
                     editor.putBoolean("checked",true);
                     editor.commit();
-                }else if(!binding.swLieOwe.isChecked()){
-                    SharedPreferences.Editor editor = preferencesBlockLier.edit();
+                }else if(!binding.swNation.isChecked()){
+                    SharedPreferences.Editor editor = preferencesBlockForeign.edit();
                     editor.remove("checked");
                     editor.commit();
                 }
             }
         });
+         database = Room.databaseBuilder(getContext().getApplicationContext(),BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        updateTask();
+    }
+    public void updateTask(){
         items = database.getItemDao().getItems();
         if (items.size()>1) {
             items = Common.sortBlockList(items);
@@ -152,8 +166,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         binding.rcBlockList.setAdapter(adapter);
         adapter.setListener(this);
     }
-
-        private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String state =  intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -176,6 +189,11 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
                     if (Common.checkInside(incomingNumber,Common.checkAdvertise(blockerItem))&&binding.swAdvertise.isChecked()){
                         Log.e("Broadcast","Advertised?Checked!");
                         Toast.makeText(getContext(),"Advertised?Checked !",Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if (Common.notForeignNumber(incomingNumber)==false){
+                        Log.e("Broadcast","Foreign number?Checked!");
+                        Toast.makeText(getContext(),"Foreign number?Checked!",Toast.LENGTH_LONG).show();
                         CallStateReceiver.endCall(context);
                     }
                 }
@@ -215,14 +233,35 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     public void onClickBlocker(int position) {
         Intent intent = new Intent(getActivity(), DetailContact.class);
 //        Bundle bundle = new Bundle();
-        intent.putExtra(INTENT_NAME,items.get(position).getName());
-        intent.putExtra(INTENT_NUMBER,items.get(position).getNumber());
+        blockerPersonItem = items.get(position);
+        intent.putExtra(INTENT_NAME,blockerPersonItem.getName());
+        intent.putExtra(INTENT_NUMBER,blockerPersonItem.getNumber());
         intent.putExtra(INTENT_BLOCK,true);
-        intent.putExtra(INTENT_BLOCK_TYPE,items.get(position).getType());
+        intent.putExtra(INTENT_BLOCK_TYPE,blockerPersonItem.getType());
+        intent.putExtra(INTENT_IMAGE,blockerPersonItem.getType());
+        intent.putExtra(INTENT_TYPE_ARRANGE,blockerPersonItem.getTypeArrange());
 //        bundle.putString(INTENT_NAME,items.get(position).getName());
 //        bundle.putString(INTENT_NUMBER,items.get(position).getNumber());
 //        bundle.putEx;
 //        intent.putExtras(bundle);
-        startActivity(intent);
+        startActivityForResult(intent,REQUEST_CODE);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE&&resultCode== Activity.RESULT_OK){
+//            if (data.hasExtra(INTENT_DELETE)){
+//                Log.e("FragmentBlackDiary","delete accepted!");
+//                BlockerPersonItem blockerPersonItem = new BlockerPersonItem(
+//                        data.getStringExtra(INTENT_NAME),
+//                        data.getStringExtra(INTENT_BLOCK_TYPE),
+//                        data.getStringExtra(INTENT_NUMBER),
+//                        data.getIntExtra(INTENT_IMAGE,1),
+//                        data.getIntExtra(INTENT_TYPE_ARRANGE,-1));
+//                database.getItemDao().deleteAll(blockerPersonItem);
+            database.getItemDao().deleteAll(blockerPersonItem);
+            updateTask();
+            }
+        }
 }

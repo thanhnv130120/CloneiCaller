@@ -9,6 +9,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 
+import androidx.room.Room;
+
+import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.example.cloneicaller.item.ItemPerson;
 
@@ -31,6 +34,27 @@ public class Common {
             }
         });
         return people;
+    }
+    public static void insertAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().insertAll(blockerPersonItem);
+    }
+    public static void deleteAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().deleteAll(blockerPersonItem);
+    }
+    public static void updateAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().updateAll(blockerPersonItem);
     }
     public static List<BlockerPersonItem> sortBlockList (List<BlockerPersonItem>people){
         Collections.sort(people, new Comparator<BlockerPersonItem>() {
@@ -231,4 +255,25 @@ public class Common {
         }
         return identified;
     }
+    public static boolean notForeignNumber(String number) {
+        boolean check;
+        check = false;
+        char a = number.charAt(0);
+        char b = number.charAt(1);
+        char c = number.charAt(2);
+        if (Character.toString(a).equals("8")){
+            if (Character.toString(b).equals("4")){
+                check = true;
+            }
+        }else if (Character.toString(a).equals("0")){
+            check = true;
+        }else if (Character.toString(a).equals("+")){
+            if(Character.toString(b).equals("8")&&Character.toString(c).equals("4")){
+                check = true;
+            }
+        }
+        return check;
+    }
+//        return number.charAt(0) + "" + number.charAt(1);
+//    }
 }
