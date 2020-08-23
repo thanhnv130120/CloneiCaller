@@ -197,13 +197,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         DataModel r = gson.fromJson(jsonPhone, DataModel.class);
 
-        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
-        if (result.length > 0) {
-            Log.e("abc", "thanh cong");
-            Log.e("ccc", result.length + "");
-        } else {
-            Log.e("cba", "ngu");
-        }
+//        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
+//        if (result.length > 0) {
+//            Log.e("abc", "thanh cong");
+//            Log.e("ccc", result.length + "");
+//        } else {
+//            Log.e("cba", "ngu");
+//        }
 
         List<DataModel.DataBeanX.DataBean> dataBeanList = phoneDB.phoneDBDAO().getAll();
         Log.e("abc", dataBeanList.size() + "");

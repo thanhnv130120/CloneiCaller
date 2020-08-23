@@ -135,18 +135,14 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
 //        bundle.putString(INTENT_NAME,people.get(position).getName());
 //        bundle.putString(INTENT_NUMBER,people.get(position).getNumber());
 //        intent.putExtras(bundle);
-        intent.putExtra(INTENT_NAME,people.get(position).getName());
-        intent.putExtra(INTENT_NUMBER,people.get(position).getNumber());
+        ItemPerson itemPerson = people.get(position);
+        intent.putExtra(INTENT_NAME,itemPerson.getName());
+        intent.putExtra(INTENT_NUMBER,itemPerson.getNumber());
         intent.putExtra(INTENT_BLOCK,false);
         intent.putExtra(INTENT_BLOCK_TYPE,"");
-      
-        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("name", people.get(position).getName());
-        bundle.putString("number", people.get(position).getNumber());
-        intent.putExtras(bundle);
+        intent.putExtra(INTENT_TYPE_ARRANGE,itemPerson.getViewType());
         startActivity(intent);
+        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
     }
 
     public interface FragmentDiaryListner {

@@ -32,36 +32,36 @@ public class CallStateReceiver extends BroadcastReceiver {
     private static final String TAG = null;
     public static String incommingNumber;
     String incno1= "9916090941";
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-        Log.e("AAAA", "state");
-        incommingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-            //Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
-            Log.e("AAAA", "state: " + incommingNumber);
-//            if ((incomingNumber != null) && incomingNumber.equals("0836918988")) {
-////                telephonyService.silentRinger();
-////                telephonyService.endCall();
-//                Log.e("HANG UP", incomingNumber);
-//                endCall(context);
-////                disconnectCall();
-//                disblock(context,intent);
-//                TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-//                try {
-//                    Class clazz = Class.forName(telephonyManager.getClass().getName());
-//                    Method method = clazz.getDeclaredMethod("getITelephony");
-//                    method.setAccessible(true);
-//                    Log.e("AAAA","show block log");
-//                    ITelephony telephonyService = (ITelephony) method.invoke(telephonyManager);
-//                    telephonyService.endCall();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-            } else {
-                Log.e("AAAA", "Wrong state");
-            }
-        }
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+//        Log.e("AAAA", "state");
+//        incommingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+//        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+//            //Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
+//            Log.e("AAAA", "state: " + incommingNumber);
+////            if ((incomingNumber != null) && incomingNumber.equals("0836918988")) {
+//////                telephonyService.silentRinger();
+//////                telephonyService.endCall();
+////                Log.e("HANG UP", incomingNumber);
+////                endCall(context);
+//////                disconnectCall();
+////                disblock(context,intent);
+////                TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+////                try {
+////                    Class clazz = Class.forName(telephonyManager.getClass().getName());
+////                    Method method = clazz.getDeclaredMethod("getITelephony");
+////                    method.setAccessible(true);
+////                    Log.e("AAAA","show block log");
+////                    ITelephony telephonyService = (ITelephony) method.invoke(telephonyManager);
+////                    telephonyService.endCall();
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                }
+//            } else {
+//                Log.e("AAAA", "Wrong state");
+//            }
+//        }
         //        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 //        try {
 //            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
@@ -147,7 +147,7 @@ public class CallStateReceiver extends BroadcastReceiver {
         }
 
         checkPermission(context);
-
+    }
     public void blockedcall(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             Cursor c = context.getContentResolver().query(BlockedNumberContract.BlockedNumbers.CONTENT_URI,

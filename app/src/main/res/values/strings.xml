@@ -25,6 +25,8 @@
     <string name="default_name">default person</string>
     <string name="default_number">default phone number</string>
     <string name="call">GỌI</string>
+    <string name="report_block">BÁO CÁO VÀ CHẶN</string>
+    <string name="choose">Lựa chọn:</string>
     <string name="message">NHẮN TIN</string>
     <string name="block">CHẶN</string>
     <string name="save_contact">LƯU</string>

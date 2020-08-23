@@ -21,7 +21,7 @@ public interface PhoneDBDAO {
     @Insert
     long[] insertAll(List<DataModel.DataBeanX.DataBean> dataBeanList);
 
-    @Update
-    long[] updatePhone(List<DataModel.DataBeanX.DataBean> dataBeanList);
+//    @Update
+//    long[] updatePhone(List<DataModel.DataBeanX.DataBean> dataBeanList);
     
 }
