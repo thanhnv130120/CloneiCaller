@@ -7,6 +7,7 @@ import androidx.room.Room;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,15 +15,20 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.ActivityDetailContactBinding;
 import com.example.cloneicaller.item.BlockerPersonItem;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.Pulse;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,7 +49,8 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
     private CircleImageView imgWhiteService;
     private CircleImageView imgWhiteLoan;
     private CircleImageView imgWhiteEstate;
-
+    private EditText edtRenameBlock;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,14 +121,24 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
             public void onClick(View v) {
                 Intent intent = getIntent();
                 if (intent.getBooleanExtra(INTENT_BLOCK,false)==false ){
-                    BottomSheetDialog dialog = new BottomSheetDialog(
-                            DetailContact.this,R.style.BottomSheetDialogTheme
-                    );
+//                    BottomSheetDialog dialog = new BottomSheetDialog(
+//                            DetailContact.this,R.style.BottomSheetDialogTheme
+//                    );
+//                    View bottomView = LayoutInflater.from(getApplicationContext()).inflate(
+//                            R.layout.dialog_block_report,
+//                            (LinearLayout)findViewById(R.id.bottom_sheet_container)
+//                    );
+                    Dialog dialog = new Dialog(v.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+//                    View bottomView = dialog.setContentView(R.layout.dialog_block_report);
                     View bottomView = LayoutInflater.from(getApplicationContext()).inflate(
                             R.layout.dialog_block_report,
                             (LinearLayout)findViewById(R.id.bottom_sheet_container)
                     );
                     tvName = bottomView.findViewById(R.id.tv_name_report);
+                    progressBar = (ProgressBar)bottomView.findViewById(R.id.spin_kit);
+                    Sprite pulse = new Pulse();
+                    progressBar.setIndeterminateDrawable(pulse);
+                    progressBar.setVisibility(View.GONE);
                     tvNumber = bottomView.findViewById(R.id.tv_phone_report);
                     bottomView.findViewById(R.id.tv_nation_report);
                     bottomView.findViewById(R.id.tv_network_report);
@@ -131,6 +148,17 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                     imgWhiteOther = bottomView.findViewById(R.id.img_white_other);
                     imgWhiteService = bottomView.findViewById(R.id.img_white_service_finance);
                     imgWhiteScam = bottomView.findViewById(R.id.img_white_scam);
+                    edtRenameBlock = bottomView.findViewById(R.id.edt_name_edit);
+                    edtRenameBlock.setVisibility(View.GONE);
+
+                    bottomView.findViewById(R.id.img_cancel).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            type = "";
+                        }
+                    });
+
                     imgWhiteAdvertise.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -148,6 +176,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_block_setting_advertising;
                             type = "QUẢNG CÁO";
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     imgWhiteEstate.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +198,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_real_estate;
                             type = "BẤT ĐỘNG SẢN";
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     imgWhiteLoan.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +220,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_loan_collection;
                             type = "ĐÒI NỢ";
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     imgWhiteOther.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +242,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_other;
                             type = "KHÁC";
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     imgWhiteService.setOnClickListener(new View.OnClickListener() {
@@ -224,6 +264,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_financial_service;
                             type = "CHO VAY";
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     imgWhiteScam.setOnClickListener(new View.OnClickListener() {
@@ -243,6 +286,9 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                             imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_scam;
                             type = "LỪA ĐẢO";
+                            progressBar.setVisibility(View.GONE);
+                            edtRenameBlock.setVisibility(View.VISIBLE);
+                            edtRenameBlock.setText(name);
                         }
                     });
                     tvName.setText(name);
@@ -250,10 +296,21 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                     bottomView.findViewById(R.id.btn_report).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            BlockerPersonItem blockerPersonItem = new BlockerPersonItem(name,type,number,image,alphabetCheck);
-                            Common.insertAll(blockerPersonItem,getApplicationContext());
-                            finish();
-                            dialog.dismiss();
+                            if (type.equals("")) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                Toast.makeText(v.getContext(),"Please select kind of spam",Toast.LENGTH_LONG).show();
+                                return;
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                if (edtRenameBlock.getText() != null) {
+                                    String rename = edtRenameBlock.getText().toString();
+                                    name = rename;
+                                }
+                                BlockerPersonItem blockerPersonItem = new BlockerPersonItem(name, type, number, image, alphabetCheck);
+                                Common.insertAll(blockerPersonItem, getApplicationContext());
+                                finish();
+                                dialog.dismiss();
+                            }
                         }
                     });
                     dialog.setContentView(bottomView);
