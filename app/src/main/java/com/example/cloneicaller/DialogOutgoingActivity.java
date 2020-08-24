@@ -16,7 +16,7 @@ import com.example.cloneicaller.databinding.ActivityDialogOutgoingBinding;
 
 public class DialogOutgoingActivity extends Service {
     ActivityDialogOutgoingBinding binding;
-    WindowManager windowManager;
+//    WindowManager windowManager;
     GroupView groupView;
     WindowManager.LayoutParams winLayoutParams;
 
@@ -32,18 +32,18 @@ public class DialogOutgoingActivity extends Service {
         return START_STICKY;
     }
     private void initView() {
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        //windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         createDialog();
         showDialog();
     }
 
     private void showDialog() {
-        windowManager.addView(groupView, winLayoutParams);
+        //windowManager.addView(groupView, winLayoutParams);
     }
 
     public void removeView() {
-        windowManager.removeView(groupView);
+      //  windowManager.removeView(groupView);
     }
 
     private void createDialog() {
@@ -79,7 +79,7 @@ public class DialogOutgoingActivity extends Service {
                     case MotionEvent.ACTION_MOVE:
                         winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
                         winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
-                        windowManager.updateViewLayout(view, winLayoutParams);
+                       // windowManager.updateViewLayout(view, winLayoutParams);
                         break;
                 }
 

@@ -6,46 +6,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.telecom.TelecomManager;
+import android.telecom.Call;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.cloneicaller.BlockActivity;
 import com.example.cloneicaller.CallStateReceiver;
 import com.example.cloneicaller.DetailContact;
-import com.example.cloneicaller.HomeActivity;
-import com.example.cloneicaller.MainActivity;
-import com.example.cloneicaller.R;
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.adapter.BlockListItemAdapter;
-import com.example.cloneicaller.call.ITelephony;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.FragmentBlackDiaryBinding;
 import com.example.cloneicaller.item.BlockerPersonItem;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter.BlockerItemListener, AppConstants {
@@ -57,7 +41,9 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     private String number;
     private List<BlockerPersonItem>items;
     BlockItemDatabase database;
+    private CallStateReceiver blockUnknownReceiver;
     private BlockerPersonItem blockerPersonItem;
+    private final int REQUEST_READ_PHONE_STATE = 101;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -166,41 +152,40 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         binding.rcBlockList.setAdapter(adapter);
         adapter.setListener(this);
     }
-    private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String state =  intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-            Log.e("AAAA", "state");
-            String incomingNumber =intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            List<BlockerPersonItem>blockerItem = Common.checkRealDialer(items);
-            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                Toast.makeText(getContext(),"The incoming number is : "+incomingNumber,Toast.LENGTH_LONG).show();
-                if ((incomingNumber != null)) {
-                    if(!Common.checkUnknown(incomingNumber,context)&& binding.swUnknown.isChecked()){
-                        Log.e("Broadcast","Unknown?Checked!");
-                        Toast.makeText(getContext(),"Unknown?Checked !",Toast.LENGTH_LONG).show();
-                        CallStateReceiver.endCall(context);
-                    }
-                    if(Common.checkInside(incomingNumber,Common.checkLier(blockerItem))&&binding.swLieOwe.isChecked()){
-                        Log.e("Broadcast","Lie or Owe?Checked!");
-                        Toast.makeText(getContext(),"Lie or Owe?Checked !",Toast.LENGTH_LONG).show();
-                        CallStateReceiver.endCall(context);
-                    }
-                    if (Common.checkInside(incomingNumber,Common.checkAdvertise(blockerItem))&&binding.swAdvertise.isChecked()){
-                        Log.e("Broadcast","Advertised?Checked!");
-                        Toast.makeText(getContext(),"Advertised?Checked !",Toast.LENGTH_LONG).show();
-                        CallStateReceiver.endCall(context);
-                    }
-                    if (Common.notForeignNumber(incomingNumber)==false){
-                        Log.e("Broadcast","Foreign number?Checked!");
-                        Toast.makeText(getContext(),"Foreign number?Checked!",Toast.LENGTH_LONG).show();
-                        CallStateReceiver.endCall(context);
-                    }
-                }
-//                number = incomingNumber;
-            }
-        }
-    };
+//    private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String state =  intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+//            Log.e("AAAA", "state");
+//            String incomingNumber =intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+//            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+//                List<BlockerPersonItem>blockerItem = Common.checkRealDialer(items);
+//                if ((incomingNumber != null)) {
+//                    if(!Common.checkUnknown(incomingNumber,getContext())&& binding.swUnknown.isChecked()){
+//                        Log.e("Broadcast","Unknown?Checked!");
+//                        Toast.makeText(getContext(),"Unknown?Checked !",Toast.LENGTH_LONG).show();
+//                        CallStateReceiver.endCall(getContext());
+//                    }
+//                    if(Common.checkInside(incomingNumber,Common.checkLier(blockerItem))&&binding.swLieOwe.isChecked()){
+//                        Log.e("Broadcast","Lie or Owe?Checked!");
+//                        Toast.makeText(getContext(),"Lie or Owe?Checked !",Toast.LENGTH_LONG).show();
+//                        CallStateReceiver.endCall(getContext());
+//                    }
+//                    if (Common.checkInside(incomingNumber,Common.checkAdvertise(blockerItem))&&binding.swAdvertise.isChecked()){
+//                        Log.e("Broadcast","Advertised?Checked!");
+//                        Toast.makeText(getContext(),"Advertised?Checked !",Toast.LENGTH_LONG).show();
+//                        CallStateReceiver.endCall(getContext());
+//                    }
+//                    if (Common.notForeignNumber(incomingNumber)==false){
+//                        Log.e("Broadcast","Foreign number?Checked!");
+//                        Toast.makeText(getContext(),"Foreign number?Checked!",Toast.LENGTH_LONG).show();
+//                        CallStateReceiver.endCall(getContext());
+//                    }
+//                }
+//            }
+//        }
+//    };
+
     @Override
     public void onStart() {
         super.onStart();
@@ -210,7 +195,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
 //                endCall(getContext());
 ////            }
 //        }
-       // blockUnknownReceiver = new CallStateReceiver();
+        blockUnknownReceiver = new CallStateReceiver();
         IntentFilter intentFilter = new IntentFilter("android.intent.action.PHONE_STATE");
         intentFilter.setPriority(100);
         getActivity().registerReceiver(blockUnknownReceiver,intentFilter);

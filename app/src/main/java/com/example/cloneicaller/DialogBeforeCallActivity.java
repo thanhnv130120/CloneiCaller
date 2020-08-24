@@ -42,7 +42,7 @@ public class DialogBeforeCallActivity extends Service {
     }
 
     private void showDialog() {
-        windowManager.addView(groupView, winLayoutParams);
+//        windowManager.addView(groupView, winLayoutParams);
     }
 
     public static void removeView() {

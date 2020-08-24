@@ -48,7 +48,7 @@ import java.util.Set;
 public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
-    private ArrayList<ItemPerson>people = new ArrayList<>();
+    private ArrayList<ItemPerson> people = new ArrayList<>();
     private FragmentDiaryListner listener;
 
     FragmentDiaryBinding binding;
@@ -84,14 +84,17 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     }
 
     private void fetchContact() {
-
-        people = Common.resolverArrayList(null, getContext());
-        people = Common.sortList(people);
-        people = Common.addAlphabet(people);
-        listener.onPutListDiarySent(people);
-        ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(), people);
-        binding.rclDiary.setAdapter(adapter);
-        adapter.setListener(this);
+        try {
+            people = Common.resolverArrayList(null, getContext());
+            people = Common.sortList(people);
+            people = Common.addAlphabet(people);
+            listener.onPutListDiarySent(people);
+            ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(), people);
+            binding.rclDiary.setAdapter(adapter);
+            adapter.setListener(this);
+        } catch (Exception e) {
+            Log.e("abc", e.getMessage());
+        }
     }
 
     private ArrayList<String> sortArrayList(ArrayList<String> item) {
@@ -136,11 +139,11 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
 //        bundle.putString(INTENT_NUMBER,people.get(position).getNumber());
 //        intent.putExtras(bundle);
         ItemPerson itemPerson = people.get(position);
-        intent.putExtra(INTENT_NAME,itemPerson.getName());
-        intent.putExtra(INTENT_NUMBER,itemPerson.getNumber());
-        intent.putExtra(INTENT_BLOCK,false);
-        intent.putExtra(INTENT_BLOCK_TYPE,"");
-        intent.putExtra(INTENT_TYPE_ARRANGE,itemPerson.getViewType());
+        intent.putExtra(INTENT_NAME, itemPerson.getName());
+        intent.putExtra(INTENT_NUMBER, itemPerson.getNumber());
+        intent.putExtra(INTENT_BLOCK, false);
+        intent.putExtra(INTENT_BLOCK_TYPE, "");
+        intent.putExtra(INTENT_TYPE_ARRANGE, itemPerson.getViewType());
         startActivity(intent);
         //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
     }
