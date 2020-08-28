@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +27,7 @@ import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.ActivityDetailContactBinding;
+import com.example.cloneicaller.databinding.DialogBlockReportBinding;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.Pulse;
@@ -71,6 +73,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
             binding.lnearSave.setVisibility(View.GONE);
             binding.imgEditDetailContact.setVisibility(View.VISIBLE);
             binding.rltBlockType.setVisibility(View.GONE);
+            binding.imgDetailContactBlock.setImageResource(R.drawable.ic_block_white);
             binding.tvStatus.setText("CHẶN");
         }else {
             binding.imgPersonDetail.setBorderColorResource(R.color.colorRed);
@@ -79,6 +82,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
             binding.lnearSave.setVisibility(View.VISIBLE);
             binding.rltBlockType.setVisibility(View.VISIBLE);
             binding.tvBlockType.setText(getIntent().getStringExtra(INTENT_BLOCK_TYPE));
+            binding.imgDetailContactBlock.setImageResource(R.drawable.ic_unblock);
             binding.tvStatus.setText("BỎ CHẶN");
         }
 
@@ -116,7 +120,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                 //setResult(Activity.RESULT_CANCELED);
             }
         });
-        binding.imgDetailContactBlock.setOnClickListener(new View.OnClickListener() {
+        binding.lnBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
@@ -130,28 +134,15 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
 //                    );
                     Dialog dialog = new Dialog(v.getContext(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
 //                    View bottomView = dialog.setContentView(R.layout.dialog_block_report);
-                    View bottomView = LayoutInflater.from(getApplicationContext()).inflate(
-                            R.layout.dialog_block_report,
-                            (LinearLayout)findViewById(R.id.bottom_sheet_container)
-                    );
-                    tvName = bottomView.findViewById(R.id.tv_name_report);
-                    progressBar = (ProgressBar)bottomView.findViewById(R.id.spin_kit);
+                    DialogBlockReportBinding binding;
+                    binding = DialogBlockReportBinding.inflate(getLayoutInflater());
+                    View bottomView = binding.getRoot();
                     Sprite pulse = new Pulse();
-                    progressBar.setIndeterminateDrawable(pulse);
-                    progressBar.setVisibility(View.GONE);
-                    tvNumber = bottomView.findViewById(R.id.tv_phone_report);
-                    bottomView.findViewById(R.id.tv_nation_report);
-                    bottomView.findViewById(R.id.tv_network_report);
-                    imgWhiteAdvertise = bottomView.findViewById(R.id.img_white_advertise);
-                    imgWhiteEstate = bottomView.findViewById(R.id.img_white_estate);
-                    imgWhiteLoan = bottomView.findViewById(R.id.img_white_loan);
-                    imgWhiteOther = bottomView.findViewById(R.id.img_white_other);
-                    imgWhiteService = bottomView.findViewById(R.id.img_white_service_finance);
-                    imgWhiteScam = bottomView.findViewById(R.id.img_white_scam);
-                    edtRenameBlock = bottomView.findViewById(R.id.edt_name_edit);
-                    edtRenameBlock.setVisibility(View.GONE);
+                    binding.spinKit.setIndeterminateDrawable(pulse);
+                    binding.spinKit.setVisibility(View.GONE);
+                    binding.edtNameEdit.setVisibility(View.GONE);
 
-                    bottomView.findViewById(R.id.img_cancel).setOnClickListener(new View.OnClickListener() {
+                    binding.imgCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             dialog.dismiss();
@@ -159,151 +150,151 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                         }
                     });
 
-                    imgWhiteAdvertise.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteAdvertise.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_block_setting_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteOther.setImageResource(R.drawable.ic_white_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteService.setImageResource(R.drawable.ic_white_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_block_setting_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_white_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_white_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_block_setting_advertising;
                             type = "QUẢNG CÁO";
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setText(name);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    imgWhiteEstate.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteEstate.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteEstate.setImageResource(R.drawable.ic_red_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteOther.setImageResource(R.drawable.ic_white_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteService.setImageResource(R.drawable.ic_white_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_red_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_white_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_white_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_real_estate;
                             type = "BẤT ĐỘNG SẢN";
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            edtRenameBlock.setText(name);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    imgWhiteLoan.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteLoan.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteLoan.setImageResource(R.drawable.ic_red_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteOther.setImageResource(R.drawable.ic_white_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteService.setImageResource(R.drawable.ic_white_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_red_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_white_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_white_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_loan_collection;
                             type = "ĐÒI NỢ";
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            edtRenameBlock.setText(name);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    imgWhiteOther.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteOther.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteOther.setImageResource(R.drawable.ic_red_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteService.setImageResource(R.drawable.ic_white_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_red_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_white_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_other;
                             type = "KHÁC";
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            edtRenameBlock.setText(name);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    imgWhiteService.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteServiceFinance.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteService.setImageResource(R.drawable.ic_red_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteOther.setImageResource(R.drawable.ic_white_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_red_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_white_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_white_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_financial_service;
                             type = "CHO VAY";
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            edtRenameBlock.setText(name);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    imgWhiteScam.setOnClickListener(new View.OnClickListener() {
+                    binding.imgWhiteScam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            imgWhiteScam.setImageResource(R.drawable.ic_red_scam);
-                            imgWhiteScam.setBackgroundResource(R.drawable.background_circular);
-                            imgWhiteService.setImageResource(R.drawable.ic_white_financial_service);
-                            imgWhiteService.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteOther.setImageResource(R.drawable.ic_white_other);
-                            imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
-                            imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
-                            imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
-                            imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
-                            imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteScam.setImageResource(R.drawable.ic_red_scam);
+                            binding.imgWhiteScam.setBackgroundResource(R.drawable.background_circular);
+                            binding.imgWhiteServiceFinance.setImageResource(R.drawable.ic_white_financial_service);
+                            binding.imgWhiteServiceFinance.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteOther.setImageResource(R.drawable.ic_white_other);
+                            binding.imgWhiteOther.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteLoan.setImageResource(R.drawable.ic_white_loan_collection);
+                            binding.imgWhiteLoan.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteEstate.setImageResource(R.drawable.ic_white_real_estate);
+                            binding.imgWhiteEstate.setBackgroundResource(R.drawable.background_circular_red);
+                            binding.imgWhiteAdvertise.setImageResource(R.drawable.ic_white_advertising);
+                            binding.imgWhiteAdvertise.setBackgroundResource(R.drawable.background_circular_red);
                             image = R.drawable.ic_red_scam;
                             type = "LỪA ĐẢO";
-                            progressBar.setVisibility(View.GONE);
-                            edtRenameBlock.setVisibility(View.VISIBLE);
-                            edtRenameBlock.setText(name);
+                            binding.spinKit.setVisibility(View.GONE);
+                            binding.edtNameEdit.setVisibility(View.VISIBLE);
+                            binding.edtNameEdit.setText(name);
                         }
                     });
-                    tvName.setText(name);
-                    tvNumber.setText(number);
-                    bottomView.findViewById(R.id.btn_report).setOnClickListener(new View.OnClickListener() {
+                    binding.tvNameReport.setText(name);
+                    binding.tvPhoneReport.setText(number);
+                    binding.btnReport.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (type.equals("")) {
-                                progressBar.setVisibility(View.VISIBLE);
+                            if (type.equals("")||type.equals(null)) {
+                                binding.spinKit.setVisibility(View.VISIBLE);
                                 Toast.makeText(v.getContext(),"Please select kind of spam",Toast.LENGTH_LONG).show();
                                 return;
                             } else {
-                                progressBar.setVisibility(View.GONE);
-                                if (edtRenameBlock.getText() != null) {
-                                    String rename = edtRenameBlock.getText().toString();
+                                binding.spinKit.setVisibility(View.GONE);
+                                if (binding.edtNameEdit.getText() != null) {
+                                    String rename = binding.edtNameEdit.getText().toString();
                                     name = rename;
                                 }
                                 BlockerPersonItem blockerPersonItem = new BlockerPersonItem(name, type, number, image, alphabetCheck);
@@ -314,6 +305,7 @@ public class DetailContact extends AppCompatActivity implements AppConstants{
                         }
                     });
                     dialog.setContentView(bottomView);
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     dialog.show();
                 }else {
                     setResult(Activity.RESULT_OK);

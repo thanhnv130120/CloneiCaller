@@ -25,9 +25,7 @@ import com.example.cloneicaller.databinding.FragmentCallKeyboardBinding;
 import java.util.ArrayList;
 
 public class FragmentCallKeyboard extends Fragment implements View.OnClickListener {
-//    private TextView edtShowNumb;
-//    private Button btnNum1, btnNum2, btnNum3,btnNum4, btnNum5, btnNum6, btnNum7, btnNum8, btnNum9, btnNum0, btnSym1, btnSym2;
-//    private ImageView imgDelete, imgCall;
+
     private String numberDislayed = "";
 
     FragmentCallKeyboardBinding binding;

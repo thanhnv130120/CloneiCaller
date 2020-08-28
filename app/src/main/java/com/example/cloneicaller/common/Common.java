@@ -1,8 +1,9 @@
 package com.example.cloneicaller.common;
 
-import android.app.Person;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
@@ -20,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static android.icu.lang.UProperty.NAME;
+import static android.os.Build.ID;
 
 public class Common {
     public static final int VIEW_TYPE_GROUP = 0;
@@ -157,6 +161,35 @@ public class Common {
         }
         return personArrayList;
     }
+    public static void deleteContactUsingID(Context context, Cursor cursor){
+
+        ContentResolver resolver = context.getContentResolver();
+        int contactId = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Cursor cur = resolver.query(ContactsContract.RawContacts.CONTENT_URI,
+                    new String[]{ContactsContract.RawContacts._ID},
+                    ContactsContract.RawContacts.CONTACT_ID+ "=?",
+                    new String[]{String.valueOf(contactId)},null);
+            int rowId = 0;
+            if (cur.moveToFirst()){
+                rowId = cur.getInt(cur.getColumnIndex(ContactsContract.RawContacts._ID));
+            }
+            ArrayList<ContentProviderOperation>ops = new ArrayList<ContentProviderOperation>();
+            String selectPhone = ContactsContract.Data.RAW_CONTACT_ID+ "=? AND "+
+                    ContactsContract.Data.MIMETYPE+"=? AND "+
+                    ContactsContract.CommonDataKinds.Phone._ID+ "=?";
+            String []phoneArgs = new String[]{Integer.toString(rowId),
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                    ID.toString()
+            };
+            ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI).withSelection(selectPhone,phoneArgs).build());
+            try {
+                resolver.applyBatch(ContactsContract.AUTHORITY, ops);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
     public static ArrayList<String>covertToStringArray(ArrayList<ItemPerson>people){
         ArrayList<String>name = new ArrayList<>();
         for (int i = 0; i < people.size(); i++) {
@@ -276,4 +309,38 @@ public class Common {
     }
 //        return number.charAt(0) + "" + number.charAt(1);
 //    }
+    public static void deleteContact(ContentResolver resolver,String number){
+        ArrayList<ContentProviderOperation> personArrayList = new ArrayList<>();
+        String []args = new String[]{(String.valueOf(getContactID(resolver,number)))};
+        personArrayList.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI)
+                .withSelection(ContactsContract.RawContacts.CONTACT_ID+"=?",args).build());
+        try{
+            resolver.applyBatch(ContactsContract.AUTHORITY,personArrayList);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static long getContactID(ContentResolver resolver, String number) {
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
+        String[] projection ={ContactsContract.PhoneLookup._ID};
+        Cursor cursor = null;
+        try {
+            cursor = resolver.query(contactUri,projection,null,null,null);
+            if (cursor.moveToFirst()){
+                int personID = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
+                return cursor.getLong(personID);
+            }
+            return -1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if (cursor!=null){
+                cursor.close();
+                cursor = null;
+            }
+        }
+        return -1;
+    }
 }

@@ -1,11 +1,13 @@
 package com.example.cloneicaller.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.telecom.Call;
 import android.telephony.TelephonyManager;
@@ -17,20 +19,29 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.cloneicaller.BlockActivity;
 import com.example.cloneicaller.CallStateReceiver;
 import com.example.cloneicaller.DetailContact;
+import com.example.cloneicaller.R;
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.adapter.BlockListItemAdapter;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.custom.ChoosePlanViewSwipe;
+import com.example.cloneicaller.databinding.DialogCompleteUnblockedBinding;
+import com.example.cloneicaller.databinding.DialogDeleteContactBinding;
 import com.example.cloneicaller.databinding.FragmentBlackDiaryBinding;
 import com.example.cloneicaller.item.BlockerPersonItem;
 
 import java.util.List;
+
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter.BlockerItemListener, AppConstants {
     FragmentBlackDiaryBinding binding;
@@ -44,6 +55,8 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     private CallStateReceiver blockUnknownReceiver;
     private BlockerPersonItem blockerPersonItem;
     private final int REQUEST_READ_PHONE_STATE = 101;
+    ChoosePlanViewSwipe choosePlanView;
+    private BlockListItemAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,10 +69,6 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
- //       String number = CallStateReceiver.incommingNumber;
-//        Toast.makeText(getContext(),"FragmentBlack"+number,Toast.LENGTH_LONG).show();
-//        Log.e("FragmentBlack","has call:"+number);
-        //Log.e("FragmentBlack",String.valueOf(Common.notForeignNumber("84836918988")));
         preferencesLie = getContext().getSharedPreferences("blockLieCall",Context.MODE_PRIVATE);
         preferencesBlockAdvertise = getContext().getSharedPreferences("blockAdvertiseCall",Context.MODE_PRIVATE);
         preferencesBlockCall = getContext().getSharedPreferences("blockUnknownCall",Context.MODE_PRIVATE);
@@ -68,6 +77,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         binding.swLieOwe.setChecked(preferencesLie.getBoolean("checked1",false));
         binding.swAdvertise.setChecked(preferencesBlockAdvertise.getBoolean("checked",false));
         binding.swNation.setChecked(preferencesBlockForeign.getBoolean("checked",false));
+        choosePlanView = new ChoosePlanViewSwipe(getContext());
         binding.btnFloatingAddToBlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,6 +146,8 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
                 }
             }
         });
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(binding.rcBlockList);
          database = Room.databaseBuilder(getContext().getApplicationContext(),BlockItemDatabase.class,
                 "blockItems")
                 .allowMainThreadQueries()
@@ -148,10 +160,74 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
             items = Common.sortBlockList(items);
             items = Common.addAlphabetBlocker(items);
         }
-        BlockListItemAdapter adapter = new BlockListItemAdapter(items,getContext());
+        adapter = new BlockListItemAdapter(items,getContext());
         binding.rcBlockList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         adapter.setListener(this);
     }
+    BlockerPersonItem blockRequest = null;
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            switch (direction){
+                case ItemTouchHelper.LEFT:
+                    //Toast.makeText(getContext(),items.get(position).getName(),Toast.LENGTH_LONG).show();
+                    blockRequest = items.get(position);
+                    items.remove(position);
+//                    adapter.notifyItemRemoved(position);
+                    database.getItemDao().deleteAll(blockRequest);
+                    updateTask();
+                    Dialog dialog = new Dialog(getContext());
+                    DialogCompleteUnblockedBinding binding;
+                    binding = DialogCompleteUnblockedBinding.inflate(getLayoutInflater());
+                    View view1 = binding.getRoot();
+                    new Thread() {
+                        public void run() {
+                            try{
+                                Thread.sleep(2000);
+                            }
+                            catch (Exception e) {
+                                Log.e("tag", e.getMessage());
+                            }
+                            // dismiss the progress dialog
+                            dialog.dismiss();
+                        }
+                    }.start();
+                    dialog.setContentView(view1);
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    dialog.show();
+                    break;
+            }
+        }
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPurpleBG))
+                    .addSwipeLeftActionIcon(R.drawable.ic_unblock)
+//                    .addSwipeLeftLabel("Unblock")
+                    .create()
+                    .decorate();
+            View itemView = viewHolder.itemView;
+//            if(dX < 0){
+//                choosePlanView.invalidate();
+//                //choosePlanView.setBackgroundResource(R.color.delete_red);
+//                choosePlanView.measure(itemView.getWidth(), itemView.getHeight());
+//                choosePlanView.layout(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+//                c.save();
+//                c.translate(choosePlanView.getRight() + (int) dX, viewHolder.getAdapterPosition()*itemView.getHeight());
+//
+//                choosePlanView.draw(c);
+//                c.restore();
+//            }
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
 //    private BroadcastReceiver blockUnknownReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
@@ -199,6 +275,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
         IntentFilter intentFilter = new IntentFilter("android.intent.action.PHONE_STATE");
         intentFilter.setPriority(100);
         getActivity().registerReceiver(blockUnknownReceiver,intentFilter);
+        updateTask();
     }
 
 //    private void init() {
