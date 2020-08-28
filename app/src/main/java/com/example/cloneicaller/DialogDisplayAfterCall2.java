@@ -5,20 +5,22 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.example.cloneicaller.databinding.DialogBeforeCallActivityBinding;
+import com.example.cloneicaller.databinding.DisplayAfterCall2Binding;
 
-public class DialogBeforeCallSpamActivity extends Service {
-
-    DialogBeforeCallActivityBinding binding;
-    WindowManager windowManager;
-    GroupView groupView;
+public class DialogDisplayAfterCall2 extends Service {
+    //thanhnv
+    DisplayAfterCall2Binding binding;
+    public static WindowManager windowManager;
+    public static GroupView groupView;
     WindowManager.LayoutParams winLayoutParams;
 
     @Nullable
@@ -30,7 +32,7 @@ public class DialogBeforeCallSpamActivity extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         initView();
-        return START_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void initView() {
@@ -44,17 +46,23 @@ public class DialogBeforeCallSpamActivity extends Service {
         windowManager.addView(groupView, winLayoutParams);
     }
 
-    public void removeView() {
+    public static void removeView() {
         windowManager.removeView(groupView);
     }
 
     private void createDialog() {
         groupView = new GroupView(this);
-        View view = View.inflate(this, R.layout.dialog_before_call_spam_activity, groupView);
+        View view = View.inflate(this, R.layout.display_after_call_2, groupView);
 
-        ImageView imgCloseCallNotSpam = view.findViewById(R.id.imgCloseCallNotSpam);
+        ImageView btnClose = view.findViewById(R.id.imgCloseAfterCall2);
+        TextView tvNameAfterCall2 = view.findViewById(R.id.tvNameAfterCall2);
+        TextView tvPhoneNumberAfterCall2 = view.findViewById(R.id.tvPhoneNumberAfterCall2);
 
-        imgCloseCallNotSpam.setOnClickListener(new View.OnClickListener() {
+
+        tvNameAfterCall2.setText(CallStateReceiver.incomingNumber);
+        tvPhoneNumberAfterCall2.setText(CallStateReceiver.outgoingNumber);
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeView();

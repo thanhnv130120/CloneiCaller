@@ -25,8 +25,8 @@ import com.example.cloneicaller.databinding.FragmentCallKeyboardBinding;
 import java.util.ArrayList;
 
 public class FragmentCallKeyboard extends Fragment implements View.OnClickListener {
-
-    private String numberDislayed = "";
+    //thanhnv
+    public static String numberDislayed = "";
 
     FragmentCallKeyboardBinding binding;
 

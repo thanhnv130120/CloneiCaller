@@ -36,6 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, FragmentDiary.FragmentDiaryListner, Callback<String> {
+    //thanhnv
     private FragmentCallKeyboard fragmentCallKeyboard = new FragmentCallKeyboard();
     private FragmentListBlock fragmentListBlock = new FragmentListBlock();
     private FragmentListHistory fragmentListHistory = new FragmentListHistory();
@@ -196,8 +197,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Gson gson = new Gson();
         DataModel r = gson.fromJson(jsonPhone, DataModel.class);
+        Log.e("aa", r.getData().getData().size() + "");
 
-//        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
+        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
+
 //        if (result.length > 0) {
 //            Log.e("abc", "thanh cong");
 //            Log.e("ccc", result.length + "");

@@ -1,18 +1,14 @@
 package com.example.cloneicaller.common;
 
-import android.content.ContentProviderOperation;
+import android.app.Person;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 
-import androidx.room.Room;
-
-import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.example.cloneicaller.item.ItemPerson;
 
@@ -21,9 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import static android.icu.lang.UProperty.NAME;
-import static android.os.Build.ID;
 
 public class Common {
     public static final int VIEW_TYPE_GROUP = 0;

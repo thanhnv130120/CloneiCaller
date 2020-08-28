@@ -1,7 +1,5 @@
 package com.example.cloneicaller;
 
-import androidx.annotation.Nullable;
-
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -12,11 +10,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.example.cloneicaller.databinding.ActivityDialogOutgoingBinding;
+import androidx.annotation.Nullable;
 
-public class DialogOutgoingActivity extends Service {
-    ActivityDialogOutgoingBinding binding;
-//    WindowManager windowManager;
+import com.example.cloneicaller.databinding.DisplayAfterCall1Binding;
+import com.example.cloneicaller.databinding.DisplayAfterCall3Binding;
+
+public class DialogDisplayAfterCall3 extends Service {
+
+    //Thanhnv
+    DisplayAfterCall3Binding binding;
+    WindowManager windowManager;
     GroupView groupView;
     WindowManager.LayoutParams winLayoutParams;
 
@@ -32,25 +35,25 @@ public class DialogOutgoingActivity extends Service {
         return START_STICKY;
     }
     private void initView() {
-        //windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         createDialog();
         showDialog();
     }
 
     private void showDialog() {
-        //windowManager.addView(groupView, winLayoutParams);
+        windowManager.addView(groupView, winLayoutParams);
     }
 
     public void removeView() {
-      //  windowManager.removeView(groupView);
+        windowManager.removeView(groupView);
     }
 
     private void createDialog() {
         groupView = new GroupView(this);
-        View view = View.inflate(this, R.layout.activity_dialog_outgoing, groupView);
+        View view = View.inflate(this, R.layout.display_after_call_3, groupView);
 
-        ImageView btnClose = view.findViewById(R.id.btnClose);
+        ImageView btnClose = view.findViewById(R.id.imgCloseAfterCall3);
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,26 +63,21 @@ public class DialogOutgoingActivity extends Service {
         });
 
         groupView.setOnTouchListener(new View.OnTouchListener() {
-            private int initialX;
             private int initialY;
-            private float initialTouchX;
             private float initialTouchY;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        initialX = winLayoutParams.x;
                         initialY = winLayoutParams.y;
-                        initialTouchX = motionEvent.getRawX();
                         initialTouchY = motionEvent.getRawY();
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
                         winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
-                       // windowManager.updateViewLayout(view, winLayoutParams);
+                        windowManager.updateViewLayout(view, winLayoutParams);
                         break;
                 }
 

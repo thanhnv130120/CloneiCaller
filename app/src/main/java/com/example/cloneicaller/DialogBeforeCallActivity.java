@@ -66,24 +66,19 @@ public class DialogBeforeCallActivity extends Service {
         });
 
         groupView.setOnTouchListener(new View.OnTouchListener() {
-            private int initialX;
             private int initialY;
-            private float initialTouchX;
             private float initialTouchY;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        initialX = winLayoutParams.x;
                         initialY = winLayoutParams.y;
-                        initialTouchX = motionEvent.getRawX();
                         initialTouchY = motionEvent.getRawY();
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
                         winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(view, winLayoutParams);
                         break;

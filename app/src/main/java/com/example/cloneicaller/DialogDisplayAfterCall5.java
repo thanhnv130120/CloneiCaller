@@ -12,11 +12,13 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.example.cloneicaller.databinding.DialogBeforeCallActivityBinding;
+import com.example.cloneicaller.databinding.DisplayAfterCall1Binding;
+import com.example.cloneicaller.databinding.DisplayAfterCall5Binding;
 
-public class DialogBeforeCallSpamActivity extends Service {
+public class DialogDisplayAfterCall5 extends Service {
 
-    DialogBeforeCallActivityBinding binding;
+    //Thanhnv
+    DisplayAfterCall5Binding binding;
     WindowManager windowManager;
     GroupView groupView;
     WindowManager.LayoutParams winLayoutParams;
@@ -32,7 +34,6 @@ public class DialogBeforeCallSpamActivity extends Service {
         initView();
         return START_STICKY;
     }
-
     private void initView() {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -50,11 +51,11 @@ public class DialogBeforeCallSpamActivity extends Service {
 
     private void createDialog() {
         groupView = new GroupView(this);
-        View view = View.inflate(this, R.layout.dialog_before_call_spam_activity, groupView);
+        View view = View.inflate(this, R.layout.display_after_call_5, groupView);
 
-        ImageView imgCloseCallNotSpam = view.findViewById(R.id.imgCloseCallNotSpam);
+        ImageView btnClose = view.findViewById(R.id.imgCloseAfterCall5);
 
-        imgCloseCallNotSpam.setOnClickListener(new View.OnClickListener() {
+        btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeView();

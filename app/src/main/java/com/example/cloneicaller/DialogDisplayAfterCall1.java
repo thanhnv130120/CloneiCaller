@@ -1,5 +1,7 @@
 package com.example.cloneicaller;
 
+import androidx.annotation.Nullable;
+
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -10,14 +12,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
+import com.example.cloneicaller.databinding.DisplayAfterCall1Binding;
 
-import com.example.cloneicaller.databinding.DialogBeforeCallActivityBinding;
+public class DialogDisplayAfterCall1 extends Service {
 
-public class DialogBeforeCallSpamActivity extends Service {
-
-    DialogBeforeCallActivityBinding binding;
+    //Thanhnv
+    DisplayAfterCall1Binding binding;
     WindowManager windowManager;
+public class DialogOutgoingActivity extends Service {
+    ActivityDialogOutgoingBinding binding;
+//    WindowManager windowManager;
     GroupView groupView;
     WindowManager.LayoutParams winLayoutParams;
 
@@ -32,7 +36,6 @@ public class DialogBeforeCallSpamActivity extends Service {
         initView();
         return START_STICKY;
     }
-
     private void initView() {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -50,11 +53,11 @@ public class DialogBeforeCallSpamActivity extends Service {
 
     private void createDialog() {
         groupView = new GroupView(this);
-        View view = View.inflate(this, R.layout.dialog_before_call_spam_activity, groupView);
+        View view = View.inflate(this, R.layout.activity_dialog_outgoing, groupView);
 
-        ImageView imgCloseCallNotSpam = view.findViewById(R.id.imgCloseCallNotSpam);
+        ImageView btnClose = view.findViewById(R.id.btnClose);
 
-        imgCloseCallNotSpam.setOnClickListener(new View.OnClickListener() {
+        btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeView();
@@ -62,19 +65,24 @@ public class DialogBeforeCallSpamActivity extends Service {
         });
 
         groupView.setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
             private int initialY;
+            private float initialTouchX;
             private float initialTouchY;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        initialX = winLayoutParams.x;
                         initialY = winLayoutParams.y;
+                        initialTouchX = motionEvent.getRawX();
                         initialTouchY = motionEvent.getRawY();
                         break;
                     case MotionEvent.ACTION_UP:
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
                         winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(view, winLayoutParams);
                         break;

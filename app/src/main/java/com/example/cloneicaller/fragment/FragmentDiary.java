@@ -58,36 +58,16 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
     private RecyclerView rclList;
     private FloatingActionButton btnAdd;
-    private ArrayList<ItemPerson> people = new ArrayList<>();
+    private ArrayList<ItemPerson>people = new ArrayList<>();
     private FragmentDiaryListner listener;
-    ItemPersonAdapter adapter;
+
     FragmentDiaryBinding binding;
-    ChoosePlanViewSwipeDiary choosePlanViewSwipe;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentDiaryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-//        SwipeHelper swipeHelper = new SwipeHelper(getContext(), binding.rclDiary) {
-//            @Override
-//            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
-//                underlayButtons.add(new SwipeHelper.UnderlayButton("XÓA", 1, Color.parseColor("#A90939"), new SwipeHelper.UnderlayButtonClickListener() {
-//                    @Override
-//                    public void onClick(int pos) {
-//                        Dialog dialog = new Dialog(getContext());
-//                        DialogDeleteContactBinding binding;
-//                        binding = DialogDeleteContactBinding.inflate(getLayoutInflater());
-//                        View view1 = binding.getRoot();
-//                        dialog.setContentView(view1);
-//                        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//
-//                        dialog.show();
-//                    }
-//                }
-//                ));
-//            }
-//        };
-        return view;
 
     }
 
