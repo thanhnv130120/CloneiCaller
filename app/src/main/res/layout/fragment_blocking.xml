@@ -37,10 +37,6 @@
             android:visibility="visible"></LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorWhite"></RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rlt_bar"
@@ -51,7 +47,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_block"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             app:tabIndicatorColor="@color/colorPurpleBG"
             app:tabSelectedTextColor="@color/colorPurpleBG"

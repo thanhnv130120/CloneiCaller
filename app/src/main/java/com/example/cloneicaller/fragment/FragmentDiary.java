@@ -46,9 +46,8 @@ import java.util.List;
 import java.util.Set;
 
 public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
-    private RecyclerView rclList;
-    private FloatingActionButton btnAdd;
-    private ArrayList<ItemPerson>people = new ArrayList<>();
+    public static String numberDiary;
+    private ArrayList<ItemPerson> people = new ArrayList<>();
     private FragmentDiaryListner listener;
 
     FragmentDiaryBinding binding;
@@ -61,6 +60,11 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
 
         binding.floatingBtnDiary.setOnClickListener(this);
         fetchContact();
+        if (people.size() == 0) {
+            binding.tvNoneDataDiary.setText(getString(R.string.none_data));
+            binding.tvNoneDataDiary.setVisibility(View.VISIBLE);
+            binding.rclDiary.setVisibility(View.GONE);
+        }
         SwipeHelper swipeHelper = new SwipeHelper(getContext(), binding.rclDiary) {
             @Override
             public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
@@ -84,14 +88,17 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     }
 
     private void fetchContact() {
-
-        people = Common.resolverArrayList(null, getContext());
-        people = Common.sortList(people);
-        people = Common.addAlphabet(people);
-        listener.onPutListDiarySent(people);
-        ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(), people);
-        binding.rclDiary.setAdapter(adapter);
-        adapter.setListener(this);
+        try {
+            people = Common.resolverArrayList(null, getContext());
+            people = Common.sortList(people);
+            people = Common.addAlphabet(people);
+            listener.onPutListDiarySent(people);
+            ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(), people);
+            binding.rclDiary.setAdapter(adapter);
+            adapter.setListener(this);
+        } catch (Exception e) {
+            Log.e("abc", e.getMessage());
+        }
     }
 
     private ArrayList<String> sortArrayList(ArrayList<String> item) {
@@ -131,21 +138,21 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     public void onClickPerson(int position) {
 
         Intent intent = new Intent(getActivity(), DetailContact.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString(INTENT_NAME,people.get(position).getName());
-//        bundle.putString(INTENT_NUMBER,people.get(position).getNumber());
-//        intent.putExtras(bundle);
-        intent.putExtra(INTENT_NAME,people.get(position).getName());
-        intent.putExtra(INTENT_NUMBER,people.get(position).getNumber());
-        intent.putExtra(INTENT_BLOCK,false);
-        intent.putExtra(INTENT_BLOCK_TYPE,"");
-      
-        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("name", people.get(position).getName());
-        bundle.putString("number", people.get(position).getNumber());
+        bundle.putString(INTENT_NAME, people.get(position).getName());
+        bundle.putString(INTENT_NUMBER, people.get(position).getNumber());
         intent.putExtras(bundle);
+        intent.putExtra(INTENT_NAME, people.get(position).getName());
+        intent.putExtra(INTENT_NUMBER, people.get(position).getNumber());
+        intent.putExtra(INTENT_BLOCK, false);
+        intent.putExtra(INTENT_BLOCK_TYPE, "");
+
+        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
+//        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString("name", people.get(position).getName());
+//        bundle.putString("number", people.get(position).getNumber());
+//        intent.putExtras(bundle);
         startActivity(intent);
     }
 

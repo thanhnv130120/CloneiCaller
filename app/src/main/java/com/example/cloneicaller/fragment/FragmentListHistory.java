@@ -29,7 +29,9 @@ import com.example.cloneicaller.Models.GeneralItem;
 import com.example.cloneicaller.PermissionActivity;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.SwipeHelper;
+import com.example.cloneicaller.adapter.ItemPersonAdapter;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
+import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.FragmentHistoryBinding;
 
 import java.sql.Time;
@@ -57,9 +59,9 @@ public class FragmentListHistory extends Fragment {
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        contactList = getCallDetails();
+        contactList = Common.getCallDetails(getContext());
 
-        HashMap<String, List<Contact>> groupedHashMap = groupDataIntoHashMap(contactList);
+        HashMap<String, List<Contact>> groupedHashMap = Common.groupDataIntoHashMap(contactList);
 
 
         for (String date : groupedHashMap.keySet()) {
@@ -73,6 +75,12 @@ public class FragmentListHistory extends Fragment {
                 generalItem.setContact(contact);
                 consolidatedList.add(generalItem);
             }
+        }
+
+        if (contactList.size() == 0){
+            binding.tvNoneDataHistory.setText(getString(R.string.none_data));
+            binding.tvNoneDataHistory.setVisibility(View.VISIBLE);
+            binding.rcListHistory.setVisibility(View.GONE);
         }
 
         LinearLayoutManager linearLayoutManager =
@@ -98,79 +106,6 @@ public class FragmentListHistory extends Fragment {
 
         return view;
     }
-
-    private List<Contact> getCallDetails() {
-
-        List<Contact> contactList = new ArrayList<>();
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALL_LOG}, 1);
-        }
-        Cursor cursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
-
-        int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-        int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);
-        int date = cursor.getColumnIndex(CallLog.Calls.DATE);
-        int name = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
-        int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
-        int country = cursor.getColumnIndex(CallLog.Calls.COUNTRY_ISO);
-        int network = cursor.getColumnIndex(CallLog.Calls.CACHED_NUMBER_TYPE);
-
-
-        cursor.moveToFirst();
-        while (cursor.moveToNext()) {
-
-            String phoneNum = cursor.getString(number);
-            String dur = cursor.getString(duration);
-            String callDate = cursor.getString(date);
-            String nameCon = cursor.getString(name);
-            String callType = cursor.getString(type);
-            String countryiso = cursor.getString(country);
-            String networkname = cursor.getString(network);
-            String dir = null;
-
-            int dirCode = Integer.parseInt(callType);
-
-            switch (dirCode) {
-                case CallLog.Calls.OUTGOING_TYPE:
-                    dir = "OUTGOING";
-                    break;
-                case CallLog.Calls.INCOMING_TYPE:
-                    dir = "INCOMING";
-                    break;
-                case CallLog.Calls.MISSED_TYPE:
-                    dir = "MISSED";
-                    break;
-            }
-
-            long seconds = Long.parseLong(callDate);
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-            String dateString = formatter.format(new Date(seconds));
-
-            SimpleDateFormat format = new SimpleDateFormat("hh:mm");
-            String time = format.format(new Time(seconds));
-
-            contactList.add(new Contact(phoneNum, time, dateString, nameCon, dir, countryiso, networkname));
-
-        }
-        return contactList;
-    }
-
-    private HashMap<String, List<Contact>> groupDataIntoHashMap(List<Contact> contactList) {
-
-        HashMap<String, List<Contact>> groupedHashMap = new HashMap<>();
-
-        for (Contact contact : contactList) {
-
-            String hashMapKey = contact.getDate();
-
-            if (groupedHashMap.containsKey(hashMapKey)) {
-                groupedHashMap.get(hashMapKey).add(contact);
-            } else {
-                List<Contact> list = new ArrayList<>();
-                list.add(contact);
-                groupedHashMap.put(hashMapKey, list);
-            }
-        }
-        return groupedHashMap;
-    }
 }
+
+

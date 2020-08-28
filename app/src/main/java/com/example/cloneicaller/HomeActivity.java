@@ -36,6 +36,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, FragmentDiary.FragmentDiaryListner, Callback<String> {
+    //thanhnv
     private FragmentCallKeyboard fragmentCallKeyboard = new FragmentCallKeyboard();
     private FragmentListBlock fragmentListBlock = new FragmentListBlock();
     private FragmentListHistory fragmentListHistory = new FragmentListHistory();
@@ -95,8 +96,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         getSupportFragmentManager().beginTransaction().replace(binding.containerView.getId(),
                 new FragmentHome()).commit();
 
-        phoneDB = Room.databaseBuilder(getApplicationContext(),
-                PhoneDB.class, "user1.db").allowMainThreadQueries().build();
+        phoneDB = PhoneDB.getInstance(this);
 
         RetrofitClient.getInstance().getData(LIMIT, ">2020-01-01", 1, 1, SELECT, "id", "DESC").enqueue(HomeActivity.this);
 
@@ -196,21 +196,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Gson gson = new Gson();
         DataModel r = gson.fromJson(jsonPhone, DataModel.class);
+        Log.e("aa", r.getData().getData().size() + "");
 
         long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
-        if (result.length > 0) {
-            Log.e("abc", "thanh cong");
-            Log.e("ccc", result.length + "");
-        } else {
-            Log.e("cba", "ngu");
-        }
+
+//        if (result.length > 0) {
+//            Log.e("abc", "thanh cong");
+//            Log.e("ccc", result.length + "");
+//        } else {
+//            Log.e("cba", "ngu");
+//        }
 
         List<DataModel.DataBeanX.DataBean> dataBeanList = phoneDB.phoneDBDAO().getAll();
         Log.e("abc", dataBeanList.size() + "");
-        for (int i= 0; i<dataBeanList.size();i++){
+        for (int i = 0; i < dataBeanList.size(); i++) {
             DataModel.DataBeanX.DataBean dataBean = dataBeanList.get(i);
-            Log.e("abc",dataBean.getId()+"");
-            Log.e("abc",dataBean.getName());
+            Log.e("abc", dataBean.getId() + "");
+            Log.e("abc", dataBean.getName() + dataBean.getPhone());
         }
 
 
