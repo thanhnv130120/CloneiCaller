@@ -5,6 +5,8 @@ public class Contact {
     private String number, duration, date, name, type, country, network;
     private int viewType;
 
+    public Contact() {
+    }
 
     public Contact(String number, String duration, String date, String name, String type, String country, String network) {
         this.number = number;

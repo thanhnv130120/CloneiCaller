@@ -5,8 +5,6 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <uses-feature android:name="android.hardware.type.watch" />
-
     <uses-permission
         android:name="android.permission.MODIFY_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
@@ -32,13 +30,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-        <activity android:name=".FilterSearchActivity"></activity>
-        android:theme="@style/AppTheme">
+        <activity
+            android:name=".FilterSearchActivity"
+            android:theme="@style/AppTheme"></activity>
         <service
-            android:name=".DialogOutgoingActivity"
+            android:name=".DialogDisplayAfterCall1"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+        <service
+            android:name=".DialogDisplayAfterCall2"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+        <service
+            android:name=".DialogDisplayAfterCall3"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+        <service
+            android:name=".DialogDisplayAfterCall4"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+        <service
+            android:name=".DialogDisplayAfterCall5"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+
         <activity
             android:name=".IntroduceActivity"
             android:theme="@style/NoActionBar" />
@@ -75,6 +95,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/NoActionBar" />
+
         <service
             android:name=".DialogBeforeCallActivity"
             android:exported="true" />

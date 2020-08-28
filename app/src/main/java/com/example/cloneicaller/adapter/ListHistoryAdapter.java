@@ -33,10 +33,11 @@ import java.util.List;
 
 public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    //Thanhnv
+
     Context context;
-    List<Contact> contactList;
     List<ListItem> listItemList;
-    RecyclerView recyclerView;
+    public static String outgoingNumber = "";
 
     public ListHistoryAdapter(Context context, List<ListItem> listItemList) {
         this.context = context;
@@ -114,6 +115,8 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 1);
                         }
+                        outgoingNumber = generalItem.getContact().getNumber();
+                        Log.e("ABC",outgoingNumber);
                         context.startActivity(intent);
                     }
                 });
