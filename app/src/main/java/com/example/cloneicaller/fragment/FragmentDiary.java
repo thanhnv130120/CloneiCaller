@@ -60,15 +60,16 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     private FloatingActionButton btnAdd;
     private ArrayList<ItemPerson>people = new ArrayList<>();
     private FragmentDiaryListner listener;
-
+    ItemPersonAdapter adapter;
     FragmentDiaryBinding binding;
+    ChoosePlanViewSwipeDiary choosePlanViewSwipe;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentDiaryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
+        return view;
     }
 
     @Override

@@ -1,28 +1,119 @@
 package com.example.cloneicaller.common;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Person;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.provider.CallLog;
 import android.provider.ContactsContract;
 
+import androidx.core.app.ActivityCompat;
+import androidx.room.Room;
+
+import com.example.cloneicaller.Models.Contact;
+import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.example.cloneicaller.item.ItemPerson;
 
 import java.lang.reflect.Method;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+
+import static android.os.Build.ID;
 
 public class Common {
     public static final int VIEW_TYPE_GROUP = 0;
     public static final int VIEW_TYPE_PERSON = 1;
     public static final int RESULT_CODE= 1000;
     public static List<String> alphabet_available = new ArrayList<>();
+    public static List<Contact> getCallDetails(Context context) {
+
+        List<Contact> contactList = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_CALL_LOG}, 1);
+        }
+        Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+
+        int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+        int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);
+        int date = cursor.getColumnIndex(CallLog.Calls.DATE);
+        int name = cursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
+        int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
+        int country = cursor.getColumnIndex(CallLog.Calls.COUNTRY_ISO);
+        int network = cursor.getColumnIndex(CallLog.Calls.CACHED_NUMBER_TYPE);
+
+
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+
+            String phoneNum = cursor.getString(number);
+            String dur = cursor.getString(duration);
+            String callDate = cursor.getString(date);
+            String nameCon = cursor.getString(name);
+            String callType = cursor.getString(type);
+            String countryiso = cursor.getString(country);
+            String networkname = cursor.getString(network);
+            String dir = null;
+
+            int dirCode = Integer.parseInt(callType);
+
+            switch (dirCode) {
+                case CallLog.Calls.OUTGOING_TYPE:
+                    dir = "OUTGOING";
+                    break;
+                case CallLog.Calls.INCOMING_TYPE:
+                    dir = "INCOMING";
+                    break;
+                case CallLog.Calls.MISSED_TYPE:
+                    dir = "MISSED";
+                    break;
+            }
+
+            long seconds = Long.parseLong(callDate);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            String dateString = formatter.format(new Date(seconds));
+
+            SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+            String time = format.format(new Time(seconds));
+
+            contactList.add(new Contact(phoneNum, time, dateString, nameCon, dir, countryiso, networkname));
+
+        }
+        return contactList;
+    }
+    public static HashMap<String, List<Contact>> groupDataIntoHashMap(List<Contact> contactList) {
+
+        HashMap<String, List<Contact>> groupedHashMap = new LinkedHashMap<>();
+
+        for (Contact contact : contactList) {
+
+            String hashMapKey = contact.getDate();
+
+            if (groupedHashMap.containsKey(hashMapKey)) {
+                groupedHashMap.get(hashMapKey).add(contact);
+            } else {
+                List<Contact> list = new ArrayList<>();
+                list.add(contact);
+                groupedHashMap.put(hashMapKey, list);
+            }
+        }
+        return groupedHashMap;
+    }
     public static ArrayList<ItemPerson> sortList (ArrayList<ItemPerson>people){
         Collections.sort(people, new Comparator<ItemPerson>() {
             @Override
@@ -52,6 +143,57 @@ public class Common {
                 .allowMainThreadQueries()
                 .build();
         database.getItemDao().updateAll(blockerPersonItem);
+    }
+    public static String findPhoneFromDiary(String phoneNumber, Context context) {
+
+        String phoneNum = "";
+        try {
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+
+            String[] projection = new String[]{ContactsContract.PhoneLookup.NUMBER};
+
+            Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+
+            if (cursor != null)
+                while (cursor.moveToNext()) {
+                    phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.NUMBER));
+                }
+            cursor.close();
+
+        } catch (Exception e) {
+
+        }
+        return phoneNum;
+    }
+    public static String findPhoneFromCallog(String phoneNumber, Context context) {
+
+        String dialed = "";
+        String columns[] = new String[]{
+                CallLog.Calls._ID,
+                CallLog.Calls.NUMBER,
+                CallLog.Calls.DATE,
+                CallLog.Calls.DURATION,
+                CallLog.Calls.TYPE};
+        String args[] = new String[1];
+        args[0] = phoneNumber;
+        Cursor c;
+        c = context.getContentResolver().query(Uri.parse("content://call_log/calls"),
+                columns, CallLog.Calls.NUMBER + "=?", args, null);
+        while (c.moveToNext()) {
+            dialed = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER));
+        }
+        return dialed;
+    }
+    public static String formatPhoneNumber(String phoneNumber) {
+        String phoneNum;
+        if (phoneNumber.startsWith("+84")) {
+            phoneNum = phoneNumber.replace(" ", "");
+        } else {
+            StringBuilder stringBuilder = new StringBuilder(phoneNumber).replace(0, 1, "+84");
+            phoneNum = String.valueOf(stringBuilder);
+            phoneNum = phoneNum.replace(" ", "");
+        }
+        return phoneNum;
     }
     public static List<BlockerPersonItem> sortBlockList (List<BlockerPersonItem>people){
         Collections.sort(people, new Comparator<BlockerPersonItem>() {

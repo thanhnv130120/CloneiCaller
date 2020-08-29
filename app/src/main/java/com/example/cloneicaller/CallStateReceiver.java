@@ -1,6 +1,4 @@
 package com.example.cloneicaller;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -12,34 +10,41 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.provider.BlockedNumberContract;
-import android.telecom.TelecomManager;
 import android.provider.Settings;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.cloneicaller.call.ITelephony;
+import androidx.room.Room;
+
+import com.android.internal.telephony.ITelephony;
+import com.example.cloneicaller.Models.DataModel;
+import com.example.cloneicaller.Room.BlockItemDatabase;
+import com.example.cloneicaller.Room.PhoneDB;
+import com.example.cloneicaller.adapter.ListHistoryAdapter;
+import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.fragment.FragmentCallKeyboard;
+import com.example.cloneicaller.item.BlockerPersonItem;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class CallStateReceiver extends BroadcastReceiver {
+import static com.example.cloneicaller.common.Common.formatPhoneNumber;
 
-    //Thanhnv
+public class CallStateReceiver extends BroadcastReceiver {
     ITelephony iTelephony;
     PhoneDB phoneDB;
+    private static final String TAG = null;
+    public static String incommingNumber;
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
-    public static String incomingNumber, numberDiary;
+    public static String incomingNumber,numberDiary = "";
     public static String outgoingNumber, outgoingNumber2, outgoingNumber3, phoneData = "";
     DataModel.DataBeanX.DataBean dataBean;
     String income;
-
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -47,7 +52,6 @@ public class CallStateReceiver extends BroadcastReceiver {
         SharedPreferences preferencesBlockAdvertise = context.getSharedPreferences("blockAdvertiseCall", Context.MODE_PRIVATE);
         SharedPreferences preferencesBlockCall = context.getSharedPreferences("blockUnknownCall", Context.MODE_PRIVATE);
         SharedPreferences preferencesBlockForeign = context.getSharedPreferences("blockForeign", Context.MODE_PRIVATE);
-        phoneDB = PhoneDB.getInstance(context);
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         Log.e("AAAA", "state");
         BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
@@ -93,12 +97,7 @@ public class CallStateReceiver extends BroadcastReceiver {
                 Intent intent1 = new Intent(context, DialogBeforeCallActivity.class);
                 context.startService(intent1);
             } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                Log.e("ABC", "ended");
-                Intent i = new Intent(context, DialogOutgoingActivity.class);
-                context.startService(i);
-//            DialogBeforeCallActivity.removeView();
-            }else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-//          DialogBeforeCallActivity.removeView();
+                DialogBeforeCallActivity.removeView();
 
                 //Check so goi den
 
@@ -110,14 +109,13 @@ public class CallStateReceiver extends BroadcastReceiver {
                 } catch (Exception e) {
 
                 }
-
                 //Co trong danh ba may
                 String phoneIn = Common.findPhoneFromDiary(incomingNumber, context);
-                phoneIn = Common.formatPhoneNumber(phoneIn);
+                phoneIn = formatPhoneNumber(phoneIn);
                 Log.e("CCC", phoneIn + "phoneIn");
                 //Co trong lich su goi
                 String phoneInHis = Common.findPhoneFromCallog(incomingNumber, context);
-                phoneInHis = Common.formatPhoneNumber(phoneInHis);
+                phoneInHis = formatPhoneNumber(phoneInHis);
                 Log.e("CCC", phoneInHis + "phoneInHis");
 
                 if (phoneIn.equals(incomingNumber)) {
@@ -130,18 +128,18 @@ public class CallStateReceiver extends BroadcastReceiver {
                     context.startService(new Intent(context, DialogDisplayAfterCall1.class));
                 }
 
-                outgoingNumber = Common.formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
+                outgoingNumber = formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
                 if (outgoingNumber.equals("+84")) {
                     outgoingNumber = "";
                 } else {
-                    outgoingNumber = Common.formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
+                    outgoingNumber = formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
                 }
                 Log.e("CCC1", outgoingNumber + "og");
-                outgoingNumber2 = Common.formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
+                outgoingNumber2 = formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
                 if (outgoingNumber2.equals("+84")) {
                     outgoingNumber2 = "";
                 } else {
-                    outgoingNumber2 = Common.formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
+                    outgoingNumber2 = formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
                 }
                 Log.e("CCC1", outgoingNumber2 + "og2");
 
@@ -179,18 +177,11 @@ public class CallStateReceiver extends BroadcastReceiver {
                 }
 
                 Log.e("ABC", "ended");
-
             }
 
             checkPermission(context);
         }
     }
-    ITelephony iTelephony;
-    private static final String TAG = null;
-    public static String incommingNumber;
-
-    public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
-    public static String incomingNumber = "";
 
 
     public void blockedcall(Context context) {
@@ -217,11 +208,13 @@ public class CallStateReceiver extends BroadcastReceiver {
                 telephonyService = (ITelephony) m.invoke(tm);
                 telephonyService.endCall();
             } catch (Exception e) {
+                Log.e("AAAA", e.getMessage());
                 e.printStackTrace();
             }
         } else {
-                TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-                tm.endCall();
+            TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+            tm.endCall();
+
         }
     }
 

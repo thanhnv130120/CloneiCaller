@@ -199,7 +199,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         DataModel r = gson.fromJson(jsonPhone, DataModel.class);
         Log.e("aa", r.getData().getData().size() + "");
 
-        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
+//        long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
 
 //        if (result.length > 0) {
 //            Log.e("abc", "thanh cong");
@@ -215,17 +215,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("abc",dataBean.getId()+"");
             Log.e("abc",dataBean.getName());
         }
-
-
     }
-
-
     @Override
     public void onFailure(Call<String> call, Throwable t) {
         Log.e("ABC", t.getMessage() + "");
     }
-
-
     public interface DataReceiverListener {
         void onReceived(int requestCode, int resultCode, Intent data);
     }

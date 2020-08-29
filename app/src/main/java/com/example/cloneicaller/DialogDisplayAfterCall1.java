@@ -19,11 +19,6 @@ public class DialogDisplayAfterCall1 extends Service {
     //Thanhnv
     DisplayAfterCall1Binding binding;
     WindowManager windowManager;
-public class DialogOutgoingActivity extends Service {
-    ActivityDialogOutgoingBinding binding;
-//    WindowManager windowManager;
-    GroupView groupView;
-    WindowManager.LayoutParams winLayoutParams;
 
     @Nullable
     @Override
@@ -31,74 +26,88 @@ public class DialogOutgoingActivity extends Service {
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        initView();
-        return START_STICKY;
-    }
-    private void initView() {
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+    public class DialogOutgoingActivity extends Service {
+        DialogDisplayAfterCall1 binding;
+        //    WindowManager windowManager;
+        GroupView groupView;
+        WindowManager.LayoutParams winLayoutParams;
 
-        createDialog();
-        showDialog();
-    }
+        @Nullable
+        @Override
+        public IBinder onBind(Intent intent) {
+            return null;
+        }
 
-    private void showDialog() {
-        windowManager.addView(groupView, winLayoutParams);
-    }
+        @Override
+        public int onStartCommand(Intent intent, int flags, int startId) {
+            initView();
+            return START_STICKY;
+        }
 
-    public void removeView() {
-        windowManager.removeView(groupView);
-    }
+        private void initView() {
+            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-    private void createDialog() {
-        groupView = new GroupView(this);
-        View view = View.inflate(this, R.layout.activity_dialog_outgoing, groupView);
+            createDialog();
+            showDialog();
+        }
 
-        ImageView btnClose = view.findViewById(R.id.btnClose);
+        private void showDialog() {
+            windowManager.addView(groupView, winLayoutParams);
+        }
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                removeView();
-            }
-        });
+        public void removeView() {
+            windowManager.removeView(groupView);
+        }
 
-        groupView.setOnTouchListener(new View.OnTouchListener() {
-            private int initialX;
-            private int initialY;
-            private float initialTouchX;
-            private float initialTouchY;
+        private void createDialog() {
+            groupView = new GroupView(this);
+            View view = View.inflate(this, R.layout.display_after_call_1, groupView);
 
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        initialX = winLayoutParams.x;
-                        initialY = winLayoutParams.y;
-                        initialTouchX = motionEvent.getRawX();
-                        initialTouchY = motionEvent.getRawY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
-                        winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
-                        windowManager.updateViewLayout(view, winLayoutParams);
-                        break;
+            ImageView btnClose = view.findViewById(R.id.btnClose);
+
+            btnClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    removeView();
                 }
+            });
 
-                return false;
-            }
-        });
+            groupView.setOnTouchListener(new View.OnTouchListener() {
+                private int initialX;
+                private int initialY;
+                private float initialTouchX;
+                private float initialTouchY;
 
-        winLayoutParams = new WindowManager.LayoutParams();
-        winLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        winLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        winLayoutParams.gravity = Gravity.CENTER;
-        winLayoutParams.format = PixelFormat.TRANSLUCENT;
-        winLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        winLayoutParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            initialX = winLayoutParams.x;
+                            initialY = winLayoutParams.y;
+                            initialTouchX = motionEvent.getRawX();
+                            initialTouchY = motionEvent.getRawY();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            winLayoutParams.x = initialX + (int) (motionEvent.getRawX() - initialTouchX);
+                            winLayoutParams.y = initialY + (int) (motionEvent.getRawY() - initialTouchY);
+                            windowManager.updateViewLayout(view, winLayoutParams);
+                            break;
+                    }
 
+                    return false;
+                }
+            });
+
+            winLayoutParams = new WindowManager.LayoutParams();
+            winLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            winLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            winLayoutParams.gravity = Gravity.CENTER;
+            winLayoutParams.format = PixelFormat.TRANSLUCENT;
+            winLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            winLayoutParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+
+        }
     }
 }
