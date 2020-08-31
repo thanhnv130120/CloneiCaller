@@ -271,10 +271,10 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
 //                endCall(getContext());
 ////            }
 //        }
-        blockUnknownReceiver = new CallStateReceiver();
-        IntentFilter intentFilter = new IntentFilter("android.intent.action.PHONE_STATE");
-        intentFilter.setPriority(100);
-        getActivity().registerReceiver(blockUnknownReceiver,intentFilter);
+//        blockUnknownReceiver = new CallStateReceiver();
+//        IntentFilter intentFilter = new IntentFilter("android.intent.action.PHONE_STATE");
+//        intentFilter.setPriority(100);
+//        getActivity().registerReceiver(blockUnknownReceiver,intentFilter);
         updateTask();
     }
 
@@ -288,7 +288,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(blockUnknownReceiver);
+//        getActivity().unregisterReceiver(blockUnknownReceiver);
     }
 
     @Override

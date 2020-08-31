@@ -35,7 +35,6 @@ import java.util.List;
 import static com.example.cloneicaller.common.Common.formatPhoneNumber;
 
 public class CallStateReceiver extends BroadcastReceiver {
-    ITelephony iTelephony;
     PhoneDB phoneDB;
     private static final String TAG = null;
     public static String incommingNumber;
