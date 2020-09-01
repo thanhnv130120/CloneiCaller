@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
@@ -18,6 +19,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.android.internal.telephony.ITelephony;
@@ -63,8 +66,8 @@ public class CallStateReceiver extends BroadcastReceiver {
             Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
             Log.e("AAAA", "state: " + incomingNumber);
             Intent intent2 = new Intent(context, DialogBeforeCallActivity.class);
-            context.startService(intent2);
-            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+//            context.startService(intent2);
+//            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                 List<BlockerPersonItem> blockerItem = Common.checkRealDialer(items);
                 if ((incomingNumber != null)) {
                     if (!Common.checkUnknown(incomingNumber, context) && preferencesBlockCall.getBoolean("checked",false)==true) {
@@ -88,13 +91,13 @@ public class CallStateReceiver extends BroadcastReceiver {
                         CallStateReceiver.endCall(context);
                     }
                 }
-            }
+//            }
 
             //Outgoing call detect
             else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                 Log.e("ABC", "started");
                 Intent intent1 = new Intent(context, DialogBeforeCallActivity.class);
-                context.startService(intent1);
+//                context.startService(intent1);
             } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                 DialogBeforeCallActivity.removeView();
 
@@ -118,13 +121,13 @@ public class CallStateReceiver extends BroadcastReceiver {
                 Log.e("CCC", phoneInHis + "phoneInHis");
 
                 if (phoneIn.equals(incomingNumber)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
                 } else if (phoneData.equals(incomingNumber) && !phoneInHis.equals(incomingNumber)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall2.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall2.class));
                 } else if (!phoneData.equals(incomingNumber) && !phoneInHis.equals(incomingNumber)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall3.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall3.class));
                 } else {
-                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
                 }
 
                 outgoingNumber = formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
@@ -165,12 +168,12 @@ public class CallStateReceiver extends BroadcastReceiver {
                 }
 
                 if (phoneNum1.equals(outgoingNumber2) || phoneNum2.equals(outgoingNumber)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall1.class));
                 } else if (phoneData.equals(outgoingNumber2) && !phoneCallLog.equals(outgoingNumber2)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall2.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall2.class));
                     Log.e("CCCV", "cc");
                 } else if (!phoneCallLog.equals(outgoingNumber2) && !phoneCallLog2.equals(outgoingNumber)) {
-                    context.startService(new Intent(context, DialogDisplayAfterCall4.class));
+//                    context.startService(new Intent(context, DialogDisplayAfterCall4.class));
                 } else {
                     Log.e("CCC", "False");
                 }
@@ -211,9 +214,12 @@ public class CallStateReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
         } else {
-            TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-            tm.endCall();
-
+            if ( ContextCompat.checkSelfPermission( context, android.Manifest.permission.ANSWER_PHONE_CALLS ) == PackageManager.PERMISSION_GRANTED ) {
+                TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                tm.endCall();
+            }else {
+                Log.e("permission","can not check");
+            }
         }
     }
 
@@ -225,7 +231,7 @@ public class CallStateReceiver extends BroadcastReceiver {
                 ((Activity) context).startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
             }
         } else {
-            context.startService(new Intent(context, DialogBeforeCallActivity.class));
+//            context.startService(new Intent(context, DialogBeforeCallActivity.class));
         }
     }
 

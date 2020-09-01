@@ -18,7 +18,6 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.settings.action.MANAGE_OVERLAY_PERMISSION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -111,7 +110,6 @@
                 <action android:name="android.intent.action.ACTION_USER_PRESENT" />
                 <action android:name="android.intent.action.ACTION_SCREEN_ON" />
                 <action android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-                <action android:name="android.permission.ANSWER_PHONE_CALLS"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
