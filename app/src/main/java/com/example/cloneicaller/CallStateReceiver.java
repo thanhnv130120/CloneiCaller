@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
@@ -19,13 +21,18 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.room.Room;
+
 import com.example.cloneicaller.Models.Contact;
 import com.example.cloneicaller.Models.DataModel;
+import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.Room.PhoneDB;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
 import com.example.cloneicaller.call.ITelephony;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.fragment.FragmentCallKeyboard;
+import com.example.cloneicaller.item.BlockerPersonItem;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -39,6 +46,8 @@ public class CallStateReceiver extends BroadcastReceiver {
     //Thanhnv
     ITelephony iTelephony;
     PhoneDB phoneDB;
+    private static final String TAG = null;
+    public static String incommingNumber;
 
     public static int OVERLAY_PERMISSION_REQ_CODE = 1234;
     public static String incomingNumber, numberDiary;
@@ -54,7 +63,50 @@ public class CallStateReceiver extends BroadcastReceiver {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPreferences preferencesLie = context.getSharedPreferences("blockLieCall", Context.MODE_PRIVATE);
+        SharedPreferences preferencesBlockAdvertise = context.getSharedPreferences("blockAdvertiseCall", Context.MODE_PRIVATE);
+        SharedPreferences preferencesBlockCall = context.getSharedPreferences("blockUnknownCall", Context.MODE_PRIVATE);
+        SharedPreferences preferencesBlockForeign = context.getSharedPreferences("blockForeign", Context.MODE_PRIVATE);
+        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        Log.e("AAAA", "state");
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        List<BlockerPersonItem> items = database.getItemDao().getItems();
+        String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+            Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
+            Log.e("AAAA", "state: " + incomingNumber);
+            Intent intent2 = new Intent(context, DialogBeforeCallActivity.class);
+//            context.startService(intent2);
+//            if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                List<BlockerPersonItem> blockerItem = Common.checkRealDialer(items);
+                if ((incomingNumber != null)) {
+                    if (!Common.checkUnknown(incomingNumber, context) && preferencesBlockCall.getBoolean("checked",false)==true) {
+                        Log.e("Broadcast", "Unknown?Checked!");
+                        Toast.makeText(context, "Unknown?Checked !", Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if (Common.checkInside(incomingNumber, Common.checkLier(blockerItem)) && preferencesLie.getBoolean("checked",false)) {
+                        Log.e("Broadcast", "Lie or Owe?Checked!");
+                        Toast.makeText(context, "Lie or Owe?Checked !", Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if (Common.checkInside(incomingNumber, Common.checkAdvertise(blockerItem)) && preferencesBlockAdvertise.getBoolean("checked",false)==true) {
+                        Log.e("Broadcast", "Advertised?Checked!");
+                        Toast.makeText(context, "Advertised?Checked !", Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                    if (preferencesBlockForeign.getBoolean("checked",false) == true) {
+                        Log.e("Broadcast", "Foreign number?Checked!");
+                        Toast.makeText(context, "Foreign number?Checked!", Toast.LENGTH_LONG).show();
+                        CallStateReceiver.endCall(context);
+                    }
+                }
+            }
 
+            //Outgoing call detect
         phoneDB = PhoneDB.getInstance(context);
         contactList = getCallDetails(context);
         Log.e("ABC", contactList.size() + "");
@@ -64,17 +116,17 @@ public class CallStateReceiver extends BroadcastReceiver {
         } else {
             String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            int state = 0;
+            int state1 = 0;
             if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                state = TelephonyManager.CALL_STATE_IDLE;
+                state1 = TelephonyManager.CALL_STATE_IDLE;
             } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                state = TelephonyManager.CALL_STATE_OFFHOOK;
+                state1 = TelephonyManager.CALL_STATE_OFFHOOK;
             } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                state = TelephonyManager.CALL_STATE_RINGING;
+                state1 = TelephonyManager.CALL_STATE_RINGING;
             }
 
 
-            onCallStateChanged(context, state, number);
+            onCallStateChanged(context, state1, number);
         }
     }
 
@@ -209,11 +261,16 @@ public class CallStateReceiver extends BroadcastReceiver {
                 telephonyService = (ITelephony) m.invoke(tm);
                 telephonyService.endCall();
             } catch (Exception e) {
+                Log.e("AAAA", e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-            tm.endCall();
+            if ( ContextCompat.checkSelfPermission( context, android.Manifest.permission.ANSWER_PHONE_CALLS ) == PackageManager.PERMISSION_GRANTED ) {
+                TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                tm.endCall();
+            }else {
+                Log.e("permission","can not check");
+            }
         }
     }
 
