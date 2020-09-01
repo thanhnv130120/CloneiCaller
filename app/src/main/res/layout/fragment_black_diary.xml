@@ -1,78 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/layoutUpdateBlackList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorFireBrick"
+            android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="16dp"
-            android:id="@+id/layoutUpdateBlackList"
-            android:gravity="center_vertical"
-            android:visibility="visible"
-            android:background="@color/colorFireBrick">
+            android:visibility="visible">
+
             <TextView
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="@color/colorWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/update_list_block_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
                 android:textColor="@color/colorWhite"
-                android:text="@string/update_list_block_content"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/update_list_block_content"
+                android:textColor="@color/colorWhite" />
+
             <Button
                 android:id="@+id/btnUpdateListBlock"
+                android:layout_width="150dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/button_ok"
-                android:textColor="@color/colorFireBrick"
                 android:text="@string/update"
-                android:layout_width="150dp"
-                android:layout_height="45dp"/>
+                android:textColor="@color/colorFireBrick" />
+
             <TextView
                 android:id="@+id/tvUpdateTime"
-                android:textColor="@color/colorWhite"
-                android:text="Dữ liệu 2020-07-31 10:59:04"
-                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Dữ liệu 2020-07-31 10:59:04"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/layoutUpdateBlackListComplete"
             android:layout_width="match_parent"
             android:layout_height="130dp"
+            android:background="@drawable/bg_update_data_success"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:id="@+id/layoutUpdateBlackListComplete"
             android:padding="16dp"
-            android:visibility="gone"
-            android:background="@drawable/bg_update_data_success">
+            android:visibility="gone">
+
             <TextView
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textColor="@color/colorWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/update_list_block_complete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
                 android:textColor="@color/colorWhite"
-                android:text="@string/update_list_block_time"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/update_list_block_time"
+                android:textColor="@color/colorWhite" />
+
             <TextView
                 android:id="@+id/tvUpdateTimeComplete"
-                android:textColor="@color/colorWhite"
-                android:text="Dữ liệu 2020-07-31 10:59:04"
-                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Dữ liệu 2020-07-31 10:59:04"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
 
         <LinearLayout
@@ -117,11 +127,11 @@
                     android:src="@drawable/ic_block_setting_scam" />
 
                 <TextView
-                    android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/block_setting_scam" />
+                    android:text="@string/block_setting_scam"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
 
             <Switch
@@ -153,11 +163,11 @@
                     android:src="@drawable/ic_block_setting_advertising" />
 
                 <TextView
-                    android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/block_setting_advertising" />
+                    android:text="@string/block_setting_advertising"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
 
             <Switch
@@ -189,11 +199,11 @@
                     android:src="@drawable/ic_block_setting_out_contact" />
 
                 <TextView
-                    android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/block_setting_out_contact" />
+                    android:text="@string/block_setting_out_contact"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
 
             <Switch
@@ -225,11 +235,11 @@
                     android:src="@drawable/ic_block_setting_foreign_number" />
 
                 <TextView
-                    android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:text="@string/block_setting_foreign_number" />
+                    android:text="@string/block_setting_foreign_number"
+                    android:textColor="@color/colorBlack" />
             </LinearLayout>
 
             <Switch
@@ -244,28 +254,31 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="2dp"
             android:background="@android:color/holo_purple" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="8dp"
                 android:id="@+id/rcBlockList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_marginTop="8dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:id="@+id/btnFloatingAddToBlock"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="20dp"
-                android:id="@+id/btnFloatingAddToBlock"
                 android:backgroundTint="@color/colorPurpleBG"
                 android:clickable="true"
                 android:src="@drawable/ic_plus"
                 app:fabSize="normal" />
         </RelativeLayout>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

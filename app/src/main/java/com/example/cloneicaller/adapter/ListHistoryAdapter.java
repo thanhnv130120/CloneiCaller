@@ -116,7 +116,7 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 1);
                         }
                         outgoingNumber = generalItem.getContact().getNumber();
-                        Log.e("ABC",outgoingNumber);
+                        Log.e("ABC", outgoingNumber);
                         context.startActivity(intent);
                     }
                 });

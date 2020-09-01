@@ -54,10 +54,10 @@ public class Common {
         int country = cursor.getColumnIndex(CallLog.Calls.COUNTRY_ISO);
         int network = cursor.getColumnIndex(CallLog.Calls.CACHED_NUMBER_TYPE);
 
-
+        int count = 0;
         cursor.moveToFirst();
         while (cursor.moveToNext()) {
-
+            if (count == 100) break;
             String phoneNum = cursor.getString(number);
             String dur = cursor.getString(duration);
             String callDate = cursor.getString(date);
@@ -89,7 +89,7 @@ public class Common {
             String time = format.format(new Time(seconds));
 
             contactList.add(new Contact(phoneNum, time, dateString, nameCon, dir, countryiso, networkname));
-
+            count++;
         }
         return contactList;
     }
@@ -135,24 +135,32 @@ public class Common {
         return phoneNum;
     }
 
-    public static String findPhoneFromCallog(String phoneNumber, Context context) {
+    public static String findPhoneFromCallog(String phoneNumber, List<Contact> contactList, Context context) {
 
         String dialed = "";
-        String columns[] = new String[]{
-                CallLog.Calls._ID,
-                CallLog.Calls.NUMBER,
-                CallLog.Calls.DATE,
-                CallLog.Calls.DURATION,
-                CallLog.Calls.TYPE};
-        String args[] = new String[1];
-        args[0] = phoneNumber;
-        Cursor c;
-        c = context.getContentResolver().query(Uri.parse("content://call_log/calls"),
-                columns, CallLog.Calls.NUMBER + "=?", args, null);
-        while (c.moveToNext()) {
-            dialed = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER));
+        for (int i = 0; i<contactList.size();i++){
+            Contact contact = contactList.get(i);
+            if (contact.getNumber().equals(phoneNumber)){
+                return phoneNumber;
+            }
         }
         return dialed;
+
+//        String columns[] = new String[]{
+//                CallLog.Calls._ID,
+//                CallLog.Calls.NUMBER,
+//                CallLog.Calls.DATE,
+//                CallLog.Calls.DURATION,
+//                CallLog.Calls.TYPE};
+//        String args[] = new String[1];
+//        args[0] = phoneNumber;
+//        Cursor c;
+//        c = context.getContentResolver().query(Uri.parse("content://call_log/calls"),
+//                columns, CallLog.Calls.NUMBER + "=?", args, null);
+//        while (c.moveToNext()) {
+//            dialed = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER));
+//        }
+//        return dialed;
     }
 
     public static String formatPhoneNumber(String phoneNumber) {

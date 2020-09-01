@@ -27,9 +27,15 @@
             android:text="@string/question"
             android:textColor="@color/colorPurpleBG"
             android:textSize="20sp" />
+        <Button
+            android:id="@+id/btnDisplayOnOtherApps"
+            android:text="Bật hiển thị trên ứng dụng khác"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcQuestion"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>
