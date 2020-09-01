@@ -3,6 +3,7 @@ package com.example.cloneicaller.common;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Person;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -14,8 +15,10 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 
 import androidx.core.app.ActivityCompat;
+import androidx.room.Room;
 
 import com.example.cloneicaller.Models.Contact;
+import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
 import com.example.cloneicaller.item.ItemPerson;
 
@@ -30,6 +33,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static android.os.Build.ID;
 
 public class Common {
     public static final int VIEW_TYPE_GROUP = 0;
@@ -112,7 +117,27 @@ public class Common {
         }
         return groupedHashMap;
     }
-
+    public static void insertAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().insertAll(blockerPersonItem);
+    }
+    public static void deleteAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().deleteAll(blockerPersonItem);
+    }
+    public static void updateAll(BlockerPersonItem blockerPersonItem, Context context){
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        database.getItemDao().updateAll(blockerPersonItem);
+    }
     public static String findPhoneFromDiary(String phoneNumber, Context context) {
 
         String phoneNum = "";
@@ -145,24 +170,7 @@ public class Common {
             }
         }
         return dialed;
-
-//        String columns[] = new String[]{
-//                CallLog.Calls._ID,
-//                CallLog.Calls.NUMBER,
-//                CallLog.Calls.DATE,
-//                CallLog.Calls.DURATION,
-//                CallLog.Calls.TYPE};
-//        String args[] = new String[1];
-//        args[0] = phoneNumber;
-//        Cursor c;
-//        c = context.getContentResolver().query(Uri.parse("content://call_log/calls"),
-//                columns, CallLog.Calls.NUMBER + "=?", args, null);
-//        while (c.moveToNext()) {
-//            dialed = c.getString(c.getColumnIndex(CallLog.Calls.NUMBER));
-//        }
-//        return dialed;
     }
-
     public static String formatPhoneNumber(String phoneNumber) {
         String phoneNum;
         if (phoneNumber.startsWith("+84")) {
@@ -195,7 +203,6 @@ public class Common {
         });
         return people;
     }
-
     public static ArrayList<ItemPerson> addAlphabet(ArrayList<ItemPerson> list) {
         int i = 0;
         ArrayList<ItemPerson> customList = new ArrayList<>();
@@ -211,7 +218,8 @@ public class Common {
             if (name1 == name2) {
                 list.get(i).setViewType(VIEW_TYPE_PERSON);
                 customList.add(list.get(i));
-            } else {
+            }
+            else {
                 list.get(i).setViewType(VIEW_TYPE_PERSON);
                 customList.add(list.get(i));
                 itemPerson.setName(String.valueOf(name2));
@@ -224,7 +232,6 @@ public class Common {
         customList.add(list.get(i));
         return customList;
     }
-
     public static List<BlockerPersonItem> addAlphabetBlocker(List<BlockerPersonItem> blocker) {
         int i = 0;
         ArrayList<BlockerPersonItem> customList = new ArrayList<>();
@@ -240,7 +247,8 @@ public class Common {
             if (name1 == name2) {
                 blocker.get(i).setTypeArrange(VIEW_TYPE_PERSON);
                 customList.add(blocker.get(i));
-            } else {
+            }
+            else {
                 blocker.get(i).setTypeArrange(VIEW_TYPE_PERSON);
                 customList.add(blocker.get(i));
                 itemPerson.setName(String.valueOf(name2));
@@ -271,7 +279,6 @@ public class Common {
         }
         return result;
     }
-
     public static ArrayList<ItemPerson> resolverArrayList(ItemPerson itemPerson, Context context) {
         ArrayList<ItemPerson> personArrayList = new ArrayList<>();
         if (itemPerson == null) {
@@ -282,25 +289,52 @@ public class Common {
             String sortOrder = null;
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = resolver.query(uri, projection, selection, selectionArgs, sortOrder);
-            while (cursor.moveToNext()) {
+            while (cursor.moveToNext()){
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 StringBuilder stringBuilder = new StringBuilder(num).replace(0, 1, "+84");
                 String number = String.valueOf(stringBuilder).replace(" ", "");
-                personArrayList.add(new ItemPerson(name, -1, number));
+                personArrayList.add(new ItemPerson(name,-1, number));
             }
         }
         return personArrayList;
     }
+    public static void deleteContactUsingID(Context context, Cursor cursor){
 
-    public static ArrayList<String> covertToStringArray(ArrayList<ItemPerson> people) {
-        ArrayList<String> name = new ArrayList<>();
+        ContentResolver resolver = context.getContentResolver();
+        int contactId = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Cursor cur = resolver.query(ContactsContract.RawContacts.CONTENT_URI,
+                    new String[]{ContactsContract.RawContacts._ID},
+                    ContactsContract.RawContacts.CONTACT_ID+ "=?",
+                    new String[]{String.valueOf(contactId)},null);
+            int rowId = 0;
+            if (cur.moveToFirst()){
+                rowId = cur.getInt(cur.getColumnIndex(ContactsContract.RawContacts._ID));
+            }
+            ArrayList<ContentProviderOperation>ops = new ArrayList<ContentProviderOperation>();
+            String selectPhone = ContactsContract.Data.RAW_CONTACT_ID+ "=? AND "+
+                    ContactsContract.Data.MIMETYPE+"=? AND "+
+                    ContactsContract.CommonDataKinds.Phone._ID+ "=?";
+            String []phoneArgs = new String[]{Integer.toString(rowId),
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+                    ID.toString()
+            };
+            ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI).withSelection(selectPhone,phoneArgs).build());
+            try {
+                resolver.applyBatch(ContactsContract.AUTHORITY, ops);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    public static ArrayList<String>covertToStringArray(ArrayList<ItemPerson>people){
+        ArrayList<String>name = new ArrayList<>();
         for (int i = 0; i < people.size(); i++) {
             name.add(people.get(i).getName());
         }
         return name;
     }
-
     public static void disconnectCall() {
         try {
 
@@ -396,5 +430,60 @@ public class Common {
             }
         }
         return identified;
+    }
+    public static boolean notForeignNumber(String number) {
+        boolean check;
+        check = false;
+        char a = number.charAt(0);
+        char b = number.charAt(1);
+        char c = number.charAt(2);
+        if (Character.toString(a).equals("8")){
+            if (Character.toString(b).equals("4")){
+                check = true;
+            }
+        }else if (Character.toString(a).equals("0")){
+            check = true;
+        }else if (Character.toString(a).equals("+")){
+            if(Character.toString(b).equals("8")&&Character.toString(c).equals("4")){
+                check = true;
+            }
+        }
+        return check;
+    }
+//        return number.charAt(0) + "" + number.charAt(1);
+//    }
+    public static void deleteContact(ContentResolver resolver,String number){
+        ArrayList<ContentProviderOperation> personArrayList = new ArrayList<>();
+        String []args = new String[]{(String.valueOf(getContactID(resolver,number)))};
+        personArrayList.add(ContentProviderOperation.newDelete(ContactsContract.RawContacts.CONTENT_URI)
+                .withSelection(ContactsContract.RawContacts.CONTACT_ID+"=?",args).build());
+        try{
+            resolver.applyBatch(ContactsContract.AUTHORITY,personArrayList);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static long getContactID(ContentResolver resolver, String number) {
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
+        String[] projection ={ContactsContract.PhoneLookup._ID};
+        Cursor cursor = null;
+        try {
+            cursor = resolver.query(contactUri,projection,null,null,null);
+            if (cursor.moveToFirst()){
+                int personID = cursor.getColumnIndex(ContactsContract.PhoneLookup._ID);
+                return cursor.getLong(personID);
+            }
+            return -1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            if (cursor!=null){
+                cursor.close();
+                cursor = null;
+            }
+        }
+        return -1;
     }
 }
