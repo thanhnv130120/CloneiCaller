@@ -59,15 +59,15 @@ public class QuestionActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnDisplayOnOtherApps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (!Settings.canDrawOverlays(QuestionActivity.this)) {
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                    startActivityForResult(intent, 0);
-//                }
-            }
-        });
+//        binding.btnDisplayOnOtherApps.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                if (!Settings.canDrawOverlays(QuestionActivity.this)) {
+//                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+//                    startActivityForResult(intent, 0);
+////                }
+//            }
+//        });
     }
 
     private void addItemsFromJSON() {

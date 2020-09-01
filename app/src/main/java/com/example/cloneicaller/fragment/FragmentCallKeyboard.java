@@ -37,13 +37,11 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
         binding = FragmentCallKeyboardBinding.inflate(inflater, container, false);
         View v = binding.getRoot();
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+                    new String[]{Manifest.permission.READ_PHONE_STATE},1);
         }
-
-        binding.tvEnterPhoneNum.setText(numberDislayed);
 
         binding.btnNum0.setOnClickListener(this);
         binding.btnNum1.setOnClickListener(this);
@@ -87,7 +85,7 @@ public class FragmentCallKeyboard extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        switch (v.getId()){
             case R.id.btn_num0:
                 if (checkFormat(numberDislayed)) {
                     numberDislayed = numberDislayed + " 0";

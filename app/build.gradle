@@ -51,6 +51,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'androidx.fragment_block.ext:junit:1.1.1'
 //    androidTestImplementation 'androidx.fragment_block.espresso:espresso-core:3.2.0'
+//    implementation 'com.google.android.material:1.2.0-alpha02'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.5.0'
 
@@ -78,4 +80,8 @@ dependencies {
 
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+    implementation 'com.baoyz.swipemenulistview:library:1.3.0'
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    implementation 'com.ernestoyaquello.dragdropswiperecyclerview:drag-drop-swipe-recyclerview:0.6.0'
 }

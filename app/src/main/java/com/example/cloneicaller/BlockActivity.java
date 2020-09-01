@@ -70,12 +70,5 @@ public class BlockActivity extends AppCompatActivity {
                 finish();
             }
         });
-//        binding.spin.setVisibility(View.GONE);
-//        binding.cigmType.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                binding.spin.setVisibility(View.VISIBLE);
-//            }
-//        });
     }
 }

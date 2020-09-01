@@ -1,7 +1,6 @@
 package com.example.cloneicaller.Room;
 
 import androidx.room.Dao;
-import androidx.room.Entity;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -24,7 +23,7 @@ public interface PhoneDBDAO {
 
 
     //     thêm 1 hoặc nhiều User
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     long[] insertAll(List<DataModel.DataBeanX.DataBean> dataBeanList);
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
