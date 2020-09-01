@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     PhoneDB phoneDB;
 
+    public static int LastId;
 
     String data;
     String jsonPhone;
@@ -196,24 +197,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         Gson gson = new Gson();
         DataModel r = gson.fromJson(jsonPhone, DataModel.class);
-        Log.e("aa", r.getData().getData().size() + "");
 
         long[] result = phoneDB.phoneDBDAO().insertAll(r.getData().getData());
 
-//        if (result.length > 0) {
-//            Log.e("abc", "thanh cong");
-//            Log.e("ccc", result.length + "");
-//        } else {
-//            Log.e("cba", "ngu");
-//        }
 
         List<DataModel.DataBeanX.DataBean> dataBeanList = phoneDB.phoneDBDAO().getAll();
-        Log.e("abc", dataBeanList.size() + "");
-        for (int i = 0; i < dataBeanList.size(); i++) {
-            DataModel.DataBeanX.DataBean dataBean = dataBeanList.get(i);
-            Log.e("abc", dataBean.getId() + "");
-            Log.e("abc", dataBean.getName() + dataBean.getPhone());
-        }
+        DataModel.DataBeanX.DataBean dataBean = dataBeanList.get(dataBeanList.size()-1);
+        LastId = dataBean.getId();
+
+
+//        Log.e("abc", dataBeanList.size() + "");
+//        for (int i = 0; i < dataBeanList.size(); i++) {
+//            DataModel.DataBeanX.DataBean dataBean1 = dataBeanList.get(i);
+//            Log.e("abc", dataBean1.getId() + "");
+//            Log.e("abc", dataBean1.getName() + dataBean1.getPhone());
+//        }
 
 
     }

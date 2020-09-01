@@ -7,14 +7,11 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.provider.BlockedNumberContract;
 import android.telecom.TelecomManager;
 import android.provider.Settings;
@@ -25,24 +22,17 @@ import android.widget.Toast;
 import com.example.cloneicaller.Models.Contact;
 import com.example.cloneicaller.Models.DataModel;
 import com.example.cloneicaller.Room.PhoneDB;
-import com.example.cloneicaller.Room.PhoneDBDAO;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
 import com.example.cloneicaller.call.ITelephony;
 import com.example.cloneicaller.common.Common;
-import com.example.cloneicaller.databinding.DisplayAfterCall2Binding;
 import com.example.cloneicaller.fragment.FragmentCallKeyboard;
-import com.example.cloneicaller.fragment.FragmentDiary;
-import com.example.cloneicaller.item.ItemPerson;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.example.cloneicaller.common.Common.disconnectCall;
-import static com.example.cloneicaller.common.Common.findPositionWithName;
 import static com.example.cloneicaller.common.Common.formatPhoneNumber;
+import static com.example.cloneicaller.common.Common.getCallDetails;
 
 public class CallStateReceiver extends BroadcastReceiver {
 
@@ -54,126 +44,146 @@ public class CallStateReceiver extends BroadcastReceiver {
     public static String incomingNumber, numberDiary;
     public static String outgoingNumber, outgoingNumber2, outgoingNumber3, phoneData = "";
     DataModel.DataBeanX.DataBean dataBean;
+    public static String savedNumber;
+    private static int lastState = TelephonyManager.CALL_STATE_IDLE;
+    private static Date callStartTime;
+    private static boolean isIncoming;
     String income;
+    List<Contact> contactList;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
 
         phoneDB = PhoneDB.getInstance(context);
+        contactList = getCallDetails(context);
+        Log.e("ABC", contactList.size() + "");
 
-        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-        Log.e("AAAA", "state");
-        incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-
-//        stringBuilder = new StringBuilder(incomingNumber).replace(0, 1, "+84");
-//        income = String.valueOf(stringBuilder);
-//        income = income.replace(" ", "");
-
-        incomingNumber = Common.formatPhoneNumber(incomingNumber);
-
-        Log.e("stringbuilder", incomingNumber + "");
-        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-            Toast.makeText(context, "Ringing State Number is - " + incomingNumber, Toast.LENGTH_LONG).show();
-            Log.e("AAAA", "state: " + incomingNumber);
-            if ((incomingNumber != null) && incomingNumber.equals("6505551212")) {
-                disconnectCall();
+        if (intent.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL)) {
+            savedNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+        } else {
+            String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
+            String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            int state = 0;
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                state = TelephonyManager.CALL_STATE_IDLE;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                state = TelephonyManager.CALL_STATE_OFFHOOK;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                state = TelephonyManager.CALL_STATE_RINGING;
             }
+
+
+            onCallStateChanged(context, state, number);
         }
-
-
-        //Outgoing call detect
-        else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-            Log.e("ABC", "started");
-            Intent intent1 = new Intent(context, DialogBeforeCallActivity.class);
-            context.startService(intent1);
-
-        } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-//          DialogBeforeCallActivity.removeView();
-
-            //Check so goi den
-
-            //check so trong database tu ban phim
-            dataBean = phoneDB.phoneDBDAO().getDataByPhone(incomingNumber);
-            try {
-                phoneData = dataBean.getPhone();
-                Log.e("CCCB", dataBean.getName() + "");
-            } catch (Exception e) {
-
-            }
-
-            //Co trong danh ba may
-            String phoneIn = Common.findPhoneFromDiary(incomingNumber, context);
-            phoneIn = Common.formatPhoneNumber(phoneIn);
-            Log.e("CCC", phoneIn + "phoneIn");
-            //Co trong lich su goi
-            String phoneInHis = Common.findPhoneFromCallog(incomingNumber, context);
-            phoneInHis = Common.formatPhoneNumber(phoneInHis);
-            Log.e("CCC", phoneInHis + "phoneInHis");
-
-            if (phoneIn.equals(incomingNumber)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall1.class));
-            } else if (phoneData.equals(incomingNumber) && !phoneInHis.equals(incomingNumber)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall2.class));
-            } else if (!phoneData.equals(incomingNumber) && !phoneInHis.equals(incomingNumber)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall3.class));
-            } else {
-                context.startService(new Intent(context, DialogDisplayAfterCall1.class));
-            }
-
-            outgoingNumber = Common.formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
-            if (outgoingNumber.equals("+84")) {
-                outgoingNumber = "";
-            } else {
-                outgoingNumber = Common.formatPhoneNumber(ListHistoryAdapter.outgoingNumber);
-            }
-            Log.e("CCC1", outgoingNumber + "og");
-            outgoingNumber2 = Common.formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
-            if (outgoingNumber2.equals("+84")) {
-                outgoingNumber2 = "";
-            } else {
-                outgoingNumber2 = Common.formatPhoneNumber(FragmentCallKeyboard.numberDislayed);
-            }
-            Log.e("CCC1", outgoingNumber2 + "og2");
-
-            //check so trong danh ba nhap tu ban phim
-            String phoneNum1 = Common.findPhoneFromDiary(outgoingNumber2, context);
-            phoneNum1 = formatPhoneNumber(phoneNum1);
-            //check so trong danh ba tu lich su cuoc goi
-            String phoneNum2 = Common.findPhoneFromDiary(outgoingNumber, context);
-            phoneNum2 = formatPhoneNumber(phoneNum2);
-
-            //check so trong callLog từ ban phim
-            String phoneCallLog = Common.findPhoneFromCallog(outgoingNumber2, context);
-            phoneCallLog = formatPhoneNumber(phoneCallLog);
-            //check so trong callLog tu lich su cuoc goi
-            String phoneCallLog2 = Common.findPhoneFromCallog(outgoingNumber, context);
-            phoneCallLog2 = formatPhoneNumber(phoneCallLog2);
-
-            //check so trong database tu ban phim
-            dataBean = phoneDB.phoneDBDAO().getDataByPhone(outgoingNumber2);
-            try {
-                phoneData = dataBean.getPhone();
-            } catch (Exception e) {
-
-            }
-
-            if (phoneNum1.equals(outgoingNumber2) || phoneNum2.equals(outgoingNumber)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall1.class));
-            } else if (phoneData.equals(outgoingNumber2) && !phoneCallLog.equals(outgoingNumber2)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall2.class));
-                Log.e("CCCV", "cc");
-            } else if (!phoneCallLog.equals(outgoingNumber2) && !phoneCallLog2.equals(outgoingNumber)) {
-                context.startService(new Intent(context, DialogDisplayAfterCall4.class));
-            } else {
-                Log.e("CCC", "False");
-            }
-
-            Log.e("ABC", "ended");
-
-        }
-        checkPermission(context);
     }
+
+    private void onCallStateChanged(Context context, int state, String number) {
+        if (lastState == state) {
+
+            return;
+        }
+        switch (state) {
+            case TelephonyManager.CALL_STATE_RINGING:
+                isIncoming = true;
+                callStartTime = new Date();
+                savedNumber = number;
+                onIncomingCallReceived(context, number, callStartTime);
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                if (lastState != TelephonyManager.CALL_STATE_RINGING) {
+                    isIncoming = false;
+                    callStartTime = new Date();
+                    onOutgoingCallStarted(context, savedNumber, callStartTime);
+                } else {
+                    isIncoming = true;
+                    callStartTime = new Date();
+                    onIncomingCallAnswered(context, savedNumber, callStartTime);
+                }
+
+                break;
+            case TelephonyManager.CALL_STATE_IDLE:
+                if (lastState == TelephonyManager.CALL_STATE_RINGING) {
+                    onMissedCall(context, savedNumber, callStartTime);
+                } else if (isIncoming) {
+                    onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
+                } else {
+                    onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
+                }
+                break;
+        }
+        lastState = state;
+    }
+
+    private void onOutgoingCallEnded(Context context, String savedNumber, Date callStartTime, Date date) {
+
+        String phoneNumInDia = Common.findPhoneFromDiary(savedNumber, context);
+        phoneNumInDia = Common.formatPhoneNumber(phoneNumInDia);
+
+        String phoneNumInCallL = Common.findPhoneFromCallog(savedNumber, contactList, context);
+        Log.e("ABC1232123", phoneNumInCallL + "");
+        phoneNumInCallL = Common.formatPhoneNumber(phoneNumInCallL);
+        Log.e("ABC1232123", phoneNumInCallL + "");
+        savedNumber = Common.formatPhoneNumber(savedNumber);
+        Log.e("ABCOutEnd", savedNumber + "");
+        String dataPhone = "";
+        try {
+            dataBean = phoneDB.phoneDBDAO().getDataByPhone(savedNumber);
+            dataPhone = dataBean.getPhone();
+            Log.e("ABCOutEnd", dataBean.getPhone() + "");
+        } catch (Exception e) {
+
+        }
+        if (savedNumber.equals(phoneNumInDia)) {
+            context.startService(new Intent(context, DialogDisplayAfterCall1.class));
+        } else if (savedNumber.equals(dataPhone) && !savedNumber.equals(phoneNumInCallL)) {
+            context.startService(new Intent(context, DialogDisplayAfterCall2.class));
+        } else if (!savedNumber.equals(phoneNumInCallL)) {
+            context.startService(new Intent(context, DialogDisplayAfterCall4.class));
+        }
+
+    }
+
+    private void onIncomingCallEnded(Context context, String savedNumber, Date callStartTime, Date date) {
+
+        String phoneIncomeDiary = Common.findPhoneFromDiary(savedNumber, context);
+        String phoneIncomeCallLog = Common.findPhoneFromCallog(savedNumber, contactList, context);
+        Log.e("ABCNothing", phoneIncomeCallLog);
+        String dataPhone = "";
+
+        try {
+            dataBean = phoneDB.phoneDBDAO().getDataByPhone(savedNumber);
+            dataPhone = dataBean.getPhone();
+            Log.e("ABCOutEnd", dataBean.getPhone() + "");
+        } catch (Exception e) {
+
+        }
+        Log.e("ABCIncomeDiary", phoneIncomeDiary);
+        if (phoneIncomeDiary.length() > 0 && !phoneIncomeDiary.equals("+84")) {
+            context.startService(new Intent(context, DialogDisplayAfterCall1.class));
+        } else if (dataPhone.length() > 0 && phoneIncomeCallLog.length() == 0) {
+            context.startService(new Intent(context, DialogDisplayAfterCall2.class));
+        } else if (phoneIncomeDiary.length() == 0 && phoneIncomeCallLog.length() == 0) {
+            context.startService(new Intent(context, DialogDisplayAfterCall3.class));
+        }
+    }
+
+    private void onOutgoingCallStarted(Context context, String savedNumber, Date callStartTime) {
+        Log.e("ABCOutStarted", savedNumber + "");
+    }
+
+    private void onMissedCall(Context context, String savedNumber, Date callStartTime) {
+        Log.e("ABCMissed", savedNumber + "");
+    }
+
+    private void onIncomingCallAnswered(Context context, String savedNumber, Date callStartTime) {
+        Log.e("ABCInAns", savedNumber + "");
+    }
+
+    private void onIncomingCallReceived(Context context, String number, Date callStartTime) {
+        Log.e("ABC", number + "");
+    }
+
 
     public void blockedcall(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {

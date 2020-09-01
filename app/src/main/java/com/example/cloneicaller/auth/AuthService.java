@@ -18,11 +18,19 @@ public interface AuthService {
     //Get phone DB
     @GET("phone/get-db")
     Call<String> getData(@Query("limit") Integer limit,
-                           @Query("updated_at") String updated_at,
-                           @Query("paging") Integer paging,
-                           @Query("page") Integer page,
-                           @Query("select") String select,
-                           @Query("sort") String sort,
-                           @Query("direction") String direction);
+                         @Query("updated_at") String updated_at,
+                         @Query("paging") Integer paging,
+                         @Query("page") Integer page,
+                         @Query("select") String select,
+                         @Query("sort") String sort,
+                         @Query("direction") String direction);
+
+    @GET("phone/get-db")
+    Call<String> updateData(@Query("limit") Integer limit,
+                            @Query("updated_at") String updated_at,
+                            @Query("id") String id,
+                            @Query("select") String select,
+                            @Query("sort") String sort,
+                            @Query("direction") String direction);
 
 }
