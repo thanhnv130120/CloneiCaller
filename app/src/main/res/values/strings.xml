@@ -42,6 +42,7 @@
     <string name="block_setting_scam">Chặn các số lừa đảo, đòi nợ</string>
     <string name="block_number">Chặn số</string>
     <string name="block_name">Tên</string>
+
     <string name="block_description">Mô tả</string>
     <string name="block_option">Lựa chọn:</string>
     <string name="diary_filter_number">DANH BẠ (2)</string>
