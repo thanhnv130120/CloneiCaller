@@ -13,6 +13,7 @@
         android:gravity="center"
         android:background="@color/colorPurple">
         <TextView
+            android:id="@+id/tv_name_swipe"
             android:layout_weight="4"
             android:text="ABC"
             android:textStyle="bold"
@@ -40,6 +41,7 @@
         android:padding="16dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/btn_cancel"
             android:layout_marginRight="8dp"
             android:textColor="@color/colorPurple"
             android:layout_weight="1"
@@ -48,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <Button
+            android:id="@+id/btn_remove"
             android:layout_marginLeft="8dp"
             android:textColor="@color/colorWhite"
             android:layout_weight="1"

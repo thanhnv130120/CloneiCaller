@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -18,7 +19,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cloneicaller.DetailContact;
@@ -30,6 +33,7 @@ import com.example.cloneicaller.adapter.AdapterPersonDiary;
 import com.example.cloneicaller.adapter.ItemPersonAdapter;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.custom.ChoosePlanViewSwipeDiary;
 import com.example.cloneicaller.databinding.DialogDeleteContactBinding;
 import com.example.cloneicaller.databinding.FragmentDiaryBinding;
 import com.example.cloneicaller.item.ItemGroup;
@@ -45,12 +49,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
 public class FragmentDiary extends Fragment implements View.OnClickListener, ItemPersonAdapter.PersonItemListener, AppConstants {
     public static String numberDiary;
     private ArrayList<ItemPerson> people = new ArrayList<>();
     private FragmentDiaryListner listener;
-
+    ItemPersonAdapter adapter;
     FragmentDiaryBinding binding;
+    ChoosePlanViewSwipeDiary choosePlanViewSwipe;
 
     @Nullable
     @Override
@@ -59,6 +66,9 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
         View view = binding.getRoot();
 
         binding.floatingBtnDiary.setOnClickListener(this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(binding.rclDiary);
+        choosePlanViewSwipe = new ChoosePlanViewSwipeDiary(getContext());
         fetchContact();
         if (people.size() == 0) {
             binding.tvNoneDataDiary.setText(getString(R.string.none_data));
@@ -86,14 +96,81 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
         };
         return view;
     }
+    ItemPerson person = null;
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
 
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            switch (direction){
+                case ItemTouchHelper.LEFT:
+                    person = people.get(position);
+                    String number = person.getNumber();
+                    people.remove(position);
+                    adapter.notifyItemRemoved(position);
+                    Dialog dialog = new Dialog(getContext());
+                    DialogDeleteContactBinding binding;
+                    binding = DialogDeleteContactBinding.inflate(getLayoutInflater());
+                    View view2 = binding.getRoot();
+                    binding.tvNameSwipe.setText(person.getName());
+                    binding.btnRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ContentResolver resolver = getContext().getContentResolver();
+                            Common.deleteContact(resolver,number);
+                            dialog.dismiss();
+                        }
+                    });
+
+                    binding.btnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            people.add(person);
+                            adapter.notifyDataSetChanged();
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(view2);
+                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                    dialog.show();
+                    break;
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorRed))
+                    .addSwipeLeftActionIcon(R.drawable.ic_delete)
+//                    .addSwipeLeftLabel("Unblock")
+                    .create()
+                    .decorate();
+            View itemView = viewHolder.itemView;
+//            if(dX < 0){
+//                choosePlanViewSwipe.invalidate();
+//                //choosePlanView.setBackgroundResource(R.color.delete_red);
+//                choosePlanViewSwipe.measure(itemView.getWidth(), itemView.getHeight());
+//                choosePlanViewSwipe.layout(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+//                c.save();
+//                c.translate(choosePlanViewSwipe.getRight() + (int) dX, viewHolder.getAdapterPosition()*itemView.getHeight());
+//
+//                choosePlanViewSwipe.draw(c);
+//                c.restore();
+//            }
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
     private void fetchContact() {
         try {
             people = Common.resolverArrayList(null, getContext());
             people = Common.sortList(people);
             people = Common.addAlphabet(people);
             listener.onPutListDiarySent(people);
-            ItemPersonAdapter adapter = new ItemPersonAdapter(getContext(), people);
+            adapter = new ItemPersonAdapter(getContext(), people);
             binding.rclDiary.setAdapter(adapter);
             adapter.setListener(this);
         } catch (Exception e) {
@@ -138,21 +215,12 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
     public void onClickPerson(int position) {
 
         Intent intent = new Intent(getActivity(), DetailContact.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(INTENT_NAME, people.get(position).getName());
-        bundle.putString(INTENT_NUMBER, people.get(position).getNumber());
-        intent.putExtras(bundle);
-        intent.putExtra(INTENT_NAME, people.get(position).getName());
-        intent.putExtra(INTENT_NUMBER, people.get(position).getNumber());
+        ItemPerson itemPerson = people.get(position);
+        intent.putExtra(INTENT_NAME, itemPerson.getName());
+        intent.putExtra(INTENT_NUMBER, itemPerson.getNumber());
         intent.putExtra(INTENT_BLOCK, false);
         intent.putExtra(INTENT_BLOCK_TYPE, "");
-
-        //Toast.makeText(getContext(),""+people.get(position).getName() +":"+people.get(position).getNumber(),Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent(getActivity(), DetailDiaryActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("name", people.get(position).getName());
-//        bundle.putString("number", people.get(position).getNumber());
-//        intent.putExtras(bundle);
+        intent.putExtra(INTENT_TYPE_ARRANGE, itemPerson.getViewType());
         startActivity(intent);
     }
 
@@ -168,6 +236,11 @@ public class FragmentDiary extends Fragment implements View.OnClickListener, Ite
         } else {
             throw new RuntimeException(context.toString() + " must implement FragmentListener");
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
