@@ -311,7 +311,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(blockUnknownReceiver);
+//        getActivity().unregisterReceiver(blockUnknownReceiver);
     }
 
     @Override
