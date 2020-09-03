@@ -10,13 +10,18 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
+import com.android.internal.telephony.ITelephony;
 import com.example.cloneicaller.Models.Contact;
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
@@ -270,7 +275,26 @@ public class Common {
         }
         return 1;
     }
+    public static void endCall(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            ITelephony telephonyService;
+            try {
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                Method m = tm.getClass().getDeclaredMethod("getITelephony");
 
+                m.setAccessible(true);
+                telephonyService = (ITelephony) m.invoke(tm);
+                telephonyService.endCall();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission( context, android.Manifest.permission.ANSWER_PHONE_CALLS)== PackageManager.PERMISSION_GRANTED ){
+                TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                tm.endCall();
+            }
+        }
+    }
     public static ArrayList<String> getAlphabet() {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 65; i < 90; i++) {

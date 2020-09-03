@@ -1,4 +1,4 @@
-package com.example.cloneicaller.call;
+package com.android.internal.telephony;
 
 public interface ITelephony {
     boolean endCall();

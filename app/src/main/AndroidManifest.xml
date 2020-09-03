@@ -107,6 +107,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="android.intent.action.ACTION_USER_PRESENT" />
+                <action android:name="android.intent.action.ACTION_SCREEN_ON" />
+                <action android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
     </application>
