@@ -44,6 +44,7 @@
     <LinearLayout
         android:layout_below="@+id/lnear_filter"
         android:id="@+id/lnear_filter_search"
+        android:background="@color/colorWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"

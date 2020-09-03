@@ -25,10 +25,15 @@
     <string name="default_name">default person</string>
     <string name="default_number">default phone number</string>
     <string name="call">GỌI</string>
+    <string name="report_block">BÁO CÁO VÀ CHẶN</string>
+    <string name="choose">Lựa chọn:</string>
     <string name="message">NHẮN TIN</string>
     <string name="block">CHẶN</string>
     <string name="save_contact">LƯU</string>
     <string name="default_country">default nation</string>
+    <string name="complete">Hoàn thành !</string>
+    <string name="complete1">Cảm ơn bạn đã giúp chúng tôi tạo ra</string>
+    <string name="complete2">một trải nghiệm gọi điện tốt hơn!</string>
     <string name="default_network">default network</string>
     <string name="block_setting">Cài đặt chặn số</string>
     <string name="block_setting_advertising">Chặn các số quảng cáo</string>
@@ -37,6 +42,7 @@
     <string name="block_setting_scam">Chặn các số lừa đảo, đòi nợ</string>
     <string name="block_number">Chặn số</string>
     <string name="block_name">Tên</string>
+
     <string name="block_description">Mô tả</string>
     <string name="block_option">Lựa chọn:</string>
     <string name="diary_filter_number">DANH BẠ (2)</string>
@@ -45,6 +51,7 @@
     <string name="update_list_block_title">Cập nhật danh sách bị chặn</string>
     <string name="update_list_block_content">Nhận danh sách cập nhật các số spam được báo cáo gần nhất để phát hiện chúng nhanh chóng ngay cả khi ngoại tuyến. Cập nhật danh sách này thường xuyên.</string>
     <string name="update">Cập nhật</string>
+
     <string name="update_list_block_complete">Dữ liệu đã cập nhật mới nhất.</string>
     <string name="update_list_block_time">Lần cập nhật cuối cùng</string>
     <string name="setting_eng">Setting</string>
@@ -73,6 +80,9 @@
     <string name="button_9">9\nw x y z</string>
     <string name="button_star">*</string>
     <string name="button_thang">#</string>
+    <string name="unblock">BỎ CHẶN</string>
+    <string name="did_unblocked">Đã bỏ chặn</string>
+    <string name="agree">ĐỒNG Ý</string>
     <!--
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
@@ -84,4 +94,6 @@
     <string name="lie">LỪA ĐẢO</string>
     <string name="land">BẤT ĐỘNG SẢN</string>
     <string name="hello_world">Hello Square World!</string>
+
+
 </resources>
