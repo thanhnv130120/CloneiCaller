@@ -269,7 +269,6 @@ public class CallStateReceiver extends BroadcastReceiver {
             try {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 Method m = tm.getClass().getDeclaredMethod("getITelephony");
-
                 m.setAccessible(true);
                 telephonyService = (ITelephony) m.invoke(tm);
                 telephonyService.endCall();
@@ -292,15 +291,6 @@ public class CallStateReceiver extends BroadcastReceiver {
             }
         }
     }
-    public static final String[] PERMISSION_GROUP_CALL_LOG = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-            ? new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
-            : new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
-
-    public static final String[] PERMISSION_GROUP_PHONE = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-            ? new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
-            : new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
-
-    public static final String[] PERMISSION_GROUP_CONTACT = new String[] { Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS };
 //    public static void requestCallLogPermissionsForResult(Activity activity) {
 //        Set<String> set = new HashSet<>();
 //        set.addAll(Arrays.asList(PERMISSION_GROUP_CALL_LOG));

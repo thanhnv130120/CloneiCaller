@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -32,6 +33,8 @@ import com.example.cloneicaller.SwipeHelper;
 import com.example.cloneicaller.adapter.ItemPersonAdapter;
 import com.example.cloneicaller.adapter.ListHistoryAdapter;
 import com.example.cloneicaller.common.Common;
+import com.example.cloneicaller.custom.ChoosePlanViewSwipeDiary;
+import com.example.cloneicaller.custom.ChoosePlanViewSwipeHistory;
 import com.example.cloneicaller.databinding.FragmentHistoryBinding;
 
 import java.sql.Time;
@@ -45,20 +48,22 @@ import java.util.List;
 import java.util.Locale;
 
 public class FragmentListHistory extends Fragment {
-
+    private ChoosePlanViewSwipeHistory choosePlanViewSwipeHistory;
     private List<Contact> contactList = new ArrayList<>();
     List<ListItem> consolidatedList = new ArrayList<>();
 
     FragmentHistoryBinding binding;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         contactList = Common.getCallDetails(getContext());
 
         HashMap<String, List<Contact>> groupedHashMap = Common.groupDataIntoHashMap(contactList);
@@ -91,21 +96,37 @@ public class FragmentListHistory extends Fragment {
         ListHistoryAdapter listHistoryAdapter = new ListHistoryAdapter(getContext(), consolidatedList);
         binding.rcListHistory.setAdapter(listHistoryAdapter);
 
-        SwipeHelper swipeHelper = new SwipeHelper(getContext(), binding.rcListHistory) {
-            @Override
-            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
-                underlayButtons.add(new SwipeHelper.UnderlayButton("CHẶN", 1, Color.parseColor("#A90939"), new SwipeHelper.UnderlayButtonClickListener() {
-                    @Override
-                    public void onClick(int pos) {
-                        Toast.makeText(getContext(), "ABC", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                ));
-            }
-        };
-
-        return view;
+//        SwipeHelper swipeHelper = new SwipeHelper(getContext(), binding.rcListHistory) {
+//            @Override
+//            public void instantiateUnderlayButton(RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+//                underlayButtons.add(new SwipeHelper.UnderlayButton("CHẶN", 1, Color.parseColor("#A90939"), new SwipeHelper.UnderlayButtonClickListener() {
+//                    @Override
+//                    public void onClick(int pos) {
+//                        Toast.makeText(getContext(), "ABC", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                ));
+//            }
+//        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(binding.rcListHistory);
     }
+    GeneralItem item = null;
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+            switch (direction){
+                case ItemTouchHelper.LEFT:
+                    //item =
+            }
+        }
+    };
 }
 
 

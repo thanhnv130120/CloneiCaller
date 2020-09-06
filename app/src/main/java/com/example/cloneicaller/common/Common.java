@@ -295,6 +295,15 @@ public class Common {
             }
         }
     }
+    public static final String[] PERMISSION_GROUP_CALL_LOG = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+            ? new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
+            : new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
+
+    public static final String[] PERMISSION_GROUP_PHONE = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+            ? new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
+            : new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
+
+    public static final String[] PERMISSION_GROUP_CONTACT = new String[] { Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS };
     public static ArrayList<String> getAlphabet() {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 65; i < 90; i++) {
