@@ -13,7 +13,6 @@ public class GeneralItem implements ListItem {
     public void setContact(Contact contact) {
         this.contact = contact;
     }
-
     @Override
     public int getType() {
         return TYPE_GENERAL;

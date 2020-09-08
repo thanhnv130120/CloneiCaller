@@ -46,7 +46,6 @@ public class Common {
     public static final int VIEW_TYPE_PERSON = 1;
     public static final int RESULT_CODE = 1000;
     public static List<String> alphabet_available = new ArrayList<>();
-
     //thanhnv
     public static List<Contact> getCallDetails(Context context) {
 
@@ -103,7 +102,20 @@ public class Common {
         }
         return contactList;
     }
-
+    public static boolean checkBlock(Context context, String number){
+        boolean check = false;
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+         List<BlockerPersonItem> blockers = database.getItemDao().getItems();
+        for (BlockerPersonItem blocker:blockers) {
+            if (number==blocker.getNumber()){
+                check = true;
+            }
+        }
+        return check;
+    }
     public static HashMap<String, List<Contact>> groupDataIntoHashMap(List<Contact> contactList) {
 
         HashMap<String, List<Contact>> groupedHashMap = new LinkedHashMap<>();
