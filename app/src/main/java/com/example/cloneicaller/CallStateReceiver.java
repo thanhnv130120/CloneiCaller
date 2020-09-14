@@ -65,14 +65,17 @@ public class CallStateReceiver extends BroadcastReceiver {
     private static boolean isIncoming;
     String income;
     List<Contact> contactList;
-
+    SharedPreferences preferencesLie;
+    SharedPreferences preferencesBlockAdvertise;
+    SharedPreferences preferencesBlockCall;
+    SharedPreferences preferencesBlockForeign;
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
-        SharedPreferences preferencesLie = context.getSharedPreferences("blockLieCall", Context.MODE_PRIVATE);
-        SharedPreferences preferencesBlockAdvertise = context.getSharedPreferences("blockAdvertiseCall", Context.MODE_PRIVATE);
-        SharedPreferences preferencesBlockCall = context.getSharedPreferences("blockUnknownCall", Context.MODE_PRIVATE);
-        SharedPreferences preferencesBlockForeign = context.getSharedPreferences("blockForeign", Context.MODE_PRIVATE);
+        preferencesLie = context.getSharedPreferences("blockLieCall", Context.MODE_PRIVATE);
+        preferencesBlockAdvertise = context.getSharedPreferences("blockAdvertiseCall", Context.MODE_PRIVATE);
+        preferencesBlockCall = context.getSharedPreferences("blockUnknownCall", Context.MODE_PRIVATE);
+        preferencesBlockForeign = context.getSharedPreferences("blockForeign", Context.MODE_PRIVATE);
         String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         Log.e("AAAA", "state");
         BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
