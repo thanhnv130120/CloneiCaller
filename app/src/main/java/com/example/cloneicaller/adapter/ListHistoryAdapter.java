@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import com.example.cloneicaller.Models.DateItem;
 import com.example.cloneicaller.Models.GeneralItem;
 import com.example.cloneicaller.R;
 import com.example.cloneicaller.SwipeHelper;
+import com.example.cloneicaller.common.Common;
 
 import java.util.List;
 
@@ -38,10 +40,18 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     Context context;
     List<ListItem> listItemList;
     public static String outgoingNumber = "";
+    SharedPreferences sharedCheckoutDiary;
+    SharedPreferences sharedCheckoutLieOwn;
+    SharedPreferences sharedCheckoutAdvertise;
+    SharedPreferences sharedCheckoutForeign;
 
     public ListHistoryAdapter(Context context, List<ListItem> listItemList) {
         this.context = context;
         this.listItemList = listItemList;
+        sharedCheckoutDiary = context.getSharedPreferences("blockUnknownCall", Context.MODE_PRIVATE);
+        sharedCheckoutLieOwn = context.getSharedPreferences("blockLieCall", Context.MODE_PRIVATE);
+        sharedCheckoutAdvertise = context.getSharedPreferences("blockAdvertiseCall", Context.MODE_PRIVATE);
+        sharedCheckoutForeign = context.getSharedPreferences("blockForeign", Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -78,36 +88,69 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 GeneralItem generalItem = (GeneralItem) listItemList.get(position);
                 ListHistoryHolder listHistoryHolder = (ListHistoryHolder) holder;
-
+                String number = generalItem.getContact().getNumber();
+                String duration = generalItem.getContact().getDuration();
+                String date = generalItem.getContact().getDate();
+                String type = generalItem.getContact().getType();
+                String name = generalItem.getContact().getName();
+                String country = generalItem.getContact().getCountry();
+                String numberType = generalItem.getContact().getNetwork();
                 if (generalItem.getContact().getName() == null) {
-                    listHistoryHolder.tvNameContact.setText(generalItem.getContact().getNumber() + "");
+                    listHistoryHolder.tvNameContact.setText(number + "");
                 } else {
-                    listHistoryHolder.tvNameContact.setText(generalItem.getContact().getName());
+                    listHistoryHolder.tvNameContact.setText(name);
                 }
-                if (generalItem.getContact().getType() == "OUTGOING") {
+                if (type == "OUTGOING") {
                     listHistoryHolder.imgCall.setImageResource(R.drawable.ic_out_call);
-                } else if (generalItem.getContact().getType() == "INCOMING") {
+                } else if (type == "INCOMING") {
                     listHistoryHolder.imgCall.setImageResource(R.drawable.ic_in_call);
                 } else {
                     listHistoryHolder.imgCall.setImageResource(R.drawable.ic_miss_call);
                 }
 
-                listHistoryHolder.tvTimeCall.setText(generalItem.getContact().getDuration());
-
+                listHistoryHolder.tvTimeCall.setText(duration);
                 listHistoryHolder.imgDetailCall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(context, DetailDiaryActivity.class);
-                        intent.putExtra("number", generalItem.getContact().getNumber());
-                        intent.putExtra("duration", generalItem.getContact().getDuration());
-                        intent.putExtra("date", generalItem.getContact().getDate());
-                        intent.putExtra("type", generalItem.getContact().getType());
-                        intent.putExtra("name", generalItem.getContact().getName());
-                        intent.putExtra("country", generalItem.getContact().getCountry());
-                        intent.putExtra("numbertype", generalItem.getContact().getNetwork());
+                        intent.putExtra("number", number);
+                        intent.putExtra("duration", duration);
+                        intent.putExtra("date", date);
+                        intent.putExtra("type", type);
+                        intent.putExtra("name", name);
+                        intent.putExtra("country", country);
+                        intent.putExtra("numbertype", numberType);
                         context.startActivity(intent);
                     }
                 });
+//                listHistoryHolder.tvNameContact.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+                String num = (number.charAt(0) == '0') ? number.replaceFirst("0", "+84").replaceAll("\\s", "") : number.replaceAll("\\s", "");
+                if (sharedCheckoutDiary.getBoolean("checked", false) == true && !Common.checkUnknown(num, context)) {
+                    listHistoryHolder.lnWarning.setVisibility(View.VISIBLE);
+                }
+                else {
+                    listHistoryHolder.lnWarning.setVisibility(View.GONE);
+                }
+                if(Common.getAd(context,num)==true && sharedCheckoutAdvertise.getBoolean("checked",false)==true||
+                        Common.getLie(context,num)==true&&sharedCheckoutLieOwn.getBoolean("checked1",false)==true){
+                    listHistoryHolder.imgBlock.setVisibility(View.VISIBLE);
+                }
+                else {
+                    listHistoryHolder.imgBlock.setVisibility(View.GONE);
+                }
+//                if(sharedCheckoutAdvertise.getBoolean("checked",false)==true && Common.getCheckOutComming(context,num).equals("QUẢNG CÁO")
+//                || sharedCheckoutLieOwn.getBoolean("checked",false )==true &&Common.getCheckOutComming(context,num).equals("LỪA ĐẢO")){
+//                    listHistoryHolder.imgBlock.setVisibility(View.VISIBLE);
+//                }else {
+//                    listHistoryHolder.imgBlock.setVisibility(View.GONE);
+//                }
+//                Log.e("CheckTab",Common.getAd(context,num)+"Ad**************");
+//                Log.e("CheckTab",Common.getLie(context,num)+"Lie");
+//                    }
+//                });
+
                 listHistoryHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

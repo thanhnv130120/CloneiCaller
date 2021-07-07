@@ -10,13 +10,19 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
+import com.android.internal.telephony.ITelephony;
 import com.example.cloneicaller.Models.Contact;
 import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.item.BlockerPersonItem;
@@ -98,7 +104,62 @@ public class Common {
         }
         return contactList;
     }
-
+    public static boolean checkBlock(Context context, String number){
+        boolean check = false;
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+         List<BlockerPersonItem> blockers = database.getItemDao().getItems();
+        for (BlockerPersonItem blocker:blockers) {
+            if (number==blocker.getNumber()){
+                check = true;
+            }
+        }
+        return check;
+    }
+    public static boolean getLie(Context context, String number){
+        boolean checkLie= false;
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        List<BlockerPersonItem> blockers = database.getItemDao().getItems();
+        ArrayList<BlockerPersonItem>lier = new ArrayList<>();
+        lier = formatNumberBlocker(lier);
+        for (BlockerPersonItem blockerPersonItem:blockers) {
+            if (blockerPersonItem.getType().equals("LỪA ĐẢO") || blockerPersonItem.getType().equals("ĐÒI NỢ")) {
+                lier.add(blockerPersonItem);
+            }
+        }
+        for (BlockerPersonItem blockerPersonItem:lier) {
+            if (number.equals(blockerPersonItem.getNumber())) {
+                checkLie = true;
+            }
+        }
+        return checkLie;
+    }
+    public static boolean getAd(Context context, String number){
+        boolean checkA = false;
+        BlockItemDatabase database = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        List<BlockerPersonItem> blockers = database.getItemDao().getItems();
+        ArrayList<BlockerPersonItem>advertise = new ArrayList<>();
+        for (BlockerPersonItem blockerPersonItem:blockers) {
+            if (blockerPersonItem.getType().equals("QUẢNG CÁO")){
+                advertise.add(blockerPersonItem);
+            }
+        }
+        advertise = formatNumberBlocker(advertise);
+        for (BlockerPersonItem blockerPersonItem:advertise){
+            if (number.equals(blockerPersonItem.getNumber())){
+                checkA = true;
+            }
+        }
+        return checkA;
+    }
     public static HashMap<String, List<Contact>> groupDataIntoHashMap(List<Contact> contactList) {
 
         HashMap<String, List<Contact>> groupedHashMap = new LinkedHashMap<>();
@@ -270,7 +331,35 @@ public class Common {
         }
         return 1;
     }
+    public static void endCall(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            ITelephony telephonyService;
+            try {
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                Method m = tm.getClass().getDeclaredMethod("getITelephony");
 
+                m.setAccessible(true);
+                telephonyService = (ITelephony) m.invoke(tm);
+                telephonyService.endCall();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission( context, android.Manifest.permission.ANSWER_PHONE_CALLS)== PackageManager.PERMISSION_GRANTED ){
+                TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                tm.endCall();
+            }
+        }
+    }
+    public static final String[] PERMISSION_GROUP_CALL_LOG = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+            ? new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
+            : new String[] { Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
+
+    public static final String[] PERMISSION_GROUP_PHONE = Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+            ? new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS }
+            : new String[] { Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE, Manifest.permission.PROCESS_OUTGOING_CALLS, Manifest.permission.ANSWER_PHONE_CALLS };
+
+    public static final String[] PERMISSION_GROUP_CONTACT = new String[] { Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS };
     public static ArrayList<String> getAlphabet() {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 65; i < 90; i++) {
@@ -368,7 +457,32 @@ public class Common {
             e.printStackTrace();
         }
     }
-
+    public static ArrayList<ItemPerson>formatNumberItemPerson(ArrayList<ItemPerson>models){
+        ArrayList<ItemPerson>format = new ArrayList<>();
+        for (int i = 0; i < models.size(); i++) {
+            String name = models.get(i).getName();
+            String number = models.get(i).getNumber().toString();
+            number = (number.charAt(0)=='0')?number.replaceFirst("0","+84").replaceAll("\\s",""):number.replaceAll("\\s","");
+            int type = models.get(i).getViewType();
+            format.add(new ItemPerson(name,type,number));
+        }
+        return format;
+    }
+    public static ArrayList<BlockerPersonItem>formatNumberBlocker(ArrayList<BlockerPersonItem>blockerPersonItems){
+        ArrayList<BlockerPersonItem>format = new ArrayList<>();
+        for (int i = 0; i < blockerPersonItems.size(); i++) {
+            if (blockerPersonItems.get(i).getNumber()!=null){
+                String name = blockerPersonItems.get(i).getName();
+                String number = blockerPersonItems.get(i).getNumber().toString();
+                number = (number.charAt(0)=='0')?number.replaceFirst("0","+84").replaceAll("\\s",""):number.replaceAll("\\s","");
+                String type = blockerPersonItems.get(i).getType();
+                int image = blockerPersonItems.get(i).getImage();
+                int type_array = blockerPersonItems.get(i).getTypeArrange();
+                format.add(new BlockerPersonItem(name,type,number,image,type_array));
+            }
+        }
+        return format;
+    }
     public static boolean checkUnknown(String number, Context context) {
         boolean identified = false;
         ArrayList<ItemPerson> personArrayList = new ArrayList<>();
@@ -384,14 +498,31 @@ public class Common {
             String num = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             personArrayList.add(new ItemPerson(name, -1, num));
         }
-        for (ItemPerson itemPerson : personArrayList) {
-            if (number == itemPerson.getNumber()) {
+        ArrayList<ItemPerson> personArrayList1 = formatNumberItemPerson(personArrayList);
+        for (ItemPerson itemPerson : personArrayList1) {
+            String num = itemPerson.getNumber().replaceAll("\\s","");
+            Log.e("logNumber",num);
+            if (number.equals(num)) {
                 identified = true;
             }
         }
         return identified;
     }
+    public static boolean checkInBlack(String number,Context context){
+        boolean inside = false;
+        BlockItemDatabase database  = Room.databaseBuilder(context.getApplicationContext(), BlockItemDatabase.class,
+                "blockItems")
+                .allowMainThreadQueries()
+                .build();
+        List<BlockerPersonItem> items = database.getItemDao().getItems();
+        ArrayList<BlockerPersonItem>lieList = new ArrayList<>();
+        ArrayList<BlockerPersonItem>advertise = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            String type = items.get(i).getType();
 
+        }
+        return inside;
+    }
     public static List<BlockerPersonItem> checkLier(List<BlockerPersonItem> blockerPersonItems) {
         ArrayList<BlockerPersonItem> checkL = new ArrayList<>();
         for (BlockerPersonItem blockerPersonItem : blockerPersonItems) {

@@ -1,9 +1,15 @@
 package com.example.cloneicaller;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -13,6 +19,7 @@ import android.view.View;
 import com.example.cloneicaller.Models.DataModel;
 import com.example.cloneicaller.Room.PhoneDB;
 import com.example.cloneicaller.auth.RetrofitClient;
+import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.databinding.ActivityHomeBinding;
 import com.example.cloneicaller.fragment.FragmentCallKeyboard;
 import com.example.cloneicaller.fragment.FragmentDiary;
@@ -37,6 +44,7 @@ import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, FragmentDiary.FragmentDiaryListner, Callback<String> {
     //thanhnv
+
     private FragmentCallKeyboard fragmentCallKeyboard = new FragmentCallKeyboard();
     private FragmentListBlock fragmentListBlock = new FragmentListBlock();
     private FragmentListHistory fragmentListHistory = new FragmentListHistory();
@@ -80,6 +88,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 //        initReceiver();
+        if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CALL_PHONE)){
+                new AlertDialog.Builder(this)
+                        .setTitle("Permission needed")
+                        .setMessage("Just need it")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(HomeActivity.this,Common.PERMISSION_GROUP_PHONE,6);
+                                ActivityCompat.requestPermissions(HomeActivity.this,Common.PERMISSION_GROUP_CALL_LOG,7);
+                                ActivityCompat.requestPermissions(HomeActivity.this,Common.PERMISSION_GROUP_CONTACT,8);
+                            }
+                        }).setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+            }else {
+                ActivityCompat.requestPermissions(this,Common.PERMISSION_GROUP_PHONE,6);
+                ActivityCompat.requestPermissions(this,Common.PERMISSION_GROUP_CALL_LOG,7);
+                ActivityCompat.requestPermissions(this,Common.PERMISSION_GROUP_CONTACT,8);
+            }
+        }
     }
 
     @Override

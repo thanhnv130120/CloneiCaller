@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.android.internal.telephony.ITelephony;
 import com.example.cloneicaller.BlockActivity;
 import com.example.cloneicaller.CallStateReceiver;
 import com.example.cloneicaller.DetailContact;
@@ -44,7 +45,6 @@ import com.example.cloneicaller.Room.BlockItemDatabase;
 import com.example.cloneicaller.Room.PhoneDB;
 import com.example.cloneicaller.adapter.BlockListItemAdapter;
 import com.example.cloneicaller.auth.RetrofitClient;
-import com.example.cloneicaller.call.ITelephony;
 import com.example.cloneicaller.common.AppConstants;
 import com.example.cloneicaller.common.Common;
 import com.example.cloneicaller.custom.ChoosePlanViewSwipe;
@@ -311,7 +311,7 @@ public class FragmentBlackDiary extends Fragment implements BlockListItemAdapter
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(blockUnknownReceiver);
+//        getActivity().unregisterReceiver(blockUnknownReceiver);
     }
 
     @Override
